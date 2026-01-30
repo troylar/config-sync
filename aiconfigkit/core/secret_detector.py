@@ -3,7 +3,7 @@
 import math
 import re
 from dataclasses import dataclass, field
-from typing import Optional
+from typing import Any, Optional
 
 from aiconfigkit.core.models import SecretConfidence
 
@@ -142,9 +142,7 @@ class SecretDetector:
                 if safe_kw in parts:
                     is_only_safe = True
                     for part in parts:
-                        if part and part not in self.safe_keywords and any(
-                            sk in part for sk in self.secret_keywords
-                        ):
+                        if part and part not in self.safe_keywords and any(sk in part for sk in self.secret_keywords):
                             is_only_safe = False
                             break
                     if is_only_safe:
@@ -376,10 +374,9 @@ class SecretDetector:
         return bool(re.match(cred_pattern, value, re.IGNORECASE))
 
 
-from typing import Any
-
-
-def template_secrets_in_config(config: dict[str, Any], detector: Optional[SecretDetector] = None) -> tuple[dict[str, Any], list[str]]:
+def template_secrets_in_config(
+    config: dict[str, Any], detector: Optional[SecretDetector] = None
+) -> tuple[dict[str, Any], list[str]]:
     """Process a configuration dict and template detected secrets.
 
     Args:
