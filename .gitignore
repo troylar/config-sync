@@ -66,6 +66,7 @@ dmypy.json
 *.p12
 *.pfx
 *secret*
+!**/secret_detector.py
 *password*
 *credentials*
 
