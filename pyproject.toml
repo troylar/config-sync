@@ -4,13 +4,13 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "ai-config-kit"
-version = "0.5.1"
+version = "0.5.2"
 description = "Distribute and sync AI coding assistant configurations across teams"
 readme = "README.md"
 authors = [{ name = "Troy Larson", email = "troy@calvinware.com" }]
 requires-python = ">=3.10"
 license = { text = "MIT License" }
-keywords = ["cli", "ai", "config", "mcp", "cursor", "copilot", "claude", "kiro", "windsurf"]
+keywords = ["cli", "ai", "config", "mcp", "cursor", "copilot", "claude", "cline", "kiro", "windsurf"]
 classifiers = [
     "Development Status :: 3 - Alpha",
     "Intended Audience :: Developers",

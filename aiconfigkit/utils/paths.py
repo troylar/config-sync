@@ -70,6 +70,23 @@ def get_kiro_config_dir() -> Path:
     raise OSError(f"Unsupported operating system: {os.name}")
 
 
+def get_cline_config_dir() -> Path:
+    """Get Cline (VS Code extension) configuration directory based on platform."""
+    home = get_home_directory()
+
+    if os.name == "nt":  # Windows
+        return home / "AppData" / "Roaming" / "Code" / "User" / "globalStorage" / "saoudrizwan.claude-dev"
+    elif os.name == "posix":
+        if "darwin" in os.uname().sysname.lower():  # macOS
+            return (
+                home / "Library" / "Application Support" / "Code" / "User" / "globalStorage" / "saoudrizwan.claude-dev"
+            )
+        else:  # Linux
+            return home / ".config" / "Code" / "User" / "globalStorage" / "saoudrizwan.claude-dev"
+
+    raise OSError(f"Unsupported operating system: {os.name}")
+
+
 def get_claude_config_dir() -> Path:
     """Get Claude Code configuration directory based on platform."""
     home = get_home_directory()

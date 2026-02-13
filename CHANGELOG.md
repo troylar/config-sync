@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.5.2] - 2026-02-13
+
+### Added
+- **Cline IDE Support** - Added support for the Cline VS Code extension (#31)
+  - Instructions installed to `.clinerules/*.md`
+  - Cross-platform detection via VS Code globalStorage (`saoudrizwan.claude-dev`)
+  - Package system support for instructions and resources
+  - IDE capability registry entry for Cline
+  - Component detector recognizes `.clinerules/` directories
+
 ## [0.5.1] - 2026-02-13
 
 ### Added

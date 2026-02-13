@@ -4,6 +4,7 @@ from typing import Optional
 
 from aiconfigkit.ai_tools.base import AITool
 from aiconfigkit.ai_tools.claude import ClaudeTool
+from aiconfigkit.ai_tools.cline import ClineTool
 from aiconfigkit.ai_tools.copilot import CopilotTool
 from aiconfigkit.ai_tools.cursor import CursorTool
 from aiconfigkit.ai_tools.kiro import KiroTool
@@ -22,6 +23,7 @@ class AIToolDetector:
             AIToolType.WINSURF: WinsurfTool(),
             AIToolType.CLAUDE: ClaudeTool(),
             AIToolType.KIRO: KiroTool(),
+            AIToolType.CLINE: ClineTool(),
         }
 
     def detect_installed_tools(self) -> list[AITool]:
@@ -81,6 +83,7 @@ class AIToolDetector:
             AIToolType.WINSURF,
             AIToolType.CLAUDE,
             AIToolType.KIRO,
+            AIToolType.CLINE,
         ]
 
         for tool_type in priority:

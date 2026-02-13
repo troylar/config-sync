@@ -233,6 +233,7 @@ class ComponentDetector:
         ".cursor/rules": "cursor",
         ".windsurf/rules": "windsurf",
         ".kiro/steering": "kiro",
+        ".clinerules": "cline",
         ".github/instructions": "copilot",
     }
 
