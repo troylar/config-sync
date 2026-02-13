@@ -13,6 +13,7 @@ class AIToolType(Enum):
     COPILOT = "copilot"
     WINSURF = "winsurf"
     CLAUDE = "claude"
+    KIRO = "kiro"
 
 
 class ConflictResolution(Enum):
@@ -403,7 +404,7 @@ class TemplateFile:
 
     Attributes:
         path: Relative path from repository root
-        ide: Target IDE ("all", "cursor", "claude", "windsurf", "copilot")
+        ide: Target IDE ("all", "cursor", "claude", "windsurf", "copilot", "kiro")
     """
 
     path: str
@@ -413,7 +414,7 @@ class TemplateFile:
         """Validate template file data."""
         if not self.path:
             raise ValueError("Template file path cannot be empty")
-        valid_ides = ["all", "cursor", "claude", "windsurf", "copilot"]
+        valid_ides = ["all", "cursor", "claude", "windsurf", "copilot", "kiro"]
         if self.ide not in valid_ides:
             raise ValueError(f"Invalid IDE type: {self.ide}. Must be one of {valid_ides}")
 

@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.5.1] - 2026-02-13
+
+### Added
+- **Kiro IDE Support** - Added support for Amazon's Kiro AI-powered IDE (#29)
+  - Instructions installed to `.kiro/steering/*.md`
+  - Cross-platform detection (macOS, Linux, Windows)
+  - Package system support for instructions and resources
+  - IDE capability registry entry for Kiro
+  - Component detector recognizes `.kiro/steering/` directories
+
 ## [0.5.0] - 2026-01-30
 
 ### Added

@@ -121,6 +121,27 @@ CAPABILITY_REGISTRY: dict[AIToolType, IDECapability] = {
             "Supports workflows in .windsurf/workflows/. Limit of 100 MCP tools."
         ),
     ),
+    AIToolType.KIRO: IDECapability(
+        tool_type=AIToolType.KIRO,
+        tool_name="Kiro",
+        supported_components={
+            ComponentType.INSTRUCTION,
+            ComponentType.RESOURCE,
+        },
+        instructions_directory=".kiro/steering/",
+        instruction_file_extension=".md",
+        supports_project_scope=True,
+        supports_global_scope=False,
+        mcp_config_path=None,  # Kiro uses .kiro/settings/mcp.json but not yet supported
+        mcp_project_config_path=None,
+        hooks_directory=None,  # Kiro hooks use .kiro.hook JSON format, not yet supported
+        commands_directory=None,
+        notes=(
+            "Kiro uses .md files in .kiro/steering/ with optional YAML front matter "
+            "for inclusion modes (always, fileMatch, manual, auto). "
+            "MCP and hooks support deferred to future release."
+        ),
+    ),
     AIToolType.COPILOT: IDECapability(
         tool_type=AIToolType.COPILOT,
         tool_name="GitHub Copilot",

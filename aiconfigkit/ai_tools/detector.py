@@ -6,6 +6,7 @@ from aiconfigkit.ai_tools.base import AITool
 from aiconfigkit.ai_tools.claude import ClaudeTool
 from aiconfigkit.ai_tools.copilot import CopilotTool
 from aiconfigkit.ai_tools.cursor import CursorTool
+from aiconfigkit.ai_tools.kiro import KiroTool
 from aiconfigkit.ai_tools.winsurf import WinsurfTool
 from aiconfigkit.core.models import AIToolType
 
@@ -20,6 +21,7 @@ class AIToolDetector:
             AIToolType.COPILOT: CopilotTool(),
             AIToolType.WINSURF: WinsurfTool(),
             AIToolType.CLAUDE: ClaudeTool(),
+            AIToolType.KIRO: KiroTool(),
         }
 
     def detect_installed_tools(self) -> list[AITool]:
@@ -78,6 +80,7 @@ class AIToolDetector:
             AIToolType.COPILOT,
             AIToolType.WINSURF,
             AIToolType.CLAUDE,
+            AIToolType.KIRO,
         ]
 
         for tool_type in priority:

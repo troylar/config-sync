@@ -13,7 +13,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ### Core Concepts
 
 1. **Library System**: Instructions are downloaded from Git repos or local folders to `~/.ai-config-kit/library/` organized by namespace
-2. **Project-Level Installation**: All installations are project-specific, stored in tool-specific directories (`.cursor/rules/`, `.claude/rules/`, etc.)
+2. **Project-Level Installation**: All installations are project-specific, stored in tool-specific directories (`.cursor/rules/`, `.claude/rules/`, `.kiro/steering/`, etc.)
 3. **Installation Tracking**: Tracked in `<project-root>/.ai-config-kit/installations.json` for each project (instructions) and `<project-root>/.ai-config-kit/packages.json` for packages
 4. **Interactive TUI**: Terminal UI for browsing and selecting instructions from the library
 5. **Configuration Packages**: Multi-component packages containing instructions, MCP servers, hooks, commands, and resources that can be installed as a unit
@@ -26,6 +26,7 @@ ai-config-kit/
 │   ├── base.py       # Abstract AITool base class
 │   ├── claude.py     # Claude Code (.claude/rules/*.md)
 │   ├── cursor.py     # Cursor (.cursor/rules/*.mdc)
+│   ├── kiro.py       # Kiro (.kiro/steering/*.md)
 │   ├── winsurf.py    # Windsurf (.windsurf/rules/*.md)
 │   ├── copilot.py    # GitHub Copilot (.github/instructions/*.md)
 │   └── detector.py   # Tool detection logic
@@ -392,6 +393,7 @@ aiconfig package uninstall package-name --yes
 Different IDEs support different component types:
 - **Claude Code**: All components (instructions, MCP, hooks, commands, resources)
 - **Cursor**: Instructions and resources only
+- **Kiro**: Instructions and resources only
 - **Windsurf**: Instructions and resources only
 - **GitHub Copilot**: Instructions only
 
@@ -401,6 +403,7 @@ Unsupported components are automatically skipped and counted separately.
 Components are translated to IDE-specific formats:
 - **Claude Code**: `.md` files in `.claude/rules/`, `.claude/hooks/`, `.claude/commands/`
 - **Cursor**: `.mdc` files in `.cursor/rules/`
+- **Kiro**: `.md` files in `.kiro/steering/`
 - **Windsurf**: `.md` files in `.windsurf/rules/`
 - **GitHub Copilot**: `.md` files in `.github/instructions/`
 

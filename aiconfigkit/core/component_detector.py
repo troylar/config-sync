@@ -232,6 +232,7 @@ class ComponentDetector:
         ".claude/rules": "claude",
         ".cursor/rules": "cursor",
         ".windsurf/rules": "windsurf",
+        ".kiro/steering": "kiro",
         ".github/instructions": "copilot",
     }
 

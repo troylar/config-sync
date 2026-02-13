@@ -55,6 +55,21 @@ def get_winsurf_config_dir() -> Path:
     raise OSError(f"Unsupported operating system: {os.name}")
 
 
+def get_kiro_config_dir() -> Path:
+    """Get Kiro configuration directory based on platform."""
+    home = get_home_directory()
+
+    if os.name == "nt":  # Windows
+        return home / "AppData" / "Roaming" / "Kiro" / "User" / "globalStorage"
+    elif os.name == "posix":
+        if "darwin" in os.uname().sysname.lower():  # macOS
+            return home / "Library" / "Application Support" / "Kiro" / "User" / "globalStorage"
+        else:  # Linux
+            return home / ".config" / "Kiro" / "User" / "globalStorage"
+
+    raise OSError(f"Unsupported operating system: {os.name}")
+
+
 def get_claude_config_dir() -> Path:
     """Get Claude Code configuration directory based on platform."""
     home = get_home_directory()
