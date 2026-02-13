@@ -10,7 +10,7 @@
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-**Works with:** Claude Code • Claude Desktop • Cursor • GitHub Copilot • Kiro • Windsurf
+**Works with:** Claude Code • Claude Desktop • Cline • Cursor • GitHub Copilot • Kiro • Windsurf
 
 </div>
 
@@ -258,16 +258,16 @@ Any IDE-specific content from Git repositories:
 
 Complete configuration bundles with multiple component types:
 
-| Component | Claude | Cursor | Kiro | Windsurf | Copilot |
-|-----------|--------|--------|------|----------|---------|
-| Instructions | `.claude/rules/` | `.cursor/rules/` | `.kiro/steering/` | `.windsurf/rules/` | `.github/instructions/` |
-| MCP Servers | ✅ | ✅ | ❌ | ✅ | ✅ |
-| Hooks | ✅ | ❌ | ❌ | ❌ | ❌ |
-| Commands | ✅ | ❌ | ❌ | ❌ | ❌ |
-| Skills | ✅ | ❌ | ❌ | ❌ | ❌ |
-| Workflows | ❌ | ❌ | ❌ | ✅ | ❌ |
-| Memory Files | ✅ (CLAUDE.md) | ❌ | ❌ | ❌ | ❌ |
-| Resources | ✅ | ✅ | ✅ | ✅ | ❌ |
+| Component | Claude | Cline | Cursor | Kiro | Windsurf | Copilot |
+|-----------|--------|-------|--------|------|----------|---------|
+| Instructions | `.claude/rules/` | `.clinerules/` | `.cursor/rules/` | `.kiro/steering/` | `.windsurf/rules/` | `.github/instructions/` |
+| MCP Servers | ✅ | ❌ | ✅ | ❌ | ✅ | ✅ |
+| Hooks | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| Commands | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| Skills | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| Workflows | ❌ | ❌ | ❌ | ❌ | ✅ | ❌ |
+| Memory Files | ✅ (CLAUDE.md) | ❌ | ❌ | ❌ | ❌ | ❌ |
+| Resources | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ |
 
 ### MCP Server Configurations
 
@@ -287,7 +287,7 @@ Model Context Protocol server setups for enhanced AI capabilities:
 
 - Python 3.10 or higher
 - Git (for cloning template repositories)
-- One of: Claude Code, Claude Desktop, Cursor, GitHub Copilot, Kiro, or Windsurf
+- One of: Claude Code, Claude Desktop, Cline, Cursor, GitHub Copilot, Kiro, or Windsurf
 
 ### Install AI Config Kit
 

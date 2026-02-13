@@ -26,6 +26,7 @@ ai-config-kit/
 │   ├── base.py       # Abstract AITool base class
 │   ├── claude.py     # Claude Code (.claude/rules/*.md)
 │   ├── cursor.py     # Cursor (.cursor/rules/*.mdc)
+│   ├── cline.py      # Cline (.clinerules/*.md)
 │   ├── kiro.py       # Kiro (.kiro/steering/*.md)
 │   ├── winsurf.py    # Windsurf (.windsurf/rules/*.md)
 │   ├── copilot.py    # GitHub Copilot (.github/instructions/*.md)
@@ -392,6 +393,7 @@ aiconfig package uninstall package-name --yes
 #### IDE Capability Filtering
 Different IDEs support different component types:
 - **Claude Code**: All components (instructions, MCP, hooks, commands, resources)
+- **Cline**: Instructions and resources only
 - **Cursor**: Instructions and resources only
 - **Kiro**: Instructions and resources only
 - **Windsurf**: Instructions and resources only
@@ -402,6 +404,7 @@ Unsupported components are automatically skipped and counted separately.
 #### Component Translation
 Components are translated to IDE-specific formats:
 - **Claude Code**: `.md` files in `.claude/rules/`, `.claude/hooks/`, `.claude/commands/`
+- **Cline**: `.md` files in `.clinerules/`
 - **Cursor**: `.mdc` files in `.cursor/rules/`
 - **Kiro**: `.md` files in `.kiro/steering/`
 - **Windsurf**: `.md` files in `.windsurf/rules/`

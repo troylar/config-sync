@@ -142,6 +142,27 @@ CAPABILITY_REGISTRY: dict[AIToolType, IDECapability] = {
             "MCP and hooks support deferred to future release."
         ),
     ),
+    AIToolType.CLINE: IDECapability(
+        tool_type=AIToolType.CLINE,
+        tool_name="Cline",
+        supported_components={
+            ComponentType.INSTRUCTION,
+            ComponentType.RESOURCE,
+        },
+        instructions_directory=".clinerules/",
+        instruction_file_extension=".md",
+        supports_project_scope=True,
+        supports_global_scope=False,
+        mcp_config_path=None,  # Cline MCP is global-only via cline_mcp_settings.json in VS Code globalStorage
+        mcp_project_config_path=None,
+        hooks_directory=None,
+        commands_directory=None,
+        notes=(
+            "Cline uses .md files in .clinerules/ directory (recursive). "
+            "Supports optional YAML frontmatter with paths: for conditional activation. "
+            "MCP configured globally via cline_mcp_settings.json, no project-level MCP support."
+        ),
+    ),
     AIToolType.COPILOT: IDECapability(
         tool_type=AIToolType.COPILOT,
         tool_name="GitHub Copilot",

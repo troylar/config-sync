@@ -12,7 +12,7 @@ class AITool(ABC):
     """
     Abstract base class for AI coding tool integrations.
 
-    Each AI tool (Cursor, Copilot, Kiro, Winsurf, Claude) implements this interface
+    Each AI tool (Cline, Cursor, Copilot, Kiro, Winsurf, Claude) implements this interface
     to provide tool-specific installation logic.
     """
 
