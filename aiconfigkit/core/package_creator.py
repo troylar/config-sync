@@ -632,7 +632,7 @@ class PackageCreator:
         lines = [
             f"# {self.metadata.name}",
             "",
-            self.metadata.description or "Configuration package created with AI Config Kit.",
+            self.metadata.description or "Configuration package created with Config Sync.",
             "",
             "## Installation",
             "",
@@ -716,7 +716,7 @@ class PackageCreator:
                 "",
                 "---",
                 "",
-                f"*Generated with AI Config Kit on {datetime.now().strftime('%Y-%m-%d')}*",
+                f"*Generated with Config Sync on {datetime.now().strftime('%Y-%m-%d')}*",
             ]
         )
 
