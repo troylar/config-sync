@@ -29,6 +29,9 @@ def mock_all_tools_installed(monkeypatch, temp_dir):
         (home_dir / "AppData" / "Roaming" / "Code" / "User" / "globalStorage" / "saoudrizwan.claude-dev").mkdir(
             parents=True
         )
+        (home_dir / "AppData" / "Roaming" / "Code" / "User" / "globalStorage" / "rooveterinaryinc.roo-cline").mkdir(
+            parents=True
+        )
     elif os.name == "posix":
         if "darwin" in os.uname().sysname.lower():  # macOS
             (home_dir / "Library" / "Application Support" / "Cursor" / "User" / "globalStorage").mkdir(parents=True)
@@ -47,12 +50,25 @@ def mock_all_tools_installed(monkeypatch, temp_dir):
                 / "saoudrizwan.claude-dev"
             )
             cline_dir.mkdir(parents=True)
+            roo_dir = (
+                home_dir
+                / "Library"
+                / "Application Support"
+                / "Code"
+                / "User"
+                / "globalStorage"
+                / "rooveterinaryinc.roo-cline"
+            )
+            roo_dir.mkdir(parents=True)
         else:  # Linux
             (home_dir / ".config" / "Cursor" / "User" / "globalStorage").mkdir(parents=True)
             (home_dir / ".config" / "Code" / "User" / "globalStorage" / "github.copilot").mkdir(parents=True)
             (home_dir / ".config" / "Windsurf" / "User" / "globalStorage").mkdir(parents=True)
             (home_dir / ".config" / "Kiro" / "User" / "globalStorage").mkdir(parents=True)
             (home_dir / ".config" / "Code" / "User" / "globalStorage" / "saoudrizwan.claude-dev").mkdir(parents=True)
+            (home_dir / ".config" / "Code" / "User" / "globalStorage" / "rooveterinaryinc.roo-cline").mkdir(
+                parents=True
+            )
     else:
         raise OSError(f"Unsupported operating system: {os.name}")
 
@@ -67,13 +83,14 @@ class TestAIToolDetector:
 
     def test_init_creates_all_tools(self, detector):
         """Test that detector initializes with all supported tools."""
-        assert len(detector.tools) == 6
+        assert len(detector.tools) == 7
         assert AIToolType.CURSOR in detector.tools
         assert AIToolType.COPILOT in detector.tools
         assert AIToolType.WINSURF in detector.tools
         assert AIToolType.CLAUDE in detector.tools
         assert AIToolType.KIRO in detector.tools
         assert AIToolType.CLINE in detector.tools
+        assert AIToolType.ROO in detector.tools
 
     def test_detect_installed_tools_none(self, temp_dir, monkeypatch):
         """Test detect_installed_tools when no tools are installed."""
@@ -91,7 +108,7 @@ class TestAIToolDetector:
         # Create fresh detector with mocked paths
         detector = AIToolDetector()
         installed = detector.detect_installed_tools()
-        assert len(installed) == 6
+        assert len(installed) == 7
 
     def test_get_tool_by_name_valid(self, detector):
         """Test get_tool_by_name with valid tool name."""
@@ -180,13 +197,14 @@ class TestAIToolDetector:
     def test_get_tool_names(self, detector):
         """Test get_tool_names returns all tool names."""
         names = detector.get_tool_names()
-        assert len(names) == 6
+        assert len(names) == 7
         assert "cursor" in names
         assert "copilot" in names
         assert "winsurf" in names
         assert "claude" in names
         assert "kiro" in names
         assert "cline" in names
+        assert "roo" in names
 
     def test_validate_tool_name_valid(self, detector):
         """Test validate_tool_name with valid name."""
@@ -201,7 +219,7 @@ class TestAIToolDetector:
         """Test get_detection_summary."""
         detector = AIToolDetector()
         summary = detector.get_detection_summary()
-        assert len(summary) == 6
+        assert len(summary) == 7
         assert all(isinstance(v, bool) for v in summary.values())
 
     def test_format_detection_summary(self, mock_all_tools_installed):

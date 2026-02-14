@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.5.3] - 2026-02-13
+
+### Added
+- **Roo Code IDE Support** - Added support for the Roo Code VS Code extension (#32)
+  - Instructions installed to `.roo/rules/*.md`
+  - Cross-platform detection via VS Code globalStorage (`rooveterinaryinc.roo-cline`)
+  - Package system support for instructions, MCP servers, commands, and resources
+  - Project-level MCP config at `.roo/mcp.json`
+  - Slash commands at `.roo/commands/`
+  - Global and project scope support
+  - IDE capability registry entry for Roo Code
+  - Component detector recognizes `.roo/rules/` directories
+
 ## [0.5.2] - 2026-02-13
 
 ### Added

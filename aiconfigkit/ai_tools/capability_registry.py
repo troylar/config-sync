@@ -163,6 +163,30 @@ CAPABILITY_REGISTRY: dict[AIToolType, IDECapability] = {
             "MCP configured globally via cline_mcp_settings.json, no project-level MCP support."
         ),
     ),
+    AIToolType.ROO: IDECapability(
+        tool_type=AIToolType.ROO,
+        tool_name="Roo Code",
+        supported_components={
+            ComponentType.INSTRUCTION,
+            ComponentType.MCP_SERVER,
+            ComponentType.COMMAND,
+            ComponentType.RESOURCE,
+        },
+        instructions_directory=".roo/rules/",
+        instruction_file_extension=".md",
+        supports_project_scope=True,
+        supports_global_scope=True,
+        mcp_config_path=None,  # Global MCP via globalStorage cline_mcp_settings.json
+        mcp_project_config_path=".roo/mcp.json",
+        hooks_directory=None,  # Hooks not supported
+        commands_directory=".roo/commands/",
+        notes=(
+            "Roo Code uses .md files in .roo/rules/ directory (recursive). "
+            "Mode-specific rules in .roo/rules-{mode-slug}/. "
+            "MCP configured via .roo/mcp.json (project) or globalStorage (global). "
+            "Slash commands in .roo/commands/. Global rules at ~/.roo/rules/."
+        ),
+    ),
     AIToolType.COPILOT: IDECapability(
         tool_type=AIToolType.COPILOT,
         tool_name="GitHub Copilot",
