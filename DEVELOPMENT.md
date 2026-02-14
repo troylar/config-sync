@@ -1,6 +1,6 @@
 # Development Guide
 
-This guide covers development workflows, tools, and best practices for contributing to Config Sync.
+This guide covers development workflows, tools, and best practices for contributing to DevSync.
 
 ---
 
@@ -10,8 +10,8 @@ This guide covers development workflows, tools, and best practices for contribut
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/config-sync.git
-cd config-sync
+git clone https://github.com/yourusername/devsync.git
+cd devsync
 
 # Create virtual environment
 python -m venv venv
@@ -27,7 +27,7 @@ pip install -e .[dev]
 
 ## 📋 Using Invoke Tasks
 
-Config Sync uses [Invoke](https://www.pyinvoke.org/) for task automation. All common development operations are available as invoke tasks.
+DevSync uses [Invoke](https://www.pyinvoke.org/) for task automation. All common development operations are available as invoke tasks.
 
 ### List All Available Tasks
 
@@ -238,7 +238,7 @@ def test_add_repository(temp_dir: Path):
 
 ### Formatting & Linting
 
-Config Sync uses:
+DevSync uses:
 - **Black** for code formatting (line length: 100)
 - **Ruff** for fast Python linting
 - **MyPy** for type checking
@@ -717,8 +717,8 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed contribution guidelines.
 
 ## 📞 Getting Help
 
-- **Issues**: https://github.com/troylar/config-sync/issues
-- **Discussions**: https://github.com/troylar/config-sync/discussions
+- **Issues**: https://github.com/troylar/devsync/issues
+- **Discussions**: https://github.com/troylar/devsync/discussions
 - **Documentation**: See README.md and docs/
 
 ---

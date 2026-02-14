@@ -1,5 +1,5 @@
 """
-Invoke tasks for Config Sync development.
+Invoke tasks for DevSync development.
 
 Install invoke: pip install invoke
 Usage: invoke <task-name>
@@ -246,7 +246,7 @@ def dev_setup(c):
 @task
 def repl(c):
     """Start Python REPL with aiconfigkit imported."""
-    c.run("python -i -c 'import aiconfigkit; print(\"Config Sync imported\")'", pty=PTY_SUPPORTED)
+    c.run("python -i -c 'import aiconfigkit; print(\"DevSync imported\")'", pty=PTY_SUPPORTED)
 
 
 # ============================================================================

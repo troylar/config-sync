@@ -1,6 +1,6 @@
-# Contributing to Config Sync
+# Contributing to DevSync
 
-Thanks for your interest in improving Config Sync! This project thrives on community involvement. The guidelines below help you get started quickly and keep contributions consistent and high-quality.
+Thanks for your interest in improving DevSync! This project thrives on community involvement. The guidelines below help you get started quickly and keep contributions consistent and high-quality.
 
 ## 🧭 Ways to Contribute
 
@@ -14,14 +14,14 @@ If you are unsure where to begin, check the **good first issue** label or ask in
 
 ## ⚙️ Development Environment
 
-Config Sync uses [Invoke](https://www.pyinvoke.org/) to orchestrate common tasks. After cloning the repo:
+DevSync uses [Invoke](https://www.pyinvoke.org/) to orchestrate common tasks. After cloning the repo:
 
 ```bash
 pip install invoke
 invoke dev-setup
 ```
 
-This installs Config Sync in editable mode with all development dependencies.
+This installs DevSync in editable mode with all development dependencies.
 
 ### Available Invoke Tasks
 

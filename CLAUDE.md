@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-**Config Sync** is a CLI tool for managing AI coding assistant instructions. It allows users to download instruction repositories to a local library, browse them with an interactive TUI, and install them to AI tools (Cursor, Claude Code, Windsurf, GitHub Copilot) at the project level.
+**DevSync** is a CLI tool for managing AI coding assistant instructions. It allows users to download instruction repositories to a local library, browse them with an interactive TUI, and install them to AI tools (Cursor, Claude Code, Windsurf, GitHub Copilot) at the project level.
 
 **CLI entry point:** `aiconfig` (installed via `pip install devsync`)
 
@@ -506,7 +506,7 @@ This project uses **GitHub Actions with PyPI Trusted Publishing** for automated 
 2. Add a new publisher:
    - **PyPI Project Name**: `devsync`
    - **Owner**: `troylar`
-   - **Repository**: `config-sync`
+   - **Repository**: `devsync`
    - **Workflow name**: `publish.yml`
    - **Environment**: (leave empty)
 3. Save the trusted publisher
@@ -636,7 +636,7 @@ gh release create v0.2.0 \
 ```
 
 **Alternative:** Create release manually on GitHub:
-1. Go to https://github.com/troylar/config-sync/releases/new
+1. Go to https://github.com/troylar/devsync/releases/new
 2. Click "Choose a tag" and select `v0.2.0`
 3. Title: `v0.2.0`
 4. Copy the relevant section from CHANGELOG.md into the description
@@ -657,7 +657,7 @@ gh run watch
 gh run list --workflow=publish.yml
 ```
 
-You can also monitor at: https://github.com/troylar/config-sync/actions
+You can also monitor at: https://github.com/troylar/devsync/actions
 
 ### Post-Release Verification
 
@@ -747,7 +747,7 @@ gh run watch
 The GitHub Actions workflow (`.github/workflows/publish.yml`) handles building and publishing automatically.
 
 ## Active Technologies
-- Markdown (instruction content) | Python 3.10+ (for Config Sync CLI - no changes needed) + Git (for repository hosting), existing Config Sync commands (no new dependencies) (001-example-instruction-repo)
+- Markdown (instruction content) | Python 3.10+ (for DevSync CLI - no changes needed) + Git (for repository hosting), existing DevSync commands (no new dependencies) (001-example-instruction-repo)
 - GitHub repository at `troylar/config-sync-examples` | Git-based versioning (001-example-instruction-repo)
 - Python 3.10+ (targeting 3.10-3.13) (002-template-sync-system)
 - Filesystem-based (MCP definitions in `~/.ai-config-kit/library/<namespace>/`, credentials in `.ai-config-kit/.env`, AI tool configs at standard locations) (003-mcp-server-management)
@@ -755,4 +755,4 @@ The GitHub Actions workflow (`.github/workflows/publish.yml`) handles building a
 - JSON files (registry, package tracker) + YAML (manifests) + filesystem (.instructionkit/ structure) (004-config-package)
 
 ## Recent Changes
-- 001-example-instruction-repo: Added Markdown (instruction content) | Python 3.10+ (for Config Sync CLI - no changes needed) + Git (for repository hosting), existing Config Sync commands (no new dependencies)
+- 001-example-instruction-repo: Added Markdown (instruction content) | Python 3.10+ (for DevSync CLI - no changes needed) + Git (for repository hosting), existing DevSync commands (no new dependencies)

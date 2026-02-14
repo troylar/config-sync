@@ -1,6 +1,6 @@
-# Config Sync Tutorials
+# DevSync Tutorials
 
-Complete, hands-on tutorials for getting the most out of Config Sync.
+Complete, hands-on tutorials for getting the most out of DevSync.
 
 ---
 
@@ -49,16 +49,16 @@ Tutorials for specific scenarios and workflows.
 | Tutorial | Time | Difficulty | What You'll Learn |
 |----------|------|------------|-------------------|
 | **[Open Source - Contributor Onboarding](open-source-contributor-onboarding.md)** | 15 min | Beginner | Create contributor guidelines as AI instructions |
-| **[Migrating Legacy Projects](migrating-legacy-projects.md)** | 25 min | Intermediate | Add Config Sync to existing projects with established conventions |
+| **[Migrating Legacy Projects](migrating-legacy-projects.md)** | 25 min | Intermediate | Add DevSync to existing projects with established conventions |
 | **[Package Development Workflow](package-development-workflow.md)** | 30 min | Advanced | Create, test, version, and publish your own packages |
 
 ---
 
 ## 🎯 Quick Start Guide
 
-**New to Config Sync?** Start here:
+**New to DevSync?** Start here:
 
-1. **Read**: [What is Config Sync?](../README.md#overview)
+1. **Read**: [What is DevSync?](../README.md#overview)
 2. **Install**: `pip install ai-config-kit`
 3. **Choose your tutorial**:
    - Solo developer? → [Managing Multiple Projects](solo-developer-personal-projects.md)
@@ -104,12 +104,12 @@ Where to go from here.
 ### While Following a Tutorial
 
 1. **Check troubleshooting section** in that tutorial
-2. **Search GitHub Issues**: [github.com/troylar/config-sync/issues](https://github.com/troylar/config-sync/issues)
-3. **Ask in discussions**: [github.com/troylar/config-sync/discussions](https://github.com/troylar/config-sync/discussions)
+2. **Search GitHub Issues**: [github.com/troylar/devsync/issues](https://github.com/troylar/devsync/issues)
+3. **Ask in discussions**: [github.com/troylar/devsync/discussions](https://github.com/troylar/devsync/discussions)
 
 ### General Questions
 
-- **Documentation**: [Config Sync Docs](../README.md)
+- **Documentation**: [DevSync Docs](../README.md)
 - **CLI Reference**: [Command Reference](../reference/cli.md)
 - **Package Format**: [Package Specification](../reference/package-format.md)
 
@@ -122,7 +122,7 @@ Have a use case we didn't cover? We'd love your contribution!
 1. **Copy template**: Use [tutorial-template.md](tutorial-template.md)
 2. **Follow format**: Match the structure of existing tutorials
 3. **Test thoroughly**: Run through your tutorial start-to-finish
-4. **Submit PR**: [Submit a pull request](https://github.com/troylar/config-sync/pulls)
+4. **Submit PR**: [Submit a pull request](https://github.com/troylar/devsync/pulls)
 
 **Tutorial ideas we're looking for**:
 - Monorepo management
@@ -208,9 +208,9 @@ Not sure which tutorials to follow? Here are recommended learning paths:
 
 Complete all tutorials in a learning path and pass an assessment to earn:
 
-- **Config Sync Certified Solo Developer**
-- **Config Sync Certified Team Lead**
-- **Config Sync Certified Enterprise Architect**
+- **DevSync Certified Solo Developer**
+- **DevSync Certified Team Lead**
+- **DevSync Certified Enterprise Architect**
 
 Stay tuned for certification program details!
 

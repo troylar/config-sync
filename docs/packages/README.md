@@ -1,6 +1,6 @@
 # Configuration Packages Documentation
 
-**Complete documentation for Config Sync's package management system**
+**Complete documentation for DevSync's package management system**
 
 This directory contains comprehensive documentation for creating, installing, and managing configuration packages.
 
@@ -172,8 +172,8 @@ Throughout this documentation:
 ## Getting Help
 
 - **Questions?** Check individual guides for detailed information
-- **Issues?** Report bugs at [GitHub Issues](https://github.com/troylar/config-sync/issues)
-- **Discussions?** Ask questions in [GitHub Discussions](https://github.com/troylar/config-sync/discussions)
+- **Issues?** Report bugs at [GitHub Issues](https://github.com/troylar/devsync/issues)
+- **Discussions?** Ask questions in [GitHub Discussions](https://github.com/troylar/devsync/discussions)
 
 ## Contributing
 
@@ -185,7 +185,7 @@ Want to improve this documentation?
 
 ## Related Documentation
 
-- **[Main README](../../README.md)** - Config Sync overview
+- **[Main README](../../README.md)** - DevSync overview
 - **[MCP Documentation](../mcp/)** - MCP server management (if available)
 
 ---

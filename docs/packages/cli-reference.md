@@ -44,7 +44,7 @@ aiconfig package install --help
 
 ### `--version`
 
-Show Config Sync version and exit.
+Show DevSync version and exit.
 
 ```bash
 aiconfig --version
@@ -126,7 +126,7 @@ aiconfig package install ../shared/python-package
 
 **Default**: Current working directory
 
-**Behavior**: Config Sync searches for project markers (`.git/`, `pyproject.toml`, `package.json`, etc.)
+**Behavior**: DevSync searches for project markers (`.git/`, `pyproject.toml`, `package.json`, etc.)
 
 **Examples**:
 ```bash
@@ -727,7 +727,7 @@ done
 
 ## Exit Codes
 
-Config Sync commands use standard exit codes:
+DevSync commands use standard exit codes:
 
 | Code | Meaning | When Used |
 |------|---------|-----------|

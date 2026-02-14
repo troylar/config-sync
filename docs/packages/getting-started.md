@@ -8,7 +8,7 @@ This guide will walk you through installing and using your first configuration p
 
 Before you begin, make sure you have:
 
-- ✅ Config Sync installed (`pip install ai-config-kit`)
+- ✅ DevSync installed (`pip install ai-config-kit`)
 - ✅ One of the supported IDEs:
   - Claude Code (claude.ai/code)
   - Cursor (cursor.sh)
@@ -25,7 +25,7 @@ aiconfig --version
 
 ## Step 1: Find a Package
 
-For this guide, we'll use the `example-package` included with Config Sync. This package demonstrates all component types.
+For this guide, we'll use the `example-package` included with DevSync. This package demonstrates all component types.
 
 **What's in the example package:**
 - ✓ 2 Instructions (code quality, testing strategy)
@@ -38,7 +38,7 @@ For this guide, we'll use the `example-package` included with Config Sync. This 
 
 ```bash
 # If you cloned the repo
-cd config-sync
+cd devsync
 ls example-package/
 
 # You should see:
@@ -338,4 +338,4 @@ Congratulations! You've successfully installed and used your first configuration
 
 ---
 
-**Questions?** Check the [Troubleshooting Guide](troubleshooting.md) or [open an issue](https://github.com/troylar/config-sync/issues).
+**Questions?** Check the [Troubleshooting Guide](troubleshooting.md) or [open an issue](https://github.com/troylar/devsync/issues).

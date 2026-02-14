@@ -1,6 +1,6 @@
 # Configuration Packages
 
-**A comprehensive guide to Config Sync's package management system**
+**A comprehensive guide to DevSync's package management system**
 
 ## Overview
 
@@ -128,7 +128,7 @@ When you install a package:
 aiconfig package install ./my-package --ide claude
 ```
 
-Config Sync:
+DevSync:
 
 1. **Parses** the manifest to understand what's in the package
 2. **Filters** components based on your IDE's capabilities
@@ -198,8 +198,8 @@ This documentation is organized into focused guides:
 ## Community & Support
 
 - **Examples**: Browse the `example-package/` directory in this repo
-- **Issues**: Report bugs or request features on [GitHub Issues](https://github.com/troylar/config-sync/issues)
-- **Discussions**: Ask questions in [GitHub Discussions](https://github.com/troylar/config-sync/discussions)
+- **Issues**: Report bugs or request features on [GitHub Issues](https://github.com/troylar/devsync/issues)
+- **Discussions**: Ask questions in [GitHub Discussions](https://github.com/troylar/devsync/discussions)
 
 ---
 

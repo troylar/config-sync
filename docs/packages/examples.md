@@ -941,4 +941,4 @@ aiconfig package install ./my-packages/python-standard --ide claude
 
 ---
 
-**Want to contribute your package?** Share it on [GitHub Discussions](https://github.com/troylar/config-sync/discussions) or submit a PR to add it to the examples!
+**Want to contribute your package?** Share it on [GitHub Discussions](https://github.com/troylar/devsync/discussions) or submit a PR to add it to the examples!

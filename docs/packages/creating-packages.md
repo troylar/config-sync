@@ -925,7 +925,7 @@ Before publishing, ensure your package includes:
 
 ### Multi-Package Dependencies
 
-Currently, Config Sync doesn't support package dependencies. If you need multiple packages:
+Currently, DevSync doesn't support package dependencies. If you need multiple packages:
 
 ```bash
 # Install individually

@@ -1,6 +1,6 @@
 # CLI Reference
 
-Complete command-line interface reference for Config Sync.
+Complete command-line interface reference for DevSync.
 
 ## Table of Contents
 
@@ -348,7 +348,7 @@ Windsurf           ✓            ~/Library/Application Support/Windsurf
 
 ### `aiconfig --version`
 
-Show Config Sync version.
+Show DevSync version.
 
 ```bash
 aiconfig --version
@@ -412,7 +412,7 @@ aiconfig template install <repo> --as demo
 
 ## Configuration Files
 
-Config Sync uses these configuration files:
+DevSync uses these configuration files:
 
 | File | Location | Purpose |
 |------|----------|---------|

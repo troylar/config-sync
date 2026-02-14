@@ -1,11 +1,11 @@
 <div align="center">
 
-# 🎯 Config Sync
+# 🎯 DevSync
 
 **Distribute and sync coding standards, AI tool configurations, and MCP servers across your team**
 
-[![CI](https://github.com/troylar/config-sync/actions/workflows/ci.yml/badge.svg)](https://github.com/troylar/config-sync/actions/workflows/ci.yml)
-[![Coverage](https://codecov.io/gh/troylar/config-sync/branch/main/graph/badge.svg)](https://codecov.io/gh/troylar/config-sync)
+[![CI](https://github.com/troylar/devsync/actions/workflows/ci.yml/badge.svg)](https://github.com/troylar/devsync/actions/workflows/ci.yml)
+[![Coverage](https://codecov.io/gh/troylar/devsync/branch/main/graph/badge.svg)](https://codecov.io/gh/troylar/devsync)
 [![PyPI version](https://img.shields.io/pypi/v/devsync.svg)](https://pypi.org/project/devsync/)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -16,16 +16,16 @@
 
 ---
 
-## What is Config Sync?
+## What is DevSync?
 
-Config Sync is a CLI tool for distributing and managing AI coding assistant configurations across teams:
+DevSync is a CLI tool for distributing and managing AI coding assistant configurations across teams:
 
 - **📋 Templates**: Share coding standards, slash commands, and IDE configurations from Git repositories
 - **🔌 MCP Servers**: Distribute and manage Model Context Protocol server configurations
 - **🔄 Sync**: Keep your team aligned with single-command updates
 - **✅ Safe**: Built-in validation, automatic backups, conflict resolution
 
-> **Note:** Commands use `aiconfig` (short for Config Sync)
+> **Note:** Commands use `aiconfig` (short for DevSync)
 
 ---
 
@@ -151,7 +151,7 @@ aiconfig package uninstall <package-name>            # Remove package
 
 ---
 
-## Why Config Sync?
+## Why DevSync?
 
 ### For Teams
 
@@ -171,7 +171,7 @@ aiconfig package uninstall <package-name>            # Remove package
 
 ## Real-World Example
 
-Here's how a team at ACME Corp uses Config Sync:
+Here's how a team at ACME Corp uses DevSync:
 
 ```bash
 # 1. Everyone installs company security policies (global, applies to all projects)
@@ -219,7 +219,7 @@ aiconfig mcp update --all
 
 ## Project vs Global Scope
 
-Config Sync supports two installation scopes:
+DevSync supports two installation scopes:
 
 | Scope | Where Files Go | When Active | Best For |
 |-------|---------------|-------------|----------|
@@ -289,7 +289,7 @@ Model Context Protocol server setups for enhanced AI capabilities:
 - Git (for cloning template repositories)
 - One of: Claude Code, Claude Desktop, Cline, Cursor, GitHub Copilot, Kiro, Roo Code, or Windsurf
 
-### Install Config Sync
+### Install DevSync
 
 ```bash
 # Using pip
@@ -426,8 +426,8 @@ MIT License - see [LICENSE](LICENSE) for details.
 
 ## Support
 
-- **Issues**: [GitHub Issues](https://github.com/troylar/config-sync/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/troylar/config-sync/discussions)
+- **Issues**: [GitHub Issues](https://github.com/troylar/devsync/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/troylar/devsync/discussions)
 - **Changelog**: [CHANGELOG.md](CHANGELOG.md)
 
 ---

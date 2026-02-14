@@ -3,7 +3,7 @@
 **Time to Complete**: 15 minutes
 **Difficulty**: Beginner
 **Prerequisites**:
-- Config Sync installed (`pip install ai-config-kit`)
+- DevSync installed (`pip install ai-config-kit`)
 - Working with 2+ projects that use different frameworks or conventions
 - Using Claude Code, Cursor, Windsurf, or GitHub Copilot
 
@@ -60,7 +60,7 @@ cd ~/projects/project-a-django-api
 # Or: cd /path/to/your/django/project
 ```
 
-Verify you're in a git repository (Config Sync works best with git projects):
+Verify you're in a git repository (DevSync works best with git projects):
 
 ```bash
 git status

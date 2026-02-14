@@ -18,7 +18,7 @@ Use Git to version control your AI configuration. Set it up once, sync everywher
 
 ## 📋 Prerequisites
 
-- [ ] Config Sync installed on all devices (`pip install ai-config-kit`)
+- [ ] DevSync installed on all devices (`pip install ai-config-kit`)
 - [ ] Git repository for one of your projects
 - [ ] Same AI tool (Claude Code, Cursor, etc.) on all devices
 
@@ -104,7 +104,7 @@ Installed components:
 1/1 components installed to .claude/
 ```
 
-**✅ What happened**: Config Sync copied your instructions to `.claude/rules/` and created a tracking file at `.ai-config-kit/packages.json`.
+**✅ What happened**: DevSync copied your instructions to `.claude/rules/` and created a tracking file at `.ai-config-kit/packages.json`.
 
 ---
 
@@ -318,7 +318,7 @@ Not all AI config should be versioned. Here's a recommended `.gitignore`:
 
 ```bash
 cat >> .gitignore << 'EOF'
-# Config Sync - Keep instructions, ignore temp files
+# DevSync - Keep instructions, ignore temp files
 .ai-config-kit/*.lock
 .ai-config-kit/cache/
 

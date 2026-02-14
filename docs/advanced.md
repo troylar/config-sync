@@ -1,6 +1,6 @@
 # Advanced Usage
 
-Advanced patterns and techniques for Config Sync power users.
+Advanced patterns and techniques for DevSync power users.
 
 ## Table of Contents
 
@@ -113,7 +113,7 @@ aiconfig template install <repo> --as personal.templates --scope global
 
 ### Handling Name Conflicts
 
-When installing templates with conflicting names, Config Sync provides strategies:
+When installing templates with conflicting names, DevSync provides strategies:
 
 **Skip (default):**
 ```bash
@@ -141,7 +141,7 @@ aiconfig template install <repo> --as namespace --conflict overwrite
 
 ### Automatic Conflict Detection
 
-Config Sync checks for conflicts before installation:
+DevSync checks for conflicts before installation:
 
 ```bash
 aiconfig template install <repo> --as namespace
@@ -354,7 +354,7 @@ aiconfig mcp sync --tool all
 # Dockerfile
 FROM python:3.11
 
-# Install Config Sync
+# Install DevSync
 RUN pip install ai-config-kit
 
 # Copy credentials from build args
@@ -392,7 +392,7 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Install Config Sync
+      - name: Install DevSync
         run: pip install ai-config-kit
 
       - name: Install Templates
@@ -414,7 +414,7 @@ jobs:
 
 ### Automatic Backups
 
-Config Sync automatically backs up config files before syncing:
+DevSync automatically backs up config files before syncing:
 
 ```bash
 # Backup files created:

@@ -105,7 +105,7 @@ aiconfig package install ./pkg --ide claude
 
 **Project detection:**
 
-Config Sync searches for project markers:
+DevSync searches for project markers:
 - `.git/` directory
 - `pyproject.toml`
 - `package.json`
@@ -692,4 +692,4 @@ aiconfig package install ./my-package --ide claude --conflict overwrite
 
 ---
 
-**Need more help?** Check the [Troubleshooting Guide](troubleshooting.md) or [open an issue](https://github.com/troylar/config-sync/issues).
+**Need more help?** Check the [Troubleshooting Guide](troubleshooting.md) or [open an issue](https://github.com/troylar/devsync/issues).

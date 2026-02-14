@@ -744,7 +744,7 @@ components:
 
 ## Validation Rules
 
-Config Sync validates manifests during installation. Here are all validation rules:
+DevSync validates manifests during installation. Here are all validation rules:
 
 ### Package-Level Validation
 
@@ -993,4 +993,4 @@ components:
 
 ---
 
-**Questions?** Check the [Troubleshooting Guide](troubleshooting.md) or [open an issue](https://github.com/troylar/config-sync/issues).
+**Questions?** Check the [Troubleshooting Guide](troubleshooting.md) or [open an issue](https://github.com/troylar/devsync/issues).

@@ -632,7 +632,7 @@ class PackageCreator:
         lines = [
             f"# {self.metadata.name}",
             "",
-            self.metadata.description or "Configuration package created with Config Sync.",
+            self.metadata.description or "Configuration package created with DevSync.",
             "",
             "## Installation",
             "",
@@ -716,7 +716,7 @@ class PackageCreator:
                 "",
                 "---",
                 "",
-                f"*Generated with Config Sync on {datetime.now().strftime('%Y-%m-%d')}*",
+                f"*Generated with DevSync on {datetime.now().strftime('%Y-%m-%d')}*",
             ]
         )
 

@@ -389,7 +389,7 @@ git push origin main --tags
 ```markdown
 📢 **New: Team Coding Standards Package**
 
-We've created a Config Sync package with our team's coding standards!
+We've created a DevSync package with our team's coding standards!
 
 **What**: AI assistants will now automatically follow our conventions
 **Who**: Everyone should install this

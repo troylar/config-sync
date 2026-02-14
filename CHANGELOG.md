@@ -7,10 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.5.7] - 2026-02-14
+
+### Changed
+- **Project Rename** - Renamed project to "DevSync", GitHub repo to `troylar/devsync`
+- All documentation, URLs, and references updated
+
 ## [0.5.6] - 2026-02-14
 
 ### Changed
-- **Project Rename** - Renamed from "AI Config Kit" to "Config Sync"
+- **Project Rename** - Renamed from "AI Config Kit" to "DevSync"
 - All documentation and references updated
 
 ## [0.5.5] - 2026-02-14

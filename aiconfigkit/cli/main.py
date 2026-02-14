@@ -425,7 +425,7 @@ def tools() -> None:
 
 @app.command()
 def version() -> None:
-    """Show Config Sync version."""
+    """Show DevSync version."""
     from importlib.metadata import version as get_version
 
     try:
@@ -433,7 +433,7 @@ def version() -> None:
     except Exception:
         version = "unknown"
 
-    typer.echo(f"Config Sync version {version}")
+    typer.echo(f"DevSync version {version}")
 
 
 @app.callback(invoke_without_command=True)
