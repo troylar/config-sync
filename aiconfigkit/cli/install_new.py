@@ -477,7 +477,7 @@ def install_from_library_tui(
 
     # Check if library is empty
     if not library.list_instructions():
-        print_info("Library is empty. Use 'instructionkit download --repo <url>' to add instructions.")
+        print_info("Library is empty. Use 'devsync download --repo <url>' to add instructions.")
         return 1
 
     # Show TUI (always installs to project level)
@@ -731,7 +731,7 @@ def install_from_library_by_name(
 
     if not instructions:
         print_error(f"No instruction named '{name}' found in library.")
-        print_info("Use 'instructionkit list library --instructions' to see available instructions.")
+        print_info("Use 'devsync list library --instructions' to see available instructions.")
         return 1
 
     if len(instructions) == 1:

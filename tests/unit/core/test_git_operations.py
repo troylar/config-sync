@@ -141,7 +141,7 @@ class TestCleanupRepository:
 
     def test_cleanup_temp_directory(self, tmp_path: Path) -> None:
         """Test cleaning up temporary directory."""
-        temp_dir = tmp_path / "instructionkit-abc123"
+        temp_dir = tmp_path / "devsync-abc123"
         temp_dir.mkdir()
         test_file = temp_dir / "test.txt"
         test_file.write_text("test")
@@ -172,7 +172,7 @@ class TestCleanupRepository:
 
     def test_cleanup_non_temp_flag(self, tmp_path: Path) -> None:
         """Test cleanup with is_temp=False doesn't delete."""
-        temp_dir = tmp_path / "instructionkit-abc123"
+        temp_dir = tmp_path / "devsync-abc123"
         temp_dir.mkdir()
         test_file = temp_dir / "test.txt"
         test_file.write_text("test")
@@ -750,13 +750,13 @@ class TestCloneRepositoryEdgeCases:
     ) -> None:
         """Test cloning without target_dir creates temporary directory."""
         mock_valid.return_value = True
-        mock_mkdtemp.return_value = "/tmp/instructionkit-abc123"
+        mock_mkdtemp.return_value = "/tmp/devsync-abc123"
         mock_run.return_value = Mock(returncode=0, stderr="", stdout="")
 
         _result = GitOperations.clone_repository("https://github.com/user/repo.git")
 
         mock_mkdtemp.assert_called_once()
-        assert "instructionkit-" in mock_mkdtemp.call_args[1]["prefix"]
+        assert "devsync-" in mock_mkdtemp.call_args[1]["prefix"]
 
     @patch("subprocess.run")
     @patch("shutil.rmtree")

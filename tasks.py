@@ -260,19 +260,19 @@ def cli(c, args="--help"):
 
     Usage: invoke cli --args="download --repo https://..."
     """
-    c.run(f"aiconfig {args}", pty=PTY_SUPPORTED)
+    c.run(f"devsync {args}", pty=PTY_SUPPORTED)
 
 
 @task
 def list_tools(c):
     """List detected AI tools."""
-    c.run("aiconfig tools", pty=PTY_SUPPORTED)
+    c.run("devsync tools", pty=PTY_SUPPORTED)
 
 
 @task
 def list_library(c):
     """List instructions in library."""
-    c.run("aiconfig list library", pty=PTY_SUPPORTED)
+    c.run("devsync list library", pty=PTY_SUPPORTED)
 
 
 # ============================================================================

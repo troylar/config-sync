@@ -90,7 +90,7 @@ def download_instructions(
                 import tempfile
                 from pathlib import Path as PathlibPath
 
-                temp_dir = PathlibPath(tempfile.mkdtemp(prefix="instructionkit-"))
+                temp_dir = PathlibPath(tempfile.mkdtemp(prefix="devsync-"))
 
                 try:
                     GitOperations.clone_at_ref(repo, temp_dir, ref, ref_type)
@@ -205,8 +205,8 @@ def download_instructions(
             ref_label = ref_labels.get(ref_type.value if ref_type else "", "Ref")
             success_msg += f"  {ref_label}: {ref}\n"
         success_msg += (
-            "  Use 'inskit list library' to see all downloaded instructions\n"
-            "  Use 'inskit install' to install into your AI tools"
+            "  Use 'devsync list library' to see all downloaded instructions\n"
+            "  Use 'devsync install' to install into your AI tools"
         )
         print_success(success_msg)
 
@@ -248,27 +248,27 @@ def download_command(
     Download instructions from a repository into your local library.
 
     This downloads and caches instructions locally without installing them.
-    After downloading, use 'instructionkit install' to select and install
+    After downloading, use 'devsync install' to select and install
     instructions into your AI coding tools.
 
     Examples:
         # Download from GitHub (default branch)
-        instructionkit download --repo https://github.com/company/instructions
+        devsync download --repo https://github.com/company/instructions
 
         # Download specific tag version
-        instructionkit download --repo https://github.com/company/instructions --ref v1.0.0
+        devsync download --repo https://github.com/company/instructions --ref v1.0.0
 
         # Download from specific branch
-        instructionkit download --repo https://github.com/company/instructions --ref main
+        devsync download --repo https://github.com/company/instructions --ref main
 
         # Download from specific commit
-        instructionkit download --repo https://github.com/company/instructions --ref abc123def
+        devsync download --repo https://github.com/company/instructions --ref abc123def
 
         # Download from local folder (no --ref support)
-        instructionkit download --repo ./my-instructions
+        devsync download --repo ./my-instructions
 
         # Force re-download
-        instructionkit download --repo https://github.com/company/instructions --force
+        devsync download --repo https://github.com/company/instructions --force
     """
     exit_code = download_instructions(repo=repo, ref=ref, force=force)
     raise typer.Exit(code=exit_code)

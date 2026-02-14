@@ -1,4 +1,4 @@
-"""Pytest fixtures for InstructionKit tests."""
+"""Pytest fixtures for DevSync tests."""
 
 import tempfile
 from pathlib import Path

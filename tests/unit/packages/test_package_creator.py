@@ -282,7 +282,7 @@ class TestPackageCreator:
         assert "# test-package" in content
         assert "A test package" in content
         assert "Installation" in content
-        assert "aiconfig package install" in content
+        assert "devsync package install" in content
 
 
 class TestPackageCreationResult:

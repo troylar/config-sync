@@ -1,4 +1,4 @@
-"""Logging configuration for InstructionKit."""
+"""Logging configuration for DevSync."""
 
 import logging
 import sys
@@ -8,7 +8,7 @@ from typing import Optional
 
 def setup_logging(level: str = "INFO", log_file: Optional[Path] = None, format_string: Optional[str] = None) -> None:
     """
-    Configure logging for InstructionKit.
+    Configure logging for DevSync.
 
     Args:
         level: Logging level (DEBUG, INFO, WARNING, ERROR, CRITICAL)

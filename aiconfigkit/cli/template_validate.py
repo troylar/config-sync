@@ -65,9 +65,9 @@ def validate_command(
     - Local modifications (checksum mismatch)
 
     Example:
-        inskit template validate
-        inskit template validate --scope project
-        inskit template validate --fix
+        devsync template validate
+        devsync template validate --scope project
+        devsync template validate --fix
     """
     try:
         # Validate scope
@@ -139,7 +139,7 @@ def _validate_installations(tracker: TemplateInstallationTracker, scope: str, ve
                     description=f"Installed file not found: {installed_path}",
                     remediation=(
                         f"Reinstall template with: "
-                        f"inskit template install {record.source_repo} --template {record.template_name}"
+                        f"devsync template install {record.source_repo} --template {record.template_name}"
                     ),
                 )
             )
@@ -155,7 +155,7 @@ def _validate_installations(tracker: TemplateInstallationTracker, scope: str, ve
                         template=template_id,
                         issue_type="modified",
                         description="Template has been modified locally",
-                        remediation=f"Update to restore original: inskit template update {record.namespace}",
+                        remediation=f"Update to restore original: devsync template update {record.namespace}",
                     )
                 )
         except Exception as e:
@@ -173,7 +173,7 @@ def _validate_installations(tracker: TemplateInstallationTracker, scope: str, ve
                         template=template_id,
                         issue_type="outdated",
                         description=f"Newer version available ({record.source_version} -> {local_version})",
-                        remediation=f"Update with: inskit template update {record.namespace}",
+                        remediation=f"Update with: devsync template update {record.namespace}",
                     )
                 )
         except Exception as e:

@@ -8,7 +8,7 @@ This guide will walk you through installing and using your first configuration p
 
 Before you begin, make sure you have:
 
-- ✅ DevSync installed (`pip install ai-config-kit`)
+- ✅ DevSync installed (`pip install devsync`)
 - ✅ One of the supported IDEs:
   - Claude Code (claude.ai/code)
   - Cursor (cursor.sh)

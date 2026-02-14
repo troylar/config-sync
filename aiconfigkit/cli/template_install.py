@@ -47,9 +47,9 @@ def install_command(
     Install templates from a repository.
 
     Example:
-        inskit template install https://github.com/acme/templates
-        inskit template install https://github.com/acme/templates --scope global
-        inskit template install https://github.com/acme/templates --as acme
+        devsync template install https://github.com/acme/templates
+        devsync template install https://github.com/acme/templates --scope global
+        devsync template install https://github.com/acme/templates --as acme
     """
     try:
         # Validate scope

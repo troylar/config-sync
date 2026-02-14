@@ -355,7 +355,7 @@ aiconfig mcp sync --tool all
 FROM python:3.11
 
 # Install DevSync
-RUN pip install ai-config-kit
+RUN pip install devsync
 
 # Copy credentials from build args
 ARG GITHUB_TOKEN
@@ -393,7 +393,7 @@ jobs:
           python-version: '3.11'
 
       - name: Install DevSync
-        run: pip install ai-config-kit
+        run: pip install devsync
 
       - name: Install Templates
         run: |

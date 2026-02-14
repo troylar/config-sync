@@ -1,4 +1,4 @@
-"""Core data models for InstructionKit."""
+"""Core data models for DevSync."""
 
 from dataclasses import dataclass, field
 from datetime import datetime

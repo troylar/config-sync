@@ -637,7 +637,7 @@ class PackageCreator:
             "## Installation",
             "",
             "```bash",
-            f"aiconfig package install ./package-{self.metadata.name} --ide claude",
+            f"devsync package install ./package-{self.metadata.name} --ide claude",
             "```",
             "",
             "## Components",

@@ -200,7 +200,7 @@ def list_library(
     repositories = library.list_repositories()
 
     if not repositories:
-        print_info("Library is empty. Use 'inskit download' to add sources.")
+        print_info("Library is empty. Use 'devsync download' to add sources.")
         return 0
 
     # Filter if specified (match against alias or namespace)
@@ -237,7 +237,7 @@ def list_library(
         console.print()
         console.print(f"Total: {len(repositories)} source(s) in library")
         console.print()
-        console.print("[dim]Use 'inskit install' to install instructions from library[/dim]")
+        console.print("[dim]Use 'devsync install' to install instructions from library[/dim]")
 
     # Show instructions
     else:
@@ -270,6 +270,6 @@ def list_library(
         console.print()
         console.print(f"Total: {len(all_instructions)} instruction(s) in library")
         console.print()
-        console.print("[dim]Use 'inskit install' to install these instructions[/dim]")
+        console.print("[dim]Use 'devsync install' to install these instructions[/dim]")
 
     return 0

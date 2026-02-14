@@ -1,8 +1,8 @@
-name: InstructionKit Official Examples
-description: Official examples and templates for creating InstructionKit repositories
+name: DevSync Official Examples
+description: Official examples and templates for creating DevSync repositories
 version: 1.0.0
-author: InstructionKit
-repository: https://github.com/troylar/instructionkit
+author: DevSync
+repository: https://github.com/troylar/devsync
 
 instructions:
   - name: quick-start
@@ -12,11 +12,11 @@ instructions:
       - example
       - demo
 
-  - name: instructionkit-repo-creator
-    description: AI instruction to help users create InstructionKit-compatible repositories
-    file: instructions/instructionkit-repo-creator.md
+  - name: devsync-repo-creator
+    description: AI instruction to help users create DevSync-compatible repositories
+    file: instructions/devsync-repo-creator.md
     tags:
-      - instructionkit
+      - devsync
       - template
       - repository
       - setup

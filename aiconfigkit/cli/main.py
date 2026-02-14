@@ -29,8 +29,8 @@ from aiconfigkit.cli.uninstall import uninstall_instruction
 from aiconfigkit.cli.update import update_repository
 
 app = typer.Typer(
-    name="instructionkit",
-    help="CLI tool for managing AI coding tool instructions",
+    name="devsync",
+    help="Distribute and sync dev tool configurations across teams",
     add_completion=False,
 )
 
@@ -116,29 +116,29 @@ def install(
 
     LIBRARY WORKFLOW (Recommended):
       # Browse and select instructions with TUI
-      inskit install
+      devsync install
 
       # Install specific instruction from library
-      inskit install python-best-practices
+      devsync install python-best-practices
 
       # Install from specific source (if multiple sources have same name)
-      inskit install company/python-best-practices
+      devsync install company/python-best-practices
 
       # Install multiple instructions at once
-      inskit install python-style testing-guide api-design
+      devsync install python-style testing-guide api-design
 
       # Install to specific tools only
-      inskit install python-style --tool cursor --tool windsurf
+      devsync install python-style --tool cursor --tool windsurf
 
     DIRECT INSTALL (Bypasses library):
       # Install directly from source URL
-      inskit install python-style --from https://github.com/company/instructions
+      devsync install python-style --from https://github.com/company/instructions
 
       # Install bundle directly
-      inskit install python-backend --bundle --from https://github.com/company/instructions
+      devsync install python-backend --bundle --from https://github.com/company/instructions
 
     TIP: Download to your library first for better management:
-      inskit download --from https://github.com/company/instructions
+      devsync download --from https://github.com/company/instructions
     """
     exit_code = install_instruction_unified(
         names=names,
@@ -180,27 +180,27 @@ def download(
     Download instructions from a source into your local library.
 
     This downloads and caches instructions locally without installing them.
-    After downloading, use 'inskit install' to install instructions.
+    After downloading, use 'devsync install' to install instructions.
 
     Examples:
 
       # Download from GitHub (auto-generates alias)
-      inskit download --from github.com/company/instructions
+      devsync download --from github.com/company/instructions
 
       # Download specific version
-      inskit download --from github.com/company/instructions --ref v1.0.0
+      devsync download --from github.com/company/instructions --ref v1.0.0
 
       # Download from branch
-      inskit download --from github.com/company/instructions --ref main
+      devsync download --from github.com/company/instructions --ref main
 
       # Download with custom alias
-      inskit download --from github.com/company/instructions --as company
+      devsync download --from github.com/company/instructions --as company
 
       # Download from local folder
-      inskit download --from ./my-instructions --as local
+      devsync download --from ./my-instructions --as local
 
       # Force re-download
-      inskit download --from github.com/company/instructions --force
+      devsync download --from github.com/company/instructions --force
     """
     exit_code = download_instructions(repo=source, ref=ref, force=force, alias=alias)
     raise typer.Exit(code=exit_code)
@@ -219,16 +219,16 @@ def list_available_cmd(
     Examples:
 
       # List from Git repository
-      inskit list available --from github.com/company/instructions
+      devsync list available --from github.com/company/instructions
 
       # List from local folder
-      inskit list available --from ./my-instructions
+      devsync list available --from ./my-instructions
 
       # Filter by tag
-      inskit list available --from github.com/company/instructions --tag python
+      devsync list available --from github.com/company/instructions --tag python
 
       # Show only bundles
-      inskit list available --from github.com/company/instructions --bundles-only
+      devsync list available --from github.com/company/instructions --bundles-only
     """
     exit_code = list_available(
         repo=source,  # Keep backend param name for now
@@ -260,13 +260,13 @@ def list_installed_cmd(
     Examples:
 
       # List all installed instructions
-      inskit list installed
+      devsync list installed
 
       # Filter by AI tool
-      inskit list installed --tool cursor
+      devsync list installed --tool cursor
 
       # Filter by source
-      inskit list installed --source company
+      devsync list installed --source company
     """
     exit_code = list_installed(tool=tool, repo=source)  # Keep backend param name for now
     raise typer.Exit(code=exit_code)
@@ -293,13 +293,13 @@ def list_library_cmd(
     Examples:
 
       # List all sources in library
-      inskit list library
+      devsync list library
 
       # Show individual instructions
-      inskit list library --instructions
+      devsync list library --instructions
 
       # Filter by source
-      inskit list library --source company
+      devsync list library --source company
     """
     exit_code = list_library(repo_filter=source, show_instructions=instructions)
     raise typer.Exit(code=exit_code)
@@ -329,13 +329,13 @@ def update(
     Examples:
 
       # Update a specific source
-      inskit update --namespace github.com_company_instructions
+      devsync update --namespace github.com_company_instructions
 
       # Update all sources
-      inskit update --all
+      devsync update --all
 
       # List sources to find namespace
-      inskit list library
+      devsync list library
     """
     exit_code = update_repository(namespace=namespace, all_repos=all_repos)
     raise typer.Exit(code=exit_code)
@@ -358,18 +358,18 @@ def delete(
     Delete a source from your local library.
 
     This removes the downloaded instructions from your library but does NOT
-    uninstall them from your AI tools. To uninstall, use 'inskit uninstall'.
+    uninstall them from your AI tools. To uninstall, use 'devsync uninstall'.
 
     Examples:
 
       # Delete a source
-      inskit delete github.com_company_instructions
+      devsync delete github.com_company_instructions
 
       # Skip confirmation
-      inskit delete github.com_company_instructions --force
+      devsync delete github.com_company_instructions --force
 
       # List sources to find namespace
-      inskit list library
+      devsync list library
     """
     exit_code = delete_from_library(namespace=namespace, force=force)
     raise typer.Exit(code=exit_code)
@@ -399,13 +399,13 @@ def uninstall(
     Examples:
 
       # Uninstall from all tools
-      inskit uninstall python-best-practices
+      devsync uninstall python-best-practices
 
       # Uninstall from specific tool
-      inskit uninstall python-best-practices --tool cursor
+      devsync uninstall python-best-practices --tool cursor
 
       # Skip confirmation
-      inskit uninstall python-best-practices --force
+      devsync uninstall python-best-practices --force
     """
     exit_code = uninstall_instruction(name=name, tool=tool, force=force)
     raise typer.Exit(code=exit_code)
@@ -439,10 +439,10 @@ def version() -> None:
 @app.callback(invoke_without_command=True)
 def main(ctx: typer.Context) -> None:
     """
-    InstructionKit - Manage AI coding tool instructions from Git repositories.
+    DevSync - Distribute and sync dev tool configurations across teams.
 
-    Install instructions for Cursor, GitHub Copilot, Windsurf, and Claude Code
-    from any Git repository (public or private).
+    Manage AI coding assistant configurations for Claude Code, Cursor,
+    Windsurf, GitHub Copilot, Cline, Kiro, and Roo Code.
     """
     # If no command was provided, show help
     if ctx.invoked_subcommand is None:

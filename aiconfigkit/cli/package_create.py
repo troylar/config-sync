@@ -94,9 +94,9 @@ def create_package_command(
     a portable package that can be installed in other projects.
 
     Example:
-        aiconfig package create --name my-package
-        aiconfig package create --name dev-setup --no-interactive
-        aiconfig package create --name my-pkg --output ~/packages
+        devsync package create --name my-package
+        devsync package create --name dev-setup --no-interactive
+        devsync package create --name my-pkg --output ~/packages
     """
     try:
         if project:
@@ -315,7 +315,7 @@ def _display_creation_result(result: PackageCreationResult, quiet: bool) -> None
                     console.print(f"  - {warning}")
 
             console.print("\n[cyan]To install this package:[/cyan]")
-            console.print(f"  aiconfig package install {result.package_path} --ide claude")
+            console.print(f"  devsync package install {result.package_path} --ide claude")
 
     else:
         console.print("\n[red]✗ Package creation failed[/red]")

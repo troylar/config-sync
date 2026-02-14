@@ -150,8 +150,8 @@ def get_windsurf_mcp_config_path() -> Path:
     return config_dir / "mcp_config.json"
 
 
-def get_instructionkit_data_dir() -> Path:
-    """Get InstructionKit data directory for tracking installations."""
+def get_devsync_data_dir() -> Path:
+    """Get DevSync data directory for tracking installations."""
     home = get_home_directory()
     data_dir = home / ".instructionkit"
     data_dir.mkdir(parents=True, exist_ok=True)
@@ -159,15 +159,15 @@ def get_instructionkit_data_dir() -> Path:
 
 
 def get_library_dir() -> Path:
-    """Get InstructionKit library directory for downloaded instructions."""
-    library_dir = get_instructionkit_data_dir() / "library"
+    """Get DevSync library directory for downloaded instructions."""
+    library_dir = get_devsync_data_dir() / "library"
     library_dir.mkdir(parents=True, exist_ok=True)
     return library_dir
 
 
 def get_installation_tracker_path() -> Path:
     """Get path to installation tracking JSON file."""
-    return get_instructionkit_data_dir() / "installations.json"
+    return get_devsync_data_dir() / "installations.json"
 
 
 def ensure_directory_exists(path: Path) -> None:

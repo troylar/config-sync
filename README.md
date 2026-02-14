@@ -25,7 +25,9 @@ DevSync is a CLI tool for distributing and managing AI coding assistant configur
 - **🔄 Sync**: Keep your team aligned with single-command updates
 - **✅ Safe**: Built-in validation, automatic backups, conflict resolution
 
-> **Note:** Commands use `aiconfig` (short for DevSync)
+> **Note on naming:** This project was previously called "AI Config Kit" (PyPI: `ai-config-kit`, CLI: `aiconfig`).
+> As of v0.6.0, the CLI command is `devsync` and the PyPI package is `pip install devsync`.
+> If you have an older version installed, update with `pip install --upgrade devsync`.
 
 ---
 

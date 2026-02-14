@@ -42,10 +42,10 @@ def list_command(
     List installed templates.
 
     Example:
-        inskit template list
-        inskit template list --scope project
-        inskit template list --repo acme-templates
-        inskit template list --format json
+        devsync template list
+        devsync template list --scope project
+        devsync template list --repo acme-templates
+        devsync template list --format json
     """
     try:
         # Validate scope
@@ -95,7 +95,7 @@ def list_command(
             else:
                 console.print("[yellow]No templates installed.[/yellow]")
                 console.print("\nTo install templates:")
-                console.print("  inskit template install <repo-url>")
+                console.print("  devsync template install <repo-url>")
             raise typer.Exit(0)
 
         # Output based on format

@@ -1,6 +1,6 @@
 # Example Configuration Package
 
-This is an example configuration package for AI Config Kit, demonstrating all supported component types.
+This is an example configuration package for DevSync, demonstrating all supported component types.
 
 ## Package Contents
 

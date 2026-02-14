@@ -2,7 +2,7 @@
 
 ## Overview
 
-InstructionKit uses GitHub Actions for comprehensive CI/CD automation. This document describes all workflows, their purposes, and how to configure them.
+DevSync uses GitHub Actions for comprehensive CI/CD automation. This document describes all workflows, their purposes, and how to configure them.
 
 ## Workflows
 
@@ -194,16 +194,16 @@ The following labels are auto-created by the labeler:
 ### 5. Codecov Integration
 
 Coverage reports are automatically uploaded to Codecov. View reports at:
-https://app.codecov.io/gh/troylar/instructionkit
+https://app.codecov.io/gh/troylar/devsync
 
 ## Workflow Status Badges
 
 Add these to your README.md:
 
 ```markdown
-[![CI](https://github.com/troylar/instructionkit/actions/workflows/ci.yml/badge.svg)](https://github.com/troylar/instructionkit/actions/workflows/ci.yml)
-[![codecov](https://codecov.io/gh/troylar/instructionkit/branch/main/graph/badge.svg)](https://codecov.io/gh/troylar/instructionkit)
-[![PyPI version](https://badge.fury.io/py/instructionkit.svg)](https://badge.fury.io/py/instructionkit)
+[![CI](https://github.com/troylar/devsync/actions/workflows/ci.yml/badge.svg)](https://github.com/troylar/devsync/actions/workflows/ci.yml)
+[![codecov](https://codecov.io/gh/troylar/devsync/branch/main/graph/badge.svg)](https://codecov.io/gh/troylar/devsync)
+[![PyPI version](https://badge.fury.io/py/devsync.svg)](https://badge.fury.io/py/devsync)
 ```
 
 ## Local Development

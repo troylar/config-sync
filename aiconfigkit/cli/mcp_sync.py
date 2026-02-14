@@ -52,19 +52,19 @@ def mcp_sync_command(
     Examples:
 
         # Sync to all detected AI tools
-        inskit mcp sync --tool all
+        devsync mcp sync --tool all
 
         # Sync to specific tool
-        inskit mcp sync --tool claude
+        devsync mcp sync --tool claude
 
         # Dry run to see what would be synced
-        inskit mcp sync --tool all --dry-run
+        devsync mcp sync --tool all --dry-run
 
         # Sync without creating backups
-        inskit mcp sync --tool claude --no-backup
+        devsync mcp sync --tool claude --no-backup
 
         # Sync global configurations
-        inskit mcp sync --scope global
+        devsync mcp sync --scope global
     """
     try:
         # Parse scope
@@ -146,7 +146,7 @@ def mcp_sync_command(
                 console.print(table)
 
                 console.print(
-                    "\n[dim]Tip: Run 'inskit mcp configure <namespace>' to configure missing credentials[/dim]"
+                    "\n[dim]Tip: Run 'devsync mcp configure <namespace>' to configure missing credentials[/dim]"
                 )
 
         if not result.success:

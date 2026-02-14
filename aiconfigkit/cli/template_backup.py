@@ -33,9 +33,9 @@ def backup_list_command(
     during update operations.
 
     Example:
-        inskit template backup list
-        inskit template backup list --scope global
-        inskit template backup list --limit 20
+        devsync template backup list
+        devsync template backup list --scope global
+        devsync template backup list --limit 20
     """
     try:
         # Determine backup directory
@@ -110,9 +110,9 @@ def backup_cleanup_command(
     Remove old template backups to free up space.
 
     Example:
-        inskit template backup cleanup --days 30
-        inskit template backup cleanup --days 7 --force
-        inskit template backup cleanup --scope global --days 90
+        devsync template backup cleanup --days 30
+        devsync template backup cleanup --days 7 --force
+        devsync template backup cleanup --scope global --days 90
     """
     try:
         # Determine backup directory
@@ -184,13 +184,13 @@ def backup_restore_command(
 
     Example:
         # List backups first
-        inskit template backup list
+        devsync template backup list
 
         # Restore specific file
-        inskit template backup restore 20251109_143052 company.test.md
+        devsync template backup restore 20251109_143052 company.test.md
 
         # Restore to different location
-        inskit template backup restore 20251109_143052 company.test.md --target .claude/rules/company.test-restored.md
+        devsync template backup restore 20251109_143052 company.test.md --target .claude/rules/company.test-restored.md
     """
     try:
         # Determine backup directory
@@ -218,7 +218,7 @@ def backup_restore_command(
                     console.print(f"  - {f.name}")
             else:
                 console.print(f"[red]Backup directory not found: {timestamp_dir}[/red]")
-                console.print("\nUse 'inskit template backup list' to see available backups")
+                console.print("\nUse 'devsync template backup list' to see available backups")
             raise typer.Exit(1)
 
         # Determine target path

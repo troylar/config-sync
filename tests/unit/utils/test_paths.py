@@ -13,9 +13,9 @@ from aiconfigkit.utils.paths import (
     get_copilot_config_dir,
     get_cursor_config_dir,
     get_cursor_mcp_config_path,
+    get_devsync_data_dir,
     get_home_directory,
     get_installation_tracker_path,
-    get_instructionkit_data_dir,
     get_library_dir,
     get_windsurf_mcp_config_path,
     get_winsurf_config_dir,
@@ -203,14 +203,14 @@ class TestGetWinsurfMcpConfigPath:
 
 
 class TestGetInstructionkitDataDir:
-    """Test get_instructionkit_data_dir function."""
+    """Test get_devsync_data_dir function."""
 
     def test_creates_data_dir(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
         """Test that data directory is created."""
         # Use tmp_path as home directory
         monkeypatch.setattr("pathlib.Path.home", lambda: tmp_path)
 
-        data_dir = get_instructionkit_data_dir()
+        data_dir = get_devsync_data_dir()
         assert data_dir.exists()
         assert ".instructionkit" in str(data_dir)
 

@@ -99,7 +99,7 @@ class GitOperations:
 
         # Create target directory if not provided
         if target_dir is None:
-            target_dir = Path(tempfile.mkdtemp(prefix="instructionkit-"))
+            target_dir = Path(tempfile.mkdtemp(prefix="devsync-"))
         else:
             target_dir.mkdir(parents=True, exist_ok=True)
 
@@ -188,7 +188,7 @@ class GitOperations:
         # Only delete if it's a temporary directory
         if is_temp and repo_path.exists() and repo_path.is_dir():
             # Safety check: only delete if it's in temp directory
-            if "instructionkit-" in str(repo_path) or "/tmp/" in str(repo_path):
+            if "devsync-" in str(repo_path) or "/tmp/" in str(repo_path):
                 shutil.rmtree(repo_path, ignore_errors=True)
 
     @staticmethod

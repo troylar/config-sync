@@ -3,7 +3,7 @@
 **Time to Complete**: 15 minutes
 **Difficulty**: Beginner
 **Prerequisites**:
-- DevSync installed (`pip install ai-config-kit`)
+- DevSync installed (`pip install devsync`)
 - Working with 2+ projects that use different frameworks or conventions
 - Using Claude Code, Cursor, Windsurf, or GitHub Copilot
 

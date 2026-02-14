@@ -1,14 +1,14 @@
 # CLI and TUI UX Patterns for Version Selection and Collision Resolution
 
 **Research Date**: 2025-10-26
-**Context**: AI Config Kit version management and collision handling
+**Context**: DevSync version management and collision handling
 **Technologies**: Typer (CLI), Textual (TUI), Rich (formatting)
 
 ---
 
 ## Executive Summary
 
-This document provides UX pattern recommendations for implementing version display in TUI tables, collision resolution prompts, and update disambiguation in AI Config Kit. Based on research of popular CLI tools (git, npm, cargo, poetry) and Python CLI best practices, we recommend:
+This document provides UX pattern recommendations for implementing version display in TUI tables, collision resolution prompts, and update disambiguation in DevSync. Based on research of popular CLI tools (git, npm, cargo, poetry) and Python CLI best practices, we recommend:
 
 1. **Version Display**: Use compact semver format in tables with tooltips for full version info
 2. **Collision Resolution**: Interactive numbered lists with rich previews using questionary
@@ -21,7 +21,7 @@ This document provides UX pattern recommendations for implementing version displ
 
 ### Current State
 
-AI Config Kit's TUI (`tui/installer.py`) currently has a "Ver" column (line 241) displaying version strings. The table uses Textual's `DataTable` widget with fixed-width columns.
+DevSync's TUI (`tui/installer.py`) currently has a "Ver" column (line 241) displaying version strings. The table uses Textual's `DataTable` widget with fixed-width columns.
 
 ### Research Findings
 
@@ -151,7 +151,7 @@ def format_version_with_age(version: str, last_updated: datetime) -> str:
 
 ### Version Display Recommendations
 
-**For AI Config Kit TUI**:
+**For DevSync TUI**:
 
 1. **Use Pattern A** (compact + details on selection) - balances clarity with information density
 2. **Column width**: Keep at 8 characters for semver (e.g., "v12.34.5")
@@ -167,7 +167,7 @@ def format_version_with_age(version: str, last_updated: datetime) -> str:
 
 ### Current State
 
-AI Config Kit handles name conflicts in `install_new.py` (lines 83-123) with `_resolve_name_conflicts()`:
+DevSync handles name conflicts in `install_new.py` (lines 83-123) with `_resolve_name_conflicts()`:
 
 ```python
 # Current implementation (simplified)
@@ -440,7 +440,7 @@ def preview_collision_diff(inst1: LibraryInstruction, inst2: LibraryInstruction)
 
 ### Collision Resolution Recommendations
 
-**For AI Config Kit**:
+**For DevSync**:
 
 1. **Implement Pattern A** (questionary) for best UX - rich, navigable, accessible
 2. **Add dependency**: `questionary>=2.0` to `pyproject.toml`
@@ -746,7 +746,7 @@ $ aiconfig update python-testing --all
 
 ### Update Disambiguation Recommendations
 
-**For AI Config Kit**:
+**For DevSync**:
 
 1. **Primary**: Implement Pattern A (interactive single-select) - clear, guided experience
 2. **Enhancement**: Add Pattern C flags (`--from`, `--all`) for automation
@@ -933,7 +933,7 @@ def update_with_git_output(repo: Repository, verbose: bool = False) -> None:
 
 ### Progress Indication Recommendations
 
-**For AI Config Kit**:
+**For DevSync**:
 
 1. **Default**: Use Pattern B (simple status) for single repo updates
 2. **Batch updates**: Use Pattern A (multi-task progress) for updating multiple repos
@@ -994,7 +994,7 @@ def prompt_or_default(prompt_fn, default_value):
         return default_value
 ```
 
-#### Usage in AI Config Kit
+#### Usage in DevSync
 
 ```python
 def resolve_collision_smart(instructions: list[LibraryInstruction]) -> Optional[dict[str, str]]:
@@ -1057,8 +1057,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install AI Config Kit
-        run: pip install ai-config-kit
+      - name: Install DevSync
+        run: pip install devsync
 
       - name: Download instruction library
         run: aiconfig download --repo https://github.com/acme/instructions
@@ -1401,7 +1401,7 @@ Selected: python-testing v1.2.0 | From: acme/examples@v1.2.0 | Updated: 2024-10-
 
 ## Conclusion
 
-This research provides comprehensive patterns for implementing version selection and collision resolution in AI Config Kit. Key recommendations:
+This research provides comprehensive patterns for implementing version selection and collision resolution in DevSync. Key recommendations:
 
 1. **Adopt questionary** for rich interactive prompts (collision resolution, update disambiguation)
 2. **Enhance TUI** with compact version display and selection-based details

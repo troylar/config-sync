@@ -94,7 +94,7 @@ class TemplateLibraryManager:
         if not repo_path.exists():
             raise FileNotFoundError(
                 f"Template repository '{namespace}' not found in library.\n"
-                f"Install it with: inskit template install <repo-url>"
+                f"Install it with: devsync template install <repo-url>"
             )
 
         manifest_path = repo_path / "templatekit.yaml"

@@ -59,7 +59,7 @@ Tutorials for specific scenarios and workflows.
 **New to DevSync?** Start here:
 
 1. **Read**: [What is DevSync?](../README.md#overview)
-2. **Install**: `pip install ai-config-kit`
+2. **Install**: `pip install devsync`
 3. **Choose your tutorial**:
    - Solo developer? → [Managing Multiple Projects](solo-developer-personal-projects.md)
    - Part of a team? → [Small Team - Shared Standards](small-team-shared-standards.md)

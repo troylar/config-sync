@@ -1,4 +1,4 @@
-"""Entry point for running instructionkit as a module."""
+"""Entry point for running devsync as a module."""
 
 from aiconfigkit.cli.main import app
 

@@ -34,7 +34,7 @@ def delete_from_library(
     repo = library.get_repository(namespace)
     if not repo:
         print_error(f"Repository not found: {namespace}")
-        print_error("Use 'instructionkit list library' to see available repositories")
+        print_error("Use 'devsync list library' to see available repositories")
         return 1
 
     # Check if any instructions from this repo are currently installed
@@ -77,7 +77,7 @@ def delete_from_library(
         if installed_from_repo:
             print_warning(
                 f"\n  Note: {len(installed_from_repo)} instruction(s) are still installed in your AI tools.\n"
-                f"  Use 'instructionkit uninstall <name>' to remove them."
+                f"  Use 'devsync uninstall <name>' to remove them."
             )
         return 0
     else:
@@ -102,17 +102,17 @@ def delete_command(
     Delete a repository from your local library.
 
     This removes the downloaded instructions from your library but does NOT
-    uninstall them from your AI tools. To uninstall, use 'instructionkit uninstall'.
+    uninstall them from your AI tools. To uninstall, use 'devsync uninstall'.
 
     Examples:
         # Delete a repository
-        instructionkit delete github.com_company_instructions
+        devsync delete github.com_company_instructions
 
         # Skip confirmation
-        instructionkit delete github.com_company_instructions --force
+        devsync delete github.com_company_instructions --force
 
         # List repositories to find namespace
-        instructionkit list library
+        devsync list library
     """
     exit_code = delete_from_library(namespace=namespace, force=force)
     raise typer.Exit(code=exit_code)

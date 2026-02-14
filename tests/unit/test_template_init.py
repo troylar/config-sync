@@ -159,11 +159,11 @@ class TestTemplateInit:
         assert "Installation" in readme_content or "installation" in readme_content.lower()
         assert "Usage" in readme_content or "usage" in readme_content.lower()
         assert "Customization" in readme_content or "customization" in readme_content.lower()
-        assert "InstructionKit" in readme_content
+        assert "DevSync" in readme_content
 
         # Verify example commands
-        assert "inskit template install" in readme_content
-        assert "inskit template list" in readme_content
+        assert "devsync template install" in readme_content
+        assert "devsync template list" in readme_content
 
     def test_init_gitignore_content(self, tmp_path):
         """Test that .gitignore has appropriate entries."""

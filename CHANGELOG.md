@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.6.0] - 2026-02-14
+
+### Changed
+- **CLI Renamed** - CLI command changed from `aiconfig` to `devsync`
+  - All CLI examples, help text, and documentation updated
+  - `pip install devsync` now provides the `devsync` command
+- **Full rebrand to DevSync** - Removed all legacy "InstructionKit", "inskit", and "AI Config Kit" references
+- Cleaned up old build artifacts
+
 ## [0.5.7] - 2026-02-14
 
 ### Changed
@@ -23,7 +32,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - **PyPI Package Rename** - Package renamed from `ai-config-kit` to `devsync`
-  - Install with `pip install devsync` (CLI command remains `aiconfig`)
+  - Install with `pip install devsync` (CLI command is now `devsync`)
   - Previous package name was quarantined by PyPI's anti-typosquatting filters
 
 ## [0.5.4] - 2026-02-14

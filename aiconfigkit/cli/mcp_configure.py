@@ -31,20 +31,20 @@ def mcp_configure_command(
     Examples:
 
         # Configure specific server interactively
-        inskit mcp configure backend.github
+        devsync mcp configure backend.github
 
         # Configure all servers in a namespace
-        inskit mcp configure backend
+        devsync mcp configure backend
 
         # Configure with non-interactive mode (read from env)
         export GITHUB_TOKEN=ghp_xxxxx
-        inskit mcp configure backend.github --non-interactive
+        devsync mcp configure backend.github --non-interactive
 
         # Show current credentials (masked)
-        inskit mcp configure backend.github --show-current
+        devsync mcp configure backend.github --show-current
 
         # Configure globally (available in all projects)
-        inskit mcp configure backend.github --scope global
+        devsync mcp configure backend.github --scope global
     """
     try:
         # Parse scope
@@ -71,7 +71,7 @@ def mcp_configure_command(
 
         if not template:
             console.print(f"[red]Error:[/red] Template '{namespace}' not found in {install_scope.value} scope")
-            console.print(f"\nInstall it first: [cyan]inskit mcp install <source> --as {namespace}[/cyan]")
+            console.print(f"\nInstall it first: [cyan]devsync mcp install <source> --as {namespace}[/cyan]")
             return 1
 
         # Get servers to configure
@@ -149,7 +149,7 @@ def mcp_configure_command(
 
             # Show next steps
             console.print("\n[bold]Next step:[/bold]")
-            console.print("  Sync to AI tools: [cyan]inskit mcp sync --tool all[/cyan]")
+            console.print("  Sync to AI tools: [cyan]devsync mcp sync --tool all[/cyan]")
 
         return 0
 

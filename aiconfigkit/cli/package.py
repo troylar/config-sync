@@ -73,8 +73,8 @@ def install_package_command(
     Package must contain an ai-config-kit-package.yaml manifest.
 
     Example:
-        aiconfig package install ./python-dev-setup --ide claude
-        aiconfig package install ~/packages/my-package --ide cursor --conflict overwrite
+        devsync package install ./python-dev-setup --ide claude
+        devsync package install ~/packages/my-package --ide cursor --conflict overwrite
     """
     try:
         # Parse target IDE
@@ -217,8 +217,8 @@ def list_packages_command(
     List installed packages in a project.
 
     Example:
-        aiconfig package list
-        aiconfig package list --project ~/my-project
+        devsync package list
+        devsync package list --project ~/my-project
     """
     try:
         # Determine project root
@@ -316,8 +316,8 @@ def uninstall_package_command(
     This removes the package's files and tracking record.
 
     Example:
-        aiconfig package uninstall test-package
-        aiconfig package uninstall my-org/my-package --yes
+        devsync package uninstall test-package
+        devsync package uninstall my-org/my-package --yes
     """
     try:
         # Determine project root

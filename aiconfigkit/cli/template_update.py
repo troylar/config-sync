@@ -54,16 +54,16 @@ def update_command(
     Update installed templates to latest version.
 
     Example:
-        inskit template update acme-templates
-        inskit template update --all
-        inskit template update acme-templates --dry-run
-        inskit template update --all --force
+        devsync template update acme-templates
+        devsync template update --all
+        devsync template update acme-templates --dry-run
+        devsync template update --all --force
     """
     try:
         # Validate arguments
         if not repo_name and not all_repos:
             console.print("[red]Error: Must specify repo-name or --all[/red]")
-            console.print("Usage: inskit template update <repo-name> or inskit template update --all")
+            console.print("Usage: devsync template update <repo-name> or devsync template update --all")
             raise typer.Exit(2)
 
         if scope not in ["project", "global", "both"]:

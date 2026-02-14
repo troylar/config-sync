@@ -18,7 +18,7 @@ Use Git to version control your AI configuration. Set it up once, sync everywher
 
 ## 📋 Prerequisites
 
-- [ ] DevSync installed on all devices (`pip install ai-config-kit`)
+- [ ] DevSync installed on all devices (`pip install devsync`)
 - [ ] Git repository for one of your projects
 - [ ] Same AI tool (Claude Code, Cursor, etc.) on all devices
 

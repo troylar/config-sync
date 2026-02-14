@@ -25,22 +25,22 @@ def mcp_install_command(
     Install MCP server configurations from a template repository.
 
     This downloads and caches MCP server definitions from a Git repository or local
-    directory into your local library. After installation, use 'inskit mcp configure'
-    to set up credentials and 'inskit mcp sync' to apply to AI tools.
+    directory into your local library. After installation, use 'devsync mcp configure'
+    to set up credentials and 'devsync mcp sync' to apply to AI tools.
 
     Examples:
 
         # Install from GitHub repository
-        inskit mcp install https://github.com/company/backend-tools --as backend
+        devsync mcp install https://github.com/company/backend-tools --as backend
 
         # Install from local directory
-        inskit mcp install ./my-mcp-configs --as local-tools
+        devsync mcp install ./my-mcp-configs --as local-tools
 
         # Install globally (available in all projects)
-        inskit mcp install https://github.com/me/personal-tools --as personal --scope global
+        devsync mcp install https://github.com/me/personal-tools --as personal --scope global
 
         # Force overwrite existing template
-        inskit mcp install https://github.com/company/backend-tools --as backend --force
+        devsync mcp install https://github.com/company/backend-tools --as backend --force
     """
     try:
         # Parse scope
@@ -104,17 +104,17 @@ def mcp_install_command(
             if servers_needing_config:
                 console.print("  1. Configure credentials for servers:")
                 for server in servers_needing_config[:3]:  # Show first 3
-                    console.print(f"     [cyan]inskit mcp configure {namespace}.{server.name}[/cyan]")
+                    console.print(f"     [cyan]devsync mcp configure {namespace}.{server.name}[/cyan]")
                 if len(servers_needing_config) > 3:
                     console.print(f"     ... and {len(servers_needing_config) - 3} more")
             else:
                 console.print("  1. [dim]No credentials needed for servers[/dim]")
 
-            console.print("  2. Sync to AI tools: [cyan]inskit mcp sync --tool all[/cyan]")
+            console.print("  2. Sync to AI tools: [cyan]devsync mcp sync --tool all[/cyan]")
 
             if template.sets:
                 set_name = template.sets[0].name
-                console.print(f"  3. Or activate a set: [cyan]inskit mcp activate {namespace}.{set_name}[/cyan]")
+                console.print(f"  3. Or activate a set: [cyan]devsync mcp activate {namespace}.{set_name}[/cyan]")
 
         return 0
 

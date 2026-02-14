@@ -13,7 +13,7 @@ def test_main_module_execution() -> None:
         timeout=10,
     )
     assert result.returncode == 0
-    assert "aiconfig" in result.stdout.lower() or "aiconfigkit" in result.stdout.lower()
+    assert "devsync" in result.stdout.lower() or "aiconfigkit" in result.stdout.lower()
 
 
 def test_main_module_version() -> None:

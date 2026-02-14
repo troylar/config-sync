@@ -58,7 +58,7 @@ def update_repository(
         repo = library.get_repository(namespace)
         if not repo:
             print_error(f"Repository not found: {namespace}")
-            print_info("Use 'inskit list library' to see available repositories")
+            print_info("Use 'devsync list library' to see available repositories")
             return 1
         repositories = [repo]
 
@@ -297,13 +297,13 @@ def update_command(
 
     Examples:
         # Update a specific repository
-        instructionkit update --namespace github.com_company_instructions
+        devsync update --namespace github.com_company_instructions
 
         # Update all repositories
-        instructionkit update --all
+        devsync update --all
 
         # List repositories to find namespace
-        instructionkit list library
+        devsync list library
     """
     exit_code = update_repository(namespace=namespace, all_repos=all_repos)
     raise typer.Exit(code=exit_code)

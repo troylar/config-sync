@@ -160,7 +160,7 @@ class InstructionInstallerScreen(Screen):
         # Branded title section
         with Container(id="title-container"):
             yield Static(
-                "🎯 [bold cyan]InstructionKit[/bold cyan] [dim]│[/dim] " "Browse & Install Instructions",
+                "🎯 [bold cyan]DevSync[/bold cyan] [dim]│[/dim] " "Browse & Install Instructions",
                 id="app-title",
             )
 
@@ -456,7 +456,7 @@ class InstructionInstallerScreen(Screen):
 class InstructionInstallerApp(App):
     """Application for installing instructions."""
 
-    TITLE = "InstructionKit Installer"
+    TITLE = "DevSync Installer"
     SUB_TITLE = "Browse, Select & Install Instructions"
 
     def __init__(

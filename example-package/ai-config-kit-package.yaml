@@ -1,7 +1,7 @@
 name: example-package
 version: 1.0.0
 description: Example configuration package demonstrating all component types
-author: AI Config Kit Team
+author: DevSync Team
 license: MIT
 namespace: aiconfigkit/examples
 

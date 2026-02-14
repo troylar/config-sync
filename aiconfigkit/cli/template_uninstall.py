@@ -45,10 +45,10 @@ def uninstall_command(
     Remove installed templates.
 
     Example:
-        inskit template uninstall acme-templates
-        inskit template uninstall acme-templates --force
-        inskit template uninstall acme-templates --template test-command
-        inskit template uninstall acme-templates --keep-files
+        devsync template uninstall acme-templates
+        devsync template uninstall acme-templates --force
+        devsync template uninstall acme-templates --template test-command
+        devsync template uninstall acme-templates --keep-files
     """
     try:
         # Validate scope

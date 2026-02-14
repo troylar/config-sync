@@ -1,21 +1,21 @@
-# InstructionKit Repository Creator
+# DevSync Repository Creator
 
-When a user asks you to create an InstructionKit-compatible repository or instruction collection, follow this guide to help them build a properly structured repository.
+When a user asks you to create an DevSync-compatible repository or instruction collection, follow this guide to help them build a properly structured repository.
 
 ## Repository Structure Required
 
-Every InstructionKit repository must have:
+Every DevSync repository must have:
 
 ```
 repository-name/
-├── instructionkit.yaml          # REQUIRED: Metadata file
+├── devsync.yaml          # REQUIRED: Metadata file
 ├── instructions/                # REQUIRED: Instruction files directory
 │   ├── instruction-1.md
 │   └── instruction-2.md
 └── README.md                    # OPTIONAL: Documentation
 ```
 
-## Creating instructionkit.yaml
+## Creating devsync.yaml
 
 This is the core metadata file. **Always create this file first.**
 
@@ -71,7 +71,7 @@ bundles:
 
 ## Field Requirements
 
-**Required fields in instructionkit.yaml:**
+**Required fields in devsync.yaml:**
 - `name`: Repository name
 - `description`: Brief description
 - `version`: Semantic version (e.g., "1.0.0")
@@ -160,11 +160,11 @@ bundles:
 
 ## User Workflow Support
 
-When helping users create InstructionKit repositories:
+When helping users create DevSync repositories:
 
 1. **Ask about their goal**: What instructions do they want to create?
 2. **Create directory structure**: Make folders first
-3. **Write instructionkit.yaml**: Start with metadata
+3. **Write devsync.yaml**: Start with metadata
 4. **Create instruction files**: One by one
 5. **Add bundles if needed**: Group related instructions
 6. **Create README.md**: Document usage and installation
@@ -174,13 +174,13 @@ When helping users create InstructionKit repositories:
 
 ```bash
 # List available instructions
-instructionkit list available --repo .
+devsync list available --repo .
 
 # Install locally to test
-instructionkit install [name] --repo . --scope project
+devsync install [name] --repo . --scope project
 
 # Verify installation
-instructionkit list installed
+devsync list installed
 ```
 
 ## Common Use Cases
@@ -212,7 +212,7 @@ instructionkit list installed
 ## Validation Checklist
 
 Before finalizing, ensure:
-- [ ] `instructionkit.yaml` exists at root
+- [ ] `devsync.yaml` exists at root
 - [ ] All instruction files referenced in YAML exist
 - [ ] All instruction names are unique
 - [ ] Bundle instruction references are valid
@@ -231,27 +231,27 @@ Include this in the README.md you create:
 ### From GitHub
 \`\`\`bash
 # Install specific instruction
-instructionkit install [name] --repo https://github.com/username/repo
+devsync install [name] --repo https://github.com/username/repo
 
 # Install globally (available in all projects)
-instructionkit install [name] --repo https://github.com/username/repo --scope global
+devsync install [name] --repo https://github.com/username/repo --scope global
 
 # Install to current project only
-instructionkit install [name] --repo https://github.com/username/repo --scope project
+devsync install [name] --repo https://github.com/username/repo --scope project
 
 # Install a bundle
-instructionkit install [bundle-name] --bundle --repo https://github.com/username/repo
+devsync install [bundle-name] --bundle --repo https://github.com/username/repo
 \`\`\`
 
 ### From Local Folder
 \`\`\`bash
-instructionkit install [name] --repo ./path/to/repo
+devsync install [name] --repo ./path/to/repo
 \`\`\`
 ```
 
 ## Quick Start Example
 
-When a user asks "help me create an InstructionKit repository", suggest this workflow:
+When a user asks "help me create an DevSync repository", suggest this workflow:
 
 1. Create directory structure:
 ```bash
@@ -260,13 +260,13 @@ cd my-instructions
 mkdir instructions
 ```
 
-2. Create `instructionkit.yaml` with their specifications
+2. Create `devsync.yaml` with their specifications
 
 3. Create instruction markdown files in `instructions/`
 
 4. Test locally:
 ```bash
-instructionkit list available --repo .
+devsync list available --repo .
 ```
 
 5. Add to Git:
@@ -278,7 +278,7 @@ git commit -m "Initial instruction repository"
 
 ## Remember
 
-- InstructionKit repositories can be stored in Git or used locally
+- DevSync repositories can be stored in Git or used locally
 - Users can install from GitHub, GitLab, Bitbucket, or local folders
 - Instructions are installed into AI tools: Cursor, GitHub Copilot, Windsurf, Claude Code
 - Global scope = available in all projects
