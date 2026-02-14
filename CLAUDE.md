@@ -28,6 +28,7 @@ ai-config-kit/
 │   ├── cursor.py     # Cursor (.cursor/rules/*.mdc)
 │   ├── cline.py      # Cline (.clinerules/*.md)
 │   ├── kiro.py       # Kiro (.kiro/steering/*.md)
+│   ├── roo.py        # Roo Code (.roo/rules/*.md)
 │   ├── winsurf.py    # Windsurf (.windsurf/rules/*.md)
 │   ├── copilot.py    # GitHub Copilot (.github/instructions/*.md)
 │   └── detector.py   # Tool detection logic
@@ -396,6 +397,7 @@ Different IDEs support different component types:
 - **Cline**: Instructions and resources only
 - **Cursor**: Instructions and resources only
 - **Kiro**: Instructions and resources only
+- **Roo Code**: Instructions, MCP, commands, and resources
 - **Windsurf**: Instructions and resources only
 - **GitHub Copilot**: Instructions only
 
@@ -406,6 +408,7 @@ Components are translated to IDE-specific formats:
 - **Claude Code**: `.md` files in `.claude/rules/`, `.claude/hooks/`, `.claude/commands/`
 - **Cline**: `.md` files in `.clinerules/`
 - **Cursor**: `.mdc` files in `.cursor/rules/`
+- **Roo Code**: `.md` files in `.roo/rules/`, `.roo/commands/`
 - **Kiro**: `.md` files in `.kiro/steering/`
 - **Windsurf**: `.md` files in `.windsurf/rules/`
 - **GitHub Copilot**: `.md` files in `.github/instructions/`
