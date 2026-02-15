@@ -56,7 +56,7 @@ class TestInstructionDetection:
         inst = result.instructions[0]
         assert inst.name == "coding-style"
         assert inst.source_ide == "claude"
-        assert ".claude/rules/coding-style.md" in inst.relative_path
+        assert inst.relative_path == str(Path(".claude") / "rules" / "coding-style.md")
 
     def test_detect_cursor_instructions(self, temp_project: Path) -> None:
         """Test detection of Cursor instructions."""
@@ -326,7 +326,7 @@ class TestToPackageComponents:
         assert components.total_count == 1
         assert len(components.instructions) == 1
         assert components.instructions[0].name == "style"
-        assert components.instructions[0].file == ".claude/rules/style.md"
+        assert components.instructions[0].file == str(Path(".claude") / "rules" / "style.md")
 
     def test_convert_all_component_types(self, temp_project: Path) -> None:
         """Test conversion of all component types."""
