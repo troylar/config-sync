@@ -1,0 +1,14 @@
+# Snyk policy file - suppress false positive findings
+# https://docs.snyk.io/scan-using-snyk/policies/the-.snyk-file
+version: v1.25.0
+exclude:
+  code:
+    - devsync/core/secret_detector.py:
+        - "Hardcoded Non-Cryptographic Secret":
+            reason: "JWT regex pattern used for secret detection, not an actual secret"
+    - tests/unit/packages/test_package_create_cli.py:
+        - "Hardcoded Non-Cryptographic Secret":
+            reason: "Intentional dummy values in test fixtures for secret detection testing"
+    - tests/unit/packages/test_package_creator.py:
+        - "Hardcoded Non-Cryptographic Secret":
+            reason: "Intentional dummy values in test fixtures for secret detection testing"
