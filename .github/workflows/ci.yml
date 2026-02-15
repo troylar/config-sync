@@ -94,12 +94,13 @@ jobs:
         run: invoke security-check
         continue-on-error: true
 
+      - name: Install Snyk CLI
+        run: npm install -g snyk
+
       - name: Run Snyk to check for vulnerabilities
-        uses: snyk/actions/python-3.10@master
+        run: snyk test --severity-threshold=high --package-manager=pip --file=pyproject.toml
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-        with:
-          args: --severity-threshold=high
 
   dependency-review:
     name: Dependency Review

@@ -79,7 +79,7 @@ class TestAntigravityTool:
         assert path.exists()
         assert path.read_text() == "Test content"
         assert path.suffix == ".md"
-        assert ".agent/rules" in str(path)
+        assert path.parent == project_root / ".agent" / "rules"
 
     def test_install_instruction_overwrite(self, antigravity_tool: AntigravityTool, temp_dir) -> None:  # type: ignore[no-untyped-def]
         project_root = temp_dir / "project"
