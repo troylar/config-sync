@@ -7,6 +7,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.11.0] - 2026-02-21
+
+### Added
+- **Anteroom AI Tool Support** (#60) - Single-file instructions in `ANTEROOM.md` with section markers
+  - Detection via `aroom` binary or `~/.anteroom/` config directory
+  - Full package system support (translator, capability registry, component detector)
+  - 20 unit tests covering all tool methods
+
+### Fixed
+- Replace `aiconfig` with `devsync` CLI name in tutorials
+- Fix `os.uname()` compatibility on Windows (use `sys.platform` instead)
+
+### Documentation
+- Add 3 example repos (starter-templates, python-package, fullstack-package)
+- Add 3 new tutorials (CI/CD integration, multi-IDE workflow, migration guide)
+- Add unified MkDocs Material documentation with ReadTheDocs deployment
+- Slim down README and point to ReadTheDocs
+
 ## [0.10.0] - 2026-02-15
 
 ### Added
