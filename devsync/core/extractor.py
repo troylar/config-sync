@@ -80,9 +80,7 @@ class PracticeExtractor:
                 configs.append(config)
         return configs
 
-    def _extract_with_ai(
-        self, files: dict[str, str], mcp_configs: list[dict]
-    ) -> ExtractionResult:
+    def _extract_with_ai(self, files: dict[str, str], mcp_configs: list[dict]) -> ExtractionResult:
         """Extract practices using LLM intelligence."""
         assert self._llm is not None
 
@@ -127,9 +125,7 @@ class PracticeExtractor:
             ai_powered=True,
         )
 
-    def _extract_without_ai(
-        self, files: dict[str, str], mcp_configs: list[dict]
-    ) -> ExtractionResult:
+    def _extract_without_ai(self, files: dict[str, str], mcp_configs: list[dict]) -> ExtractionResult:
         """Extract practices as literal file copies (no AI)."""
         practices = self._practices_from_files(files)
 

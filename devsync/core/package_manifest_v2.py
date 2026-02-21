@@ -117,9 +117,7 @@ class PackageManifestV2:
         if self.mcp_servers:
             result["mcp_servers"] = [m.to_dict() for m in self.mcp_servers]
         if self.has_components:
-            result["components"] = {
-                key: [c.to_dict() for c in refs] for key, refs in self.components.items() if refs
-            }
+            result["components"] = {key: [c.to_dict() for c in refs] for key, refs in self.components.items() if refs}
         return result
 
     def to_yaml(self) -> str:
@@ -206,9 +204,7 @@ def _parse_v1(manifest_path: Path) -> PackageManifestV2:
 
     mcp_servers = []
     for m in data.get("components", {}).get("mcp_servers", []):
-        creds = [
-            CredentialSpec.from_dict(c) for c in m.get("credentials", [])
-        ]
+        creds = [CredentialSpec.from_dict(c) for c in m.get("credentials", [])]
         mcp_servers.append(
             MCPDeclaration(
                 name=m["name"],

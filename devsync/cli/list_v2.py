@@ -4,7 +4,6 @@ import json as json_module
 from pathlib import Path
 from typing import Optional
 
-import typer
 from rich.console import Console
 from rich.table import Table
 
@@ -34,7 +33,7 @@ def list_v2_command(
     tracker = PackageTracker(project_root)
 
     try:
-        packages = tracker.list_packages()
+        packages = tracker.get_installed_packages()
     except Exception:
         packages = []
 

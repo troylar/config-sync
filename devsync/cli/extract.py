@@ -4,7 +4,6 @@ import shutil
 from pathlib import Path
 from typing import Optional
 
-import typer
 from rich.console import Console
 from rich.progress import Progress, SpinnerColumn, TextColumn
 
@@ -202,8 +201,7 @@ def _upgrade_v1_package(
 
         v2_manifest.components = {
             "instructions": [
-                ComponentRef(name=Path(f).stem, file=f"instructions/{Path(f).name}")
-                for f in instruction_files
+                ComponentRef(name=Path(f).stem, file=f"instructions/{Path(f).name}") for f in instruction_files
             ]
         }
 

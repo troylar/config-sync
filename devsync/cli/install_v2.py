@@ -4,7 +4,6 @@ import tempfile
 from pathlib import Path
 from typing import Optional
 
-import typer
 from rich.console import Console
 from rich.prompt import Confirm
 from rich.table import Table
@@ -88,10 +87,10 @@ def _resolve_source(source: str) -> Optional[Path]:
 def _clone_source(url: str) -> Optional[Path]:
     """Clone a Git repository to a temp directory."""
     try:
-        from devsync.core.git_operations import clone_repository
+        from devsync.core.git_operations import GitOperations
 
         tmp_dir = Path(tempfile.mkdtemp(prefix="devsync-"))
-        clone_repository(url, tmp_dir)
+        GitOperations.clone_repository(url, tmp_dir)
         return tmp_dir
     except Exception as e:
         console.print(f"[red]Failed to clone {url}: {e}[/red]")
@@ -147,10 +146,6 @@ def _install_v2_fallback(
     conflict: str,
 ) -> int:
     """Install using file-copy mode (v1 compat or --no-ai)."""
-    from devsync.core.models import ConflictResolution
-
-    conflict_strategy = ConflictResolution(conflict) if conflict != "prompt" else ConflictResolution.SKIP
-
     installed_count = 0
 
     for component_type, refs in manifest.components.items():
@@ -232,7 +227,7 @@ def _install_mcp_servers(manifest: PackageManifestV2, project_root: Path) -> Non
 
         for server in manifest.mcp_servers:
             server_creds = credentials.get(server.name, {})
-            config = build_mcp_config(server, server_creds)
+            build_mcp_config(server, server_creds)
             console.print(f"  MCP: {server.name} configured")
     else:
         for server in manifest.mcp_servers:

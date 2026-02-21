@@ -3,7 +3,6 @@
 from pathlib import Path
 from unittest.mock import MagicMock, patch
 
-import pytest
 import yaml
 
 from devsync.cli.install_v2 import _get_tool_instruction_path, _resolve_source, install_v2_command
@@ -47,7 +46,9 @@ class TestInstallV2Command:
     @patch("devsync.cli.install_v2.find_project_root")
     @patch("devsync.cli.install_v2._resolve_tools", return_value=["claude"])
     @patch("devsync.cli.install_v2.Confirm.ask", return_value=False)
-    def test_install_v1_package_file_copy(self, mock_confirm: MagicMock, mock_tools: MagicMock, mock_root: MagicMock, tmp_path: Path) -> None:
+    def test_install_v1_package_file_copy(
+        self, mock_confirm: MagicMock, mock_tools: MagicMock, mock_root: MagicMock, tmp_path: Path
+    ) -> None:
         project_dir = tmp_path / "project"
         project_dir.mkdir()
         mock_root.return_value = project_dir

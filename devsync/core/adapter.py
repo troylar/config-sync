@@ -6,14 +6,12 @@ from pathlib import Path
 from typing import Optional
 
 from devsync.core.practice import PracticeDeclaration
-from devsync.llm.prompts import ADAPT_PRACTICE_PROMPT, MERGE_PRACTICES_PROMPT, SYSTEM_PROMPT
+from devsync.llm.prompts import ADAPT_PRACTICE_PROMPT, SYSTEM_PROMPT
 from devsync.llm.provider import LLMProvider, LLMProviderError
 from devsync.llm.response_models import (
     AdaptationAction,
     AdaptationPlan,
-    MergeDecision,
     parse_adaptation_response,
-    parse_merge_response,
 )
 
 logger = logging.getLogger(__name__)
@@ -85,9 +83,7 @@ class PracticeAdapter:
         """Use LLM to create semantic adaptation plan."""
         assert self._llm is not None
         actions: list[AdaptationAction] = []
-        existing_summary = "\n".join(
-            f"--- {path} ---\n{content[:500]}" for path, content in existing_rules.items()
-        )
+        existing_summary = "\n".join(f"--- {path} ---\n{content[:500]}" for path, content in existing_rules.items())
 
         for practice in practices:
             try:

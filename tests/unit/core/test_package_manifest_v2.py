@@ -100,11 +100,7 @@ class TestParseManifest:
                     "credentials": [{"name": "GITHUB_TOKEN", "description": "PAT"}],
                 }
             ],
-            "components": {
-                "instructions": [
-                    {"name": "style", "file": "instructions/style.md", "tags": ["python"]}
-                ]
-            },
+            "components": {"instructions": [{"name": "style", "file": "instructions/style.md", "tags": ["python"]}]},
         }
         (tmp_path / "devsync-package.yaml").write_text(yaml.dump(manifest))
 
@@ -127,9 +123,7 @@ class TestParseManifest:
             "license": "MIT",
             "namespace": "org/repo",
             "components": {
-                "instructions": [
-                    {"name": "rules", "file": "instructions/rules.md", "description": "Rules"}
-                ],
+                "instructions": [{"name": "rules", "file": "instructions/rules.md", "description": "Rules"}],
                 "mcp_servers": [
                     {
                         "name": "db",
@@ -167,16 +161,10 @@ class TestParseManifest:
             "name": "hybrid",
             "version": "1.0.0",
             "description": "Hybrid package",
-            "practices": [
-                {"name": "testing", "intent": "Ensure test coverage", "tags": ["testing"]}
-            ],
+            "practices": [{"name": "testing", "intent": "Ensure test coverage", "tags": ["testing"]}],
             "components": {
-                "instructions": [
-                    {"name": "testing-rules", "file": "instructions/testing.md"}
-                ],
-                "hooks": [
-                    {"name": "pre-commit", "file": "hooks/pre-commit.sh", "hook_type": "pre-commit"}
-                ],
+                "instructions": [{"name": "testing-rules", "file": "instructions/testing.md"}],
+                "hooks": [{"name": "pre-commit", "file": "hooks/pre-commit.sh", "hook_type": "pre-commit"}],
             },
         }
         (tmp_path / "devsync-package.yaml").write_text(yaml.dump(manifest))
