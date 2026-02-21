@@ -22,12 +22,12 @@ class TestGetToolInstructionPath:
     def test_claude_path(self, tmp_path: Path) -> None:
         result = _get_tool_instruction_path("claude", tmp_path, "test-rule")
         assert result is not None
-        assert str(result).endswith(".claude/rules/test-rule.md")
+        assert result == tmp_path / ".claude" / "rules" / "test-rule.md"
 
     def test_cursor_path(self, tmp_path: Path) -> None:
         result = _get_tool_instruction_path("cursor", tmp_path, "test-rule")
         assert result is not None
-        assert str(result).endswith(".cursor/rules/test-rule.mdc")
+        assert result == tmp_path / ".cursor" / "rules" / "test-rule.mdc"
 
     def test_unknown_tool_returns_none(self, tmp_path: Path) -> None:
         result = _get_tool_instruction_path("unknown-tool", tmp_path, "test")
