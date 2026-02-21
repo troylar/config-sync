@@ -65,10 +65,13 @@ def _prompt_single_credential(cred: CredentialSpec) -> str:
 
     default = cred.default or ""
     if cred.required:
-        value = Prompt.ask(f"  Enter {cred.name}", default=default if default else None)
-        return value or ""
+        while True:
+            value = Prompt.ask(f"  Enter {cred.name}", default=default if default else None, password=True)
+            if value and value.strip():
+                return value.strip()
+            console.print("  [red]This credential is required. Please enter a value.[/red]")
     else:
-        value = Prompt.ask(f"  Enter {cred.name}", default=default)
+        value = Prompt.ask(f"  Enter {cred.name}", default=default, password=True)
         return value or ""
 
 

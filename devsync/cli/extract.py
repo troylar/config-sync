@@ -149,7 +149,9 @@ def _upgrade_v1_package(
             continue
         for ref in refs:
             src_file = (package_path / ref.file).resolve()
-            if not str(src_file).startswith(str(package_path.resolve())):
+            try:
+                src_file.relative_to(package_path.resolve())
+            except ValueError:
                 console.print(f"  [red]Rejected (path traversal): {ref.file}[/red]")
                 continue
             if src_file.exists() and src_file.stat().st_size < 100_000:
@@ -160,8 +162,8 @@ def _upgrade_v1_package(
                     console.print(f"  [yellow]Could not read: {ref.file}[/yellow]")
 
     if not instruction_files:
-        console.print("[yellow]No instruction files found in v1 package.[/yellow]")
-        return 0
+        console.print("[red]No instruction files found in v1 package.[/red]")
+        return 1
 
     llm = None
     if not no_ai:

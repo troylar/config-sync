@@ -2,6 +2,7 @@
 
 import json
 import logging
+import re
 from pathlib import Path
 from typing import Optional
 
@@ -113,7 +114,8 @@ class PracticeExtractor:
             try:
                 prompt = EXTRACT_MCP_PROMPT.format(mcp_config=json.dumps(mcp_config, indent=2))
                 response = self._llm.complete(prompt, system=SYSTEM_PROMPT)
-                data = json.loads(response.content)
+                content = _strip_markdown_fences(response.content)
+                data = json.loads(content)
                 mcp_servers.append(MCPDeclaration.from_dict(data))
             except (LLMProviderError, ValueError, json.JSONDecodeError) as e:
                 logger.warning("MCP extraction failed for %s: %s", mcp_config.get("name", "unknown"), e)
@@ -162,3 +164,15 @@ class PracticeExtractor:
                 )
             )
         return practices
+
+
+def _strip_markdown_fences(text: str) -> str:
+    """Strip markdown code fences from LLM response text.
+
+    LLMs sometimes wrap JSON output in ```json ... ``` fences.
+    This extracts the content inside the fences if present.
+    """
+    match = re.search(r"```(?:json)?\s*\n(.*?)\n```", text, re.DOTALL)
+    if match:
+        return match.group(1).strip()
+    return text.strip()

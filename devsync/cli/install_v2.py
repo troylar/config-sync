@@ -1,5 +1,6 @@
 """V2 install command — AI-powered package installation."""
 
+import shutil
 import tempfile
 from pathlib import Path
 from typing import Optional
@@ -45,28 +46,37 @@ def install_v2_command(
     if not project_root:
         project_root = project_path
 
+    cloned_tmp: Path | None = None
     package_path = _resolve_source(source)
     if not package_path:
         console.print(f"[red]Could not resolve source: {source}[/red]")
         return 1
 
-    fmt = detect_manifest_format(package_path)
-    if not fmt:
-        console.print(f"[red]No manifest found in {package_path}[/red]")
-        console.print("Expected: devsync-package.yaml or ai-config-kit-package.yaml")
-        return 1
+    # Track if we cloned a temp directory so we can clean it up
+    if source.startswith(("http://", "https://", "git@", "github.com")):
+        cloned_tmp = package_path
 
-    manifest = parse_manifest(package_path)
-    target_tools = _resolve_tools(tool)
+    try:
+        fmt = detect_manifest_format(package_path)
+        if not fmt:
+            console.print(f"[red]No manifest found in {package_path}[/red]")
+            console.print("Expected: devsync-package.yaml or ai-config-kit-package.yaml")
+            return 1
 
-    console.print(f"\n[bold]Installing: {manifest.name} v{manifest.version}[/bold]")
-    console.print(f"  {manifest.description}")
-    console.print(f"  Format: {'v2 (AI-native)' if manifest.is_v2 else 'v1 (file-copy)'}")
-    console.print(f"  Tools: {', '.join(target_tools)}")
+        manifest = parse_manifest(package_path)
+        target_tools = _resolve_tools(tool)
 
-    if manifest.is_v2 and manifest.has_practices and not no_ai:
-        return _install_v2_ai(manifest, project_root, target_tools)
-    return _install_v2_fallback(manifest, package_path, project_root, target_tools, conflict)
+        console.print(f"\n[bold]Installing: {manifest.name} v{manifest.version}[/bold]")
+        console.print(f"  {manifest.description}")
+        console.print(f"  Format: {'v2 (AI-native)' if manifest.is_v2 else 'v1 (file-copy)'}")
+        console.print(f"  Tools: {', '.join(target_tools)}")
+
+        if manifest.is_v2 and manifest.has_practices and not no_ai:
+            return _install_v2_ai(manifest, project_root, target_tools)
+        return _install_v2_fallback(manifest, package_path, project_root, target_tools, conflict)
+    finally:
+        if cloned_tmp and cloned_tmp.exists():
+            shutil.rmtree(cloned_tmp, ignore_errors=True)
 
 
 def _resolve_source(source: str) -> Optional[Path]:
@@ -153,7 +163,9 @@ def _install_v2_fallback(
             continue
         for ref in refs:
             src_file = (package_path / ref.file).resolve()
-            if not str(src_file).startswith(str(package_path.resolve())):
+            try:
+                src_file.relative_to(package_path.resolve())
+            except ValueError:
                 console.print(f"  [red]Rejected (path traversal): {ref.file}[/red]")
                 continue
             if not src_file.exists():
@@ -163,7 +175,30 @@ def _install_v2_fallback(
             content = src_file.read_text(encoding="utf-8")
             for tool_name in target_tools:
                 dest = _get_tool_instruction_path(tool_name, project_root, ref.name)
-                if dest and not dest.exists():
+                if not dest:
+                    continue
+                if dest.exists():
+                    if conflict == "skip":
+                        console.print(f"  [dim]Skipped (exists): {ref.name} → {dest.relative_to(project_root)}[/dim]")
+                        continue
+                    elif conflict == "overwrite":
+                        dest.write_text(content, encoding="utf-8")
+                        installed_count += 1
+                        console.print(f"  Overwritten: {ref.name} → {dest.relative_to(project_root)}")
+                    elif conflict == "rename":
+                        suffix = 1
+                        renamed = dest.with_stem(f"{dest.stem}-{suffix}")
+                        while renamed.exists():
+                            suffix += 1
+                            renamed = dest.with_stem(f"{dest.stem}-{suffix}")
+                        renamed.parent.mkdir(parents=True, exist_ok=True)
+                        renamed.write_text(content, encoding="utf-8")
+                        installed_count += 1
+                        console.print(f"  Installed (renamed): {ref.name} → {renamed.relative_to(project_root)}")
+                    else:
+                        rel = dest.relative_to(project_root)
+                        console.print(f"  [yellow]Exists: {ref.name} → {rel} (skipped)[/yellow]")
+                else:
                     dest.parent.mkdir(parents=True, exist_ok=True)
                     dest.write_text(content, encoding="utf-8")
                     installed_count += 1

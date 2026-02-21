@@ -156,7 +156,7 @@ def parse_adaptation_response(raw_json: str) -> AdaptationAction:
 
     return AdaptationAction(
         action=data.get("action", "skip"),
-        practice_name="",
+        practice_name=data.get("practice_name", ""),
         reason=data.get("reason", ""),
         file_name=data.get("file_name", ""),
         content=data.get("merged_content", ""),
