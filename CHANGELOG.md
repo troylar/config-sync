@@ -7,6 +7,45 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.12.0] - 2026-02-21
+
+### Added
+- **DevSync v2.0 — AI-Powered Config Distribution** (#63)
+  - 6 streamlined CLI commands replacing 20+: `setup`, `tools`, `extract`, `install`, `list`, `uninstall`
+  - AI-powered practice extraction: LLM reads project rules and produces abstract practice declarations
+  - AI-powered installation: LLM adapts incoming practices to recipient's existing setup with intelligent merging
+  - LLM provider abstraction layer (Anthropic, OpenAI, OpenRouter) via HTTP — no SDK dependencies
+  - Graceful degradation: works without API key using file-copy mode (`--no-ai` flag)
+  - v2 package format (`devsync-package.yaml`) with `practices` section
+  - Backward compatibility with v1 `ai-config-kit-package.yaml` packages
+  - MCP credential prompting with masked input during installation
+  - `devsync setup` — interactive LLM provider configuration
+  - `devsync extract` — extract practices from any project with AI or file-copy mode
+  - `devsync install` — install packages from Git URLs, local paths, or directories
+  - `devsync list` — show installed packages with tool filtering and JSON output
+  - v1 package upgrade via `devsync extract --upgrade`
+
+### Fixed
+- Temp directory leak when cloning Git repos during install
+- LLM JSON responses wrapped in markdown fences now parsed correctly
+- `parse_adaptation_response` now reads `practice_name` from JSON instead of defaulting to empty
+- `--conflict` flag now properly honored (skip/overwrite/rename strategies)
+- `extract --upgrade` returns correct exit code when no instruction files found
+- Path traversal protection uses `Path.relative_to()` instead of string prefix check
+- Windows path separator handling in tests (use Path objects instead of string comparison)
+- Removed stale `tui.installer` import that caused mypy failures
+
+### Security
+- MCP credential input now masked with `password=True`
+- Path traversal guard added to both install and extract commands
+
+### Documentation
+- Complete ReadTheDocs rewrite for v2 architecture (47 files updated)
+- New CLI pages: `setup.md`, `extract.md`
+- Rewritten: `install.md`, `list.md`, quickstart, concepts, CLI reference
+- Updated tutorials, IDE integrations, and package documentation
+- Removed obsolete v1 pages (download, update, delete, MCP server section)
+
 ## [0.11.0] - 2026-02-21
 
 ### Added

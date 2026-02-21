@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "devsync"
-version = "0.11.0"
+version = "0.12.0"
 description = "Distribute and sync dev tool configurations across teams"
 readme = "README.md"
 authors = [{ name = "Troy Larson", email = "troy@calvinware.com" }]
