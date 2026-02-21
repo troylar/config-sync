@@ -4,25 +4,26 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-**DevSync** is a CLI tool for managing AI coding assistant instructions. It allows users to download instruction repositories to a local library, browse them with an interactive TUI, and install them to AI tools (Cursor, Claude Code, Windsurf, GitHub Copilot) at the project level.
+**DevSync** is a CLI tool for AI-powered config distribution across AI coding assistants. It uses LLM intelligence to extract practices from projects and adapt them to recipients' existing setups — supporting 23+ AI tools including Claude Code, Cursor, Windsurf, GitHub Copilot, Kiro, Roo Code, Cline, and Codex.
 
-**CLI entry point:** `aiconfig` (installed via `pip install devsync`)
+**CLI entry point:** `devsync` (installed via `pip install devsync`)
 
 ## Architecture
 
 ### Core Concepts
 
-1. **Library System**: Instructions are downloaded from Git repos or local folders to `~/.devsync/library/` organized by namespace
-2. **Project-Level Installation**: All installations are project-specific, stored in tool-specific directories (`.cursor/rules/`, `.claude/rules/`, `.kiro/steering/`, etc.)
-3. **Installation Tracking**: Tracked in `<project-root>/.devsync/installations.json` for each project (instructions) and `<project-root>/.devsync/packages.json` for packages
-4. **Interactive TUI**: Terminal UI for browsing and selecting instructions from the library
-5. **Configuration Packages**: Multi-component packages containing instructions, MCP servers, hooks, commands, and resources that can be installed as a unit
+1. **AI-Powered Extraction**: LLM reads a project's rules, MCP configs, and commands to produce abstract practice declarations (not file copies)
+2. **AI-Powered Installation**: LLM adapts incoming practices to recipient's existing setup with intelligent merging and conflict resolution
+3. **Project-Level Installation**: All installations are project-specific, stored in tool-specific directories (`.cursor/rules/`, `.claude/rules/`, `.kiro/steering/`, etc.)
+4. **Installation Tracking**: Tracked in `<project-root>/.devsync/packages.json` for packages
+5. **Graceful Degradation**: No API key? Extract copies files verbatim, install uses file-copy mode. `--no-ai` flag forces this explicitly
+6. **v1 Backward Compatibility**: Old `ai-config-kit-package.yaml` packages install via file-copy mode. v2 `devsync-package.yaml` adds `practices` section for AI-native content
 
 ### Package Structure
 
 ```
-ai-config-kit/
-├── ai_tools/          # AI tool integrations and detection
+devsync/
+├── ai_tools/          # AI tool integrations and detection (23+ tools)
 │   ├── base.py       # Abstract AITool base class
 │   ├── claude.py     # Claude Code (.claude/rules/*.md)
 │   ├── cursor.py     # Cursor (.cursor/rules/*.mdc)
@@ -34,30 +35,36 @@ ai-config-kit/
 │   ├── copilot.py    # GitHub Copilot (.github/instructions/*.md)
 │   ├── anteroom.py   # Anteroom (ANTEROOM.md sections)
 │   └── detector.py   # Tool detection logic
-├── cli/               # Typer CLI commands
-│   ├── main.py       # CLI app definition
-│   ├── download.py   # Download repos to library
-│   ├── install.py    # Legacy install command
-│   ├── install_new.py # New install with TUI
-│   ├── list.py       # List library/installed/available
-│   ├── update.py     # Update library repos
-│   ├── delete.py     # Delete from library
+├── cli/               # Typer CLI commands (v2 — 6 commands)
+│   ├── main.py       # CLI app definition (setup, tools, extract, install, list, uninstall)
+│   ├── setup.py      # Configure LLM provider
+│   ├── extract.py    # AI extraction command
+│   ├── install_v2.py # AI-powered install command
+│   ├── list_v2.py    # Simplified list command
 │   ├── uninstall.py  # Uninstall from projects
-│   ├── tools.py      # List detected AI tools
-│   ├── package.py    # Package management commands (list, uninstall)
-│   └── package_install.py # Package installation logic
+│   └── tools.py      # List detected AI tools
 ├── core/              # Core business logic
 │   ├── models.py     # Data models (Instruction, Repository, etc.)
+│   ├── practice.py   # PracticeDeclaration, MCPDeclaration, CredentialSpec
+│   ├── extractor.py  # AI extraction engine
+│   ├── adapter.py    # AI adaptation/merge engine
+│   ├── package_manifest_v2.py # v2 manifest parser (v1 compat)
+│   ├── mcp_credential_prompter.py # MCP credential prompting
 │   ├── repository.py # Parse ai-config-kit.yaml
 │   ├── git_operations.py # Git clone/pull operations
 │   ├── checksum.py   # File integrity checking
 │   └── conflict_resolution.py # Handle file conflicts
+├── llm/               # LLM provider abstraction (HTTP-only, no SDK deps)
+│   ├── provider.py   # Abstract LLMProvider, LLMResponse, resolve_provider()
+│   ├── anthropic.py  # Anthropic Claude (HTTP via httpx)
+│   ├── openai_provider.py # OpenAI (HTTP via httpx)
+│   ├── openrouter.py # OpenRouter (HTTP via httpx)
+│   ├── config.py     # API key resolution, ~/.devsync/config.yaml
+│   ├── prompts.py    # All prompt templates
+│   └── response_models.py # Structured response types
 ├── storage/           # Data persistence
-│   ├── library.py    # LibraryManager for ~/.devsync/library/
 │   ├── tracker.py    # InstallationTracker for installations.json
 │   └── package_tracker.py # PackageTracker for packages.json
-├── tui/               # Terminal UI
-│   └── installer.py  # Textual-based interactive browser
 └── utils/             # Utilities
     ├── project.py    # Project root detection
     └── logging.py    # Logging configuration
@@ -206,72 +213,38 @@ tests/
 
 **Commit Message Format:**
 ```
-<type>: <subject>
-
-[optional issue reference]
-
-<body>
+type(scope): description (#issue)
 ```
 
 **IMPORTANT:** Do NOT include Claude as a co-author in commit messages. Do NOT add:
-- `🤖 Generated with [Claude Code](https://claude.com/claude-code)`
 - `Co-Authored-By: Claude <noreply@anthropic.com>`
+- `Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>`
+- `🤖 Generated with [Claude Code](https://claude.com/claude-code)`
 - Any other Claude attribution lines
 
-**Types:**
-- `feat`: New feature
-- `fix`: Bug fix
-- `test`: Adding or updating tests
-- `refactor`: Code refactoring
-- `docs`: Documentation changes
-- `chore`: Maintenance tasks
-- `perf`: Performance improvements
-
-**Issue References:**
-Always reference GitHub issues in commit messages to create automatic links and tracking:
-
-- **Closing issues**: Use `Fixes #123`, `Closes #123`, or `Resolves #123` in the commit body to automatically close the issue when merged to main
-  ```
-  fix: remove duplicate installation confirmation prompt
-
-  Fixes #1
-
-  The aiconfig install command was prompting users twice...
-  ```
-
-- **Referencing issues**: Use `Refs #123` or `See #123` to reference related issues without closing them
-  ```
-  test: add unit tests for duplicate confirmation fix
-
-  Refs #1
-
-  Add comprehensive unit tests...
-  ```
+**Rules:**
+- **type** must be one of: `feat`, `fix`, `docs`, `refactor`, `test`, `chore`
+- **scope** must be a module name: `cli`, `core`, `storage`, `ai_tools`, `tui`, `utils`
+- **description** is lowercase, imperative mood, no trailing period
+- **#issue** is a valid GitHub issue number — every commit MUST reference one
+- `docs` type may omit scope when the change is project-wide
 
 **Examples:**
 ```bash
-# Bug fix that closes an issue
-git commit -m "fix: handle empty library gracefully
+# Feature with scope and issue
+git commit -m "feat(ai_tools): add zed tool support (#83)"
 
-Fixes #42
+# Bug fix
+git commit -m "fix(storage): handle missing installations.json (#91)"
 
-Previously the CLI would crash when the library was empty.
-This commit adds proper error handling..."
+# Test addition
+git commit -m "test(core): add package model validation tests (#88)"
 
-# Test addition referencing an issue
-git commit -m "test: add tests for library edge cases
-
-Refs #42
-
-Adds tests to verify empty library handling..."
-
-# Feature with multiple issue references
-git commit -m "feat: add batch installation support
-
-Closes #15, Refs #12
-
-Allows installing multiple instructions in one command..."
+# Docs (scope optional for project-wide)
+git commit -m "docs: update CLAUDE.md architecture section (#95)"
 ```
+
+**Branch naming:** `issue-<N>-short-description` (e.g., `issue-83-zed-tool-support`)
 
 ## Important Implementation Details
 
@@ -361,37 +334,44 @@ components:
       size: 1234
 ```
 
-#### Package Commands
+#### v2 Commands
 ```bash
+# Configure LLM provider (one-time)
+devsync setup
+
+# Detect installed AI tools
+devsync tools
+
+# Extract practices from a project
+devsync extract
+devsync extract --no-ai          # File-copy mode
+devsync extract --output ./pkg --name team-standards
+
 # Install a package
-aiconfig package install ./path/to/package --ide claude
-
-# Install with conflict resolution
-aiconfig package install ./package --ide cursor --conflict overwrite
-
-# Force reinstall
-aiconfig package install ./package --force
+devsync install ./team-standards
+devsync install https://github.com/company/standards
+devsync install ./package --tool claude --tool cursor
+devsync install ./package --no-ai
+devsync install ./package --conflict skip
 
 # List installed packages
-aiconfig package list
+devsync list
+devsync list --tool claude
+devsync list --json
 
-# List with JSON output
-aiconfig package list --json
-
-# Uninstall a package
-aiconfig package uninstall package-name
-
-# Uninstall without confirmation
-aiconfig package uninstall package-name --yes
+# Uninstall
+devsync uninstall team-standards
+devsync uninstall team-standards --force
 ```
 
-#### Package Installation Workflow
-1. **Parse Manifest**: Read and validate `ai-config-kit-package.yaml`
-2. **Check Existing**: Detect if package already installed
-3. **Filter Components**: Only install components supported by target IDE
-4. **Translate Components**: Convert to IDE-specific formats
-5. **Install Files**: Copy files with conflict resolution
-6. **Track Installation**: Record in `.devsync/packages.json`
+#### v2 Installation Workflow
+1. **Parse Manifest**: Read and validate `devsync-package.yaml` or `ai-config-kit-package.yaml` (v1 compat)
+2. **Auto-detect tools**: Detect installed AI tools
+3. **AI adaptation**: Use LLM to semantically merge practices with existing rules
+4. **Display plan**: Show user what will be installed/merged/skipped
+5. **Confirm and execute**: Write adapted files to tool-specific directories
+6. **MCP credentials**: Prompt for any required MCP server credentials
+7. **Track Installation**: Record in `.devsync/packages.json`
 
 #### IDE Capability Filtering
 Different IDEs support different component types:
@@ -487,7 +467,7 @@ Follow the `.cursor/rules/documentation-practices.mdc` guide:
 
 ```bash
 # Enable debug logging
-LOGLEVEL=DEBUG aiconfig install
+LOGLEVEL=DEBUG devsync install
 
 # Run specific test with output
 pytest tests/unit/test_models.py -s -vv
@@ -751,6 +731,16 @@ gh run watch
 ```
 
 The GitHub Actions workflow (`.github/workflows/publish.yml`) handles building and publishing automatically.
+
+## Developer Workflow
+
+This project uses Claude Code skills (`.claude/commands/`) and auto-loaded rules (`.claude/rules/`) to enforce development standards. See `VISION.md` for product identity and scope guardrails. See `ROADMAP.md` for the prioritized roadmap organized by VISION.md direction areas.
+
+**Skills** (invoke with `/command`): `/ideate`, `/new-issue`, `/start-work`, `/commit`, `/submit-pr`, `/pr-check`, `/code-review`, `/deploy`, `/cleanup`, `/next`, `/triage`, `/write-docs`, `/dev-help`. Run `/dev-help` for a full guide.
+
+**SpecKit Skills** (invoke with `/speckit.<command>`): `/speckit.analyze`, `/speckit.checklist`, `/speckit.clarify`, `/speckit.constitution`, `/speckit.implement`, `/speckit.plan`, `/speckit.specify`, `/speckit.tasks`.
+
+**Rules** (auto-loaded every session): commit format, issue requirement, output formatting, product vision alignment, security patterns, test requirements.
 
 ## Active Technologies
 - Markdown (instruction content) | Python 3.10+ (for DevSync CLI - no changes needed) + Git (for repository hosting), existing DevSync commands (no new dependencies) (001-example-instruction-repo)
