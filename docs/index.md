@@ -1,8 +1,8 @@
 # DevSync
 
-**Distribute and sync AI coding assistant configurations across your team.**
+**AI-powered dev config distribution across AI coding assistants.**
 
-DevSync is a CLI tool that manages instructions, MCP servers, and configuration packages for 22+ AI coding assistants. Download shared configs from Git repos, install them to any IDE, and keep your team aligned with a single command.
+DevSync extracts coding practices from any project and installs them into 23+ AI coding assistants with intelligent adaptation. Two commands replace hours of manual configuration copying.
 
 ---
 
@@ -10,9 +10,9 @@ DevSync is a CLI tool that manages instructions, MCP servers, and configuration 
 
 <div class="feature-card" markdown>
 
-### Instructions
+### AI-Powered Extraction
 
-Share coding standards, style guides, and AI prompts across your team. Works with all 22 supported IDEs.
+Extract coding standards, style guides, and MCP configs from any project into shareable practice declarations.
 
 [Get started](getting-started/quickstart.md){ .md-button }
 
@@ -20,11 +20,11 @@ Share coding standards, style guides, and AI prompts across your team. Works wit
 
 <div class="feature-card" markdown>
 
-### MCP Servers
+### Intelligent Installation
 
-Distribute Model Context Protocol server configurations with secure credential management.
+AI adapts incoming practices to your existing setup -- merging, not overwriting.
 
-[MCP docs](mcp-server/index.md){ .md-button }
+[Install guide](cli/install.md){ .md-button }
 
 </div>
 
@@ -32,7 +32,7 @@ Distribute Model Context Protocol server configurations with secure credential m
 
 ### Configuration Packages
 
-Bundle instructions, MCP servers, hooks, commands, and resources into installable packages.
+Bundle practices, MCP servers, hooks, commands, and resources into installable packages.
 
 [Package guide](packages/index.md){ .md-button }
 
@@ -40,9 +40,9 @@ Bundle instructions, MCP servers, hooks, commands, and resources into installabl
 
 <div class="feature-card" markdown>
 
-### 23 IDE Integrations
+### 23+ IDE Integrations
 
-Claude Code, Cursor, Windsurf, GitHub Copilot, Codex CLI, Cline, Kiro, Roo Code, Anteroom, and 14 more.
+Claude Code, Cursor, Windsurf, GitHub Copilot, Codex CLI, Cline, Kiro, Roo Code, Anteroom, and more.
 
 [See all IDEs](ide-integrations/index.md){ .md-button }
 
@@ -58,14 +58,19 @@ Claude Code, Cursor, Windsurf, GitHub Copilot, Codex CLI, Cline, Kiro, Roo Code,
 # Install DevSync
 $ pip install devsync
 
+# Configure your LLM provider (one-time)
+$ devsync setup
+
 # Check which AI tools are detected
 $ devsync tools
 
-# Download instructions from a Git repo
-$ devsync download --from github.com/company/standards --as company
+# Extract practices from a project with existing rules
+$ cd ~/my-team-project
+$ devsync extract --output ./team-standards --name team-standards
 
-# Install to your IDE (interactive TUI)
-$ devsync install
+# Install those practices into another project
+$ cd ~/new-project
+$ devsync install ~/my-team-project/team-standards
 ```
 
 See the full [quickstart guide](getting-started/quickstart.md) for a 5-minute walkthrough.
@@ -85,8 +90,8 @@ See the full [quickstart guide](getting-started/quickstart.md) for a 5-minute wa
 
 - **Portable** -- same setup across all your machines
 - **Composable** -- layer company, team, and personal configs
-- **Discoverable** -- install from any Git repository
-- **Safe** -- automatic backups, conflict resolution, checksums
+- **Works without AI** -- graceful degradation to file-copy mode when no API key
+- **Safe** -- conflict resolution, checksums, installation tracking
 
 ---
 
@@ -119,19 +124,19 @@ See the full [quickstart guide](getting-started/quickstart.md) for a 5-minute wa
 ## How It Works
 
 ```
-┌─────────────────┐     ┌──────────────┐     ┌─────────────────┐
-│  Git Repository  │────>│  Local       │────>│  Project IDE    │
-│  (team configs)  │     │  Library     │     │  Config Files   │
-│                  │     │  ~/.devsync/ │     │  .cursor/rules/ │
-└─────────────────┘     └──────────────┘     │  .claude/rules/ │
-    devsync download        devsync install   │  .windsurf/...  │
-                                              └─────────────────┘
+┌─────────────────┐     ┌──────────────────┐     ┌─────────────────┐
+│  Source Project  │────>│  Package with    │────>│  Target Project │
+│  (team configs)  │     │  Practices       │     │  IDE Config     │
+│                  │     │                  │     │  .cursor/rules/ │
+└─────────────────┘     └──────────────────┘     │  .claude/rules/ │
+    devsync extract         devsync install      │  .windsurf/...  │
+                                                 └─────────────────┘
 ```
 
-1. **Download** instruction repos to your local library (`~/.devsync/library/`)
-2. **Browse** instructions with the interactive TUI or CLI
-3. **Install** to any AI tool at project level
-4. **Update** with a single command when upstream changes
+1. **Extract** practices from a project's existing rules, MCP configs, and commands
+2. **Share** the resulting package via Git or local directory
+3. **Install** into any project -- AI adapts practices to the recipient's existing setup
+4. **Track** installations in `.devsync/packages.json` for management
 
 ---
 
@@ -140,10 +145,9 @@ See the full [quickstart guide](getting-started/quickstart.md) for a 5-minute wa
 | Section | What you'll find |
 |---------|-----------------|
 | [Getting Started](getting-started/installation.md) | Installation, quickstart, core concepts |
-| [CLI Reference](cli/index.md) | All commands with examples |
+| [CLI Reference](cli/index.md) | All 6 commands with examples |
 | [IDE Integrations](ide-integrations/index.md) | Setup guides for each AI tool |
 | [Packages](packages/index.md) | Creating and installing config packages |
-| [MCP Server](mcp-server/index.md) | devsync-mcp for AI-powered config merging |
 | [Tutorials](tutorials/team-config-repo.md) | Step-by-step walkthroughs |
 | [Advanced](advanced/config-types.md) | Config types, conflict resolution, contributing |
 | [Reference](reference/cli-reference.md) | Full CLI reference, YAML schemas |

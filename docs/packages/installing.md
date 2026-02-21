@@ -3,354 +3,218 @@
 ## Basic Installation
 
 ```bash
-devsync package install <package-path> --ide <ide-name>
+devsync install <source>
 ```
 
-The `<package-path>` is the directory containing `ai-config-kit-package.yaml`. The `--ide` flag specifies which AI coding tool to target.
+The `<source>` can be a local directory path or a Git URL.
 
 ```bash
-# From the project directory
-cd ~/my-project
-devsync package install ./python-dev-setup --ide claude
+# Local directory
+devsync install ./team-standards
 
 # Absolute path
-devsync package install /home/user/packages/python-dev-setup --ide claude
+devsync install /home/user/packages/team-standards
 
-# Parent directory
-devsync package install ../shared-packages/security --ide cursor
+# Git URL
+devsync install https://github.com/company/team-standards
 ```
 
 ## Command Options
 
 ```bash
-devsync package install <package-path> \
-  --ide <ide-name> \
-  [--project <path>] \
+devsync install <source> \
+  [--tool <tool-name>] \
+  [--no-ai] \
   [--conflict <strategy>] \
-  [--force] \
-  [--quiet] \
-  [--json]
+  [--project-dir <path>]
 ```
 
-### `--ide, -i` (required)
+### `--tool, -t` (optional, repeatable)
 
-Target IDE. This determines which components are installed and where files are placed.
-
-=== "Claude Code"
-
-    ```bash
-    devsync package install ./pkg --ide claude
-    ```
-
-    Installs all component types. Files go to `.claude/rules/`, `.claude/hooks/`, `.claude/commands/`, `.claude/skills/`, and `CLAUDE.md`.
-
-=== "Cursor"
-
-    ```bash
-    devsync package install ./pkg --ide cursor
-    ```
-
-    Installs instructions (as `.mdc` files), MCP servers, and resources. Hooks, commands, skills, workflows, and memory files are skipped.
-
-=== "Windsurf"
-
-    ```bash
-    devsync package install ./pkg --ide windsurf
-    ```
-
-    Installs instructions, MCP servers, workflows, and resources. Files go to `.windsurf/rules/` and `.windsurf/workflows/`.
-
-=== "GitHub Copilot"
-
-    ```bash
-    devsync package install ./pkg --ide copilot
-    ```
-
-    Installs instructions (as `.instructions.md` files) and MCP servers. Files go to `.github/instructions/` and `.vscode/mcp.json`.
-
-=== "Roo Code"
-
-    ```bash
-    devsync package install ./pkg --ide roo
-    ```
-
-    Installs instructions, MCP servers, commands, and resources. Files go to `.roo/rules/`, `.roo/mcp.json`, and `.roo/commands/`.
-
-=== "Other IDEs"
-
-    ```bash
-    devsync package install ./pkg --ide kiro
-    devsync package install ./pkg --ide cline
-    devsync package install ./pkg --ide codex
-    devsync package install ./pkg --ide gemini
-    # ... and more
-    ```
-
-    Each IDE receives only the component types it supports. Use `devsync/ai_tools/capability_registry.py` as the definitive reference.
-
-### `--project, -p` (optional)
-
-Override the project root directory. By default, DevSync detects the project root by searching for `.git/`, `pyproject.toml`, `package.json`, or similar markers.
+Target specific AI tools. If omitted, DevSync auto-detects all installed tools.
 
 ```bash
-# Install to a different project
-devsync package install ./pkg --ide claude --project ~/other-project
+# Install to Claude Code only
+devsync install ./pkg --tool claude
 
-# Install same package to multiple projects
-devsync package install ./pkg --ide claude --project ~/project-a
-devsync package install ./pkg --ide claude --project ~/project-b
+# Install to Claude Code and Cursor
+devsync install ./pkg --tool claude --tool cursor
 ```
+
+### `--no-ai` (optional)
+
+Skip AI adaptation and copy files directly:
+
+```bash
+devsync install ./pkg --no-ai
+```
+
+Useful when you don't have an LLM configured or want exact file copies.
 
 ### `--conflict, -c` (optional)
 
-Conflict resolution strategy when files already exist. Default: `skip`.
+Conflict resolution strategy when files already exist. Default: `prompt`.
 
 ```bash
---conflict skip       # Keep existing files, do not install conflicting components
---conflict overwrite  # Replace existing files with package versions
---conflict rename     # Install with a numbered suffix (e.g., style-guide-1.md)
+--conflict prompt      # Ask what to do (default)
+--conflict skip        # Keep existing files
+--conflict overwrite   # Replace existing files
+--conflict rename      # Install with numbered suffix
 ```
 
 See [Conflict Resolution](#conflict-resolution) below for detailed behavior.
 
-### `--force, -f` (optional)
+### `--project-dir, -p` (optional)
 
-Force reinstallation even if the package is already tracked in `.devsync/packages.json`.
-
-```bash
-devsync package install ./pkg --ide claude --force
-```
-
-Without `--force`, reinstalling an already-installed package still proceeds but records the operation as a reinstall. Use `--force` combined with `--conflict overwrite` for a clean reset.
-
-### `--quiet, -q` (optional)
-
-Suppress informational output. Only errors and the final result are printed.
+Override the target project directory:
 
 ```bash
-devsync package install ./pkg --ide claude --quiet
+devsync install ./pkg --project-dir ~/other-project
 ```
 
-### `--json` (optional)
+## AI Adaptation
 
-Output results as JSON for scripting and CI/CD integration.
+With AI enabled (default), DevSync intelligently merges practices with existing rules:
 
 ```bash
-devsync package install ./pkg --ide claude --json
+$ devsync install ./team-standards
+
+Installing team-standards...
+
+  Detected tools: Claude Code, Cursor
+
+  Claude Code:
+    Created: .claude/rules/type-safety.md
+    Merged:  .claude/rules/code-style.md (adapted to existing)
+    Created: .claude/rules/testing.md
+
+  Cursor:
+    Created: .cursor/rules/type-safety.mdc
+    Merged:  .cursor/rules/code-style.mdc (adapted to existing)
+    Created: .cursor/rules/testing.mdc
+
+  MCP: Configured 1 server (1 credential prompted)
+
+Installation complete.
 ```
 
-```json
-{
-  "success": true,
-  "status": "complete",
-  "package_name": "python-dev-setup",
-  "version": "2.0.0",
-  "installed_count": 6,
-  "skipped_count": 0,
-  "failed_count": 0,
-  "components_installed": {
-    "instruction": 2,
-    "mcp_server": 1,
-    "hook": 1,
-    "command": 2
-  },
-  "is_reinstall": false,
-  "error_message": null
-}
-```
+The AI reads existing rules in the target project and:
+
+- **Creates** new files for practices that don't exist
+- **Merges** overlapping practices into existing files, avoiding duplication
+- **Adapts** content to match the project's conventions
 
 ## Conflict Resolution
 
-When a package component targets a file that already exists in the project, the conflict strategy determines behavior.
+When an installed component targets a file that already exists:
 
-### Skip (Default)
+### Prompt (Default)
 
-Existing files are preserved. The conflicting component is not installed.
+Asks what to do for each conflict.
+
+### Skip
+
+Existing files are preserved. Conflicting components are not installed.
 
 ```bash
-devsync package install ./pkg --ide claude --conflict skip
+devsync install ./pkg --conflict skip
 ```
-
-```
-Installed: 4
-Skipped: 1    <- existing file kept
-Failed: 0
-```
-
-Use `skip` when you have local customizations you want to preserve.
 
 ### Overwrite
 
 Existing files are replaced with the package version.
 
 ```bash
-devsync package install ./pkg --ide claude --conflict overwrite
-```
-
-```
-Installed: 5    <- all files written, including replacements
-Skipped: 0
-Failed: 0
+devsync install ./pkg --conflict overwrite
 ```
 
 !!! warning
-    Overwrite permanently replaces local changes. There is no undo. Consider committing your changes to version control before using this option.
+    Overwrite permanently replaces local changes. Consider committing your changes to version control first.
 
 ### Rename
 
 Both versions are kept. The new file receives a numbered suffix.
 
 ```bash
-devsync package install ./pkg --ide claude --conflict rename
+devsync install ./pkg --conflict rename
 ```
 
-After installation:
-
 ```
-.claude/rules/code-quality.md      <- original, untouched
-.claude/rules/code-quality-1.md    <- from package
+.claude/rules/code-quality.md      # original, untouched
+.claude/rules/code-quality-1.md    # from package
 ```
 
-Subsequent installs with `rename` increment the suffix:
+## MCP Credential Prompting
+
+If a package includes MCP servers that require credentials, DevSync prompts during installation:
 
 ```
-.claude/rules/code-quality-2.md
-.claude/rules/code-quality-3.md
+MCP server "github" requires credentials:
+
+  GITHUB_TOKEN (required): GitHub personal access token
+  > [enter value]
+
+  ALLOWED_DIRECTORIES (optional, default: "."): Directories to expose
+  > [enter value or press Enter for default]
 ```
 
-### Comparison
+Credentials are set as environment variables -- never written to tracked files.
 
-| Strategy | Existing File | Package File | Result |
-|----------|--------------|--------------|--------|
-| `skip` | Preserved | Not installed | Original unchanged |
-| `overwrite` | Replaced | Installed | Package version wins |
-| `rename` | Preserved | Installed with suffix | Both versions exist |
+## IDE Filtering
 
-## IDE Filtering in Practice
-
-A package with 7 components (2 instructions, 1 MCP server, 1 hook, 1 command, 1 workflow, 1 resource) installs differently per IDE:
+Packages install different components per IDE based on capability:
 
 === "Claude Code"
 
-    ```bash
-    $ devsync package install ./pkg --ide claude
-
-    Successfully installed pkg v1.0.0
-      Installed: 6    # instructions, MCP, hook, command, resource
-      Skipped: 1      # workflow (Windsurf-only)
-    ```
+    Gets all component types: practices, MCP servers, hooks, commands, resources.
 
 === "Cursor"
 
-    ```bash
-    $ devsync package install ./pkg --ide cursor
-
-    Partially installed pkg v1.0.0
-      Installed: 4    # instructions, MCP, resource
-      Skipped: 3      # hook, command, workflow
-    ```
+    Gets practices (as `.mdc` files), MCP servers, and resources. Hooks and commands are skipped.
 
 === "Windsurf"
 
-    ```bash
-    $ devsync package install ./pkg --ide windsurf
+    Gets practices, MCP servers, and resources. Hooks and commands are skipped.
 
-    Partially installed pkg v1.0.0
-      Installed: 5    # instructions, MCP, workflow, resource
-      Skipped: 2      # hook, command
-    ```
+=== "Other IDEs"
 
-The installation status is `complete` when all package components are installed, and `partial` when some are filtered by IDE capability.
+    Each IDE receives only the component types it supports. Run `devsync tools` to check support.
 
 ## Listing Installed Packages
 
 ```bash
-devsync package list
+$ devsync list
 ```
 
 ```
 Installed packages in /home/user/my-project:
 
-┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━━━━┳━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━┓
-┃ Package                        ┃ Version ┃ Status     ┃ Components ┃ Installed       ┃
-┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━╇━━━━━━━━━━━━╇━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━┩
-│ acme/python-dev-setup          │ 2.0.0   │ complete   │          6 │ 2025-01-14 10:30│
-│ security/compliance-pack       │ 1.1.0   │ partial    │          3 │ 2025-01-15 09:00│
-└────────────────────────────────┴─────────┴────────────┴────────────┴─────────────────┘
+  team-standards     v1.0.0    4 practices, 1 MCP server    Claude Code, Cursor
+  security-rules     v2.1.0    3 practices                  Claude Code
 
 Total: 2 package(s)
-```
-
-### List for a specific project
-
-```bash
-devsync package list --project ~/other-project
 ```
 
 ### JSON output
 
 ```bash
-devsync package list --json
-```
-
-```json
-[
-  {
-    "name": "python-dev-setup",
-    "namespace": "acme/python-packages",
-    "version": "2.0.0",
-    "status": "complete",
-    "scope": "project",
-    "installed_at": "2025-01-14T10:30:00",
-    "updated_at": "2025-01-14T10:30:00",
-    "component_count": 6
-  }
-]
+devsync list --json
 ```
 
 ## Uninstalling Packages
 
 ```bash
-devsync package uninstall <package-name>
+devsync uninstall team-standards
 ```
 
-This removes all component files installed by the package and deletes the tracking record from `.devsync/packages.json`.
-
-### Interactive (default)
+This removes all files installed by the package and deletes the tracking record from `.devsync/packages.json`.
 
 ```bash
-$ devsync package uninstall python-dev-setup
+# Skip confirmation
+devsync uninstall team-standards --force
 
-Package to uninstall:
-  Name: python-dev-setup
-  Version: 2.0.0
-  Components: 6
-
-Are you sure you want to uninstall this package? [y/N]: y
-
-  Removed: .claude/rules/python-style.md
-  Removed: .claude/rules/testing-strategy.md
-  Removed: .claude/hooks/pre-commit.sh
-  Removed: .claude/commands/test.sh
-  Removed: .claude/commands/lint.sh
-  Removed: .gitignore
-
-Uninstalled python-dev-setup v2.0.0
-  Removed 6 file(s)
-```
-
-### Non-interactive
-
-Skip the confirmation prompt:
-
-```bash
-devsync package uninstall python-dev-setup --yes
-```
-
-### Specifying project
-
-```bash
-devsync package uninstall python-dev-setup --project ~/other-project
+# Uninstall from specific tool only
+devsync uninstall team-standards --tool cursor
 ```
 
 ## Troubleshooting
@@ -361,15 +225,11 @@ Point to the package directory, not the YAML file:
 
 ```bash
 # Correct
-devsync package install ./my-package --ide claude
+devsync install ./my-package
 
 # Wrong
-devsync package install ./my-package/ai-config-kit-package.yaml --ide claude
+devsync install ./my-package/devsync-package.yaml
 ```
-
-### "Missing required field"
-
-The manifest must include `name`, `version`, `description`, `author`, `license`, and `namespace`. Check the error message for which field is missing.
 
 ### Components not appearing in IDE
 
@@ -383,6 +243,8 @@ ls -la .cursor/rules/     # Cursor
 ls -la .windsurf/rules/   # Windsurf
 ```
 
-### Package shows "partial" status
+### AI adaptation not working
 
-This is expected when the target IDE does not support all component types in the package. The `partial` status indicates that some components were filtered out by IDE capability, not that the installation failed.
+1. Run `devsync setup` to configure your LLM provider
+2. Ensure your API key environment variable is set
+3. Use `--no-ai` as a fallback for file-copy mode

@@ -1,152 +1,68 @@
 # devsync list
 
-List instructions from remote sources, your local library, or installed in your AI tools.
+Show installed packages in the current project.
 
 ## Usage
 
 ```
-$ devsync list <subcommand> [options]
+$ devsync list [OPTIONS]
 ```
 
----
+## Options
 
-## list available
+| Option | Short | Description | Default |
+|--------|-------|-------------|---------|
+| `--tool` | `-t` | Filter by AI tool | -- |
+| `--json` | -- | Output as JSON | `False` |
 
-List instructions from a remote source without downloading.
+## Examples
 
-### Usage
+### List all installed packages
 
-```
-$ devsync list available --from <source> [options]
-```
-
-### Options
-
-| Option | Short | Description | Required |
-|--------|-------|-------------|----------|
-| `--from` | `-f` | Source URL or local directory path | Yes |
-| `--tag` | `-t` | Filter by tag | No |
-| `--bundles-only` | | Show only bundles | No |
-| `--instructions-only` | | Show only individual instructions | No |
-
-### Examples
-
-List all instructions from a repository:
-
-```
-$ devsync list available --from https://github.com/company/ai-instructions
+```bash
+$ devsync list
 ```
 
-List from a local directory:
-
 ```
-$ devsync list available --from ./my-instructions
-```
+Installed packages in /home/user/my-project:
 
-Filter by tag:
+  team-standards     v1.0.0    4 practices, 1 MCP server    Claude Code, Cursor
+  security-rules     v2.1.0    3 practices                  Claude Code
 
-```
-$ devsync list available --from https://github.com/company/ai-instructions --tag python
+Total: 2 package(s)
 ```
 
-Show only bundles:
+### Filter by tool
 
-```
-$ devsync list available --from https://github.com/company/ai-instructions --bundles-only
+```bash
+$ devsync list --tool claude
 ```
 
-Show only individual instructions (no bundles):
+Shows only packages installed to Claude Code.
 
+### JSON output
+
+```bash
+$ devsync list --json
 ```
-$ devsync list available --from https://github.com/company/ai-instructions --instructions-only
+
+```json
+[
+  {
+    "name": "team-standards",
+    "version": "1.0.0",
+    "tools": ["claude", "cursor"],
+    "components": {
+      "practices": 4,
+      "mcp_servers": 1
+    }
+  }
+]
 ```
+
+## Installation Tracking
+
+Installed packages are tracked in `.devsync/packages.json` at the project root. This file records package names, versions, installed components, and timestamps. DevSync uses this to manage installations and detect conflicts.
 
 !!! tip
-    Use `list available` to preview what a repository offers before downloading it with `devsync download`.
-
----
-
-## list installed
-
-List instructions currently installed in your AI tools at the project level.
-
-### Usage
-
-```
-$ devsync list installed [options]
-```
-
-### Options
-
-| Option | Short | Description | Required |
-|--------|-------|-------------|----------|
-| `--tool` | `-t` | Filter by AI tool (`cursor`, `copilot`, `windsurf`, `claude`, etc.) | No |
-| `--source` | `-s` | Filter by source alias or name | No |
-
-### Examples
-
-List all installed instructions:
-
-```
-$ devsync list installed
-```
-
-Filter by AI tool:
-
-```
-$ devsync list installed --tool cursor
-```
-
-Filter by source:
-
-```
-$ devsync list installed --source company
-```
-
-Combine filters:
-
-```
-$ devsync list installed --tool claude --source company
-```
-
----
-
-## list library
-
-List sources and instructions stored in your local library (`~/.devsync/library/`).
-
-### Usage
-
-```
-$ devsync list library [options]
-```
-
-### Options
-
-| Option | Short | Description | Required |
-|--------|-------|-------------|----------|
-| `--source` | `-s` | Filter by source alias or namespace | No |
-| `--instructions` | `-i` | Show individual instructions instead of repositories | No |
-
-### Examples
-
-List all downloaded sources:
-
-```
-$ devsync list library
-```
-
-Show individual instructions across all sources:
-
-```
-$ devsync list library --instructions
-```
-
-Filter by source:
-
-```
-$ devsync list library --source company
-```
-
-!!! tip
-    The default view shows repository-level summaries. Use `--instructions` to see every individual instruction with its name, description, tags, and version.
+    Use `devsync list --json` for scripting and CI/CD integration.

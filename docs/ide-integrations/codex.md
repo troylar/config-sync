@@ -57,14 +57,14 @@ Each instruction is wrapped in a pair of HTML comment markers:
 ## Installing Instructions
 
 ```bash
-# Install interactively
-aiconfig install --ide codex
+# Install a package from a local path
+devsync install ./my-package --tool codex
 
-# Install a specific instruction
-aiconfig install my-instruction --ide codex
+# Install a package from a Git repository
+devsync install https://github.com/acme/standards --tool codex
 
 # Overwrite an existing section
-aiconfig install my-instruction --ide codex --conflict overwrite
+devsync install ./my-package --tool codex --conflict overwrite
 ```
 
 ### What Happens During Installation
@@ -79,7 +79,7 @@ aiconfig install my-instruction --ide codex --conflict overwrite
 ## Uninstalling Instructions
 
 ```bash
-aiconfig uninstall my-instruction --ide codex
+devsync uninstall my-package --tool codex
 ```
 
 DevSync removes the section between the matching markers and cleans up extra blank lines. Other content in `AGENTS.md` -- including other DevSync sections and manually written content -- is preserved.
@@ -92,9 +92,9 @@ Codex CLI, [Amp](other-ides.md#amp), and [OpenCode](other-ides.md#opencode) all 
 
 ```bash
 # These all write to the same AGENTS.md
-aiconfig install my-instruction --ide codex
-aiconfig install my-instruction --ide amp
-aiconfig install my-instruction --ide opencode
+devsync install ./my-package --tool codex
+devsync install ./my-package --tool amp
+devsync install ./my-package --tool opencode
 ```
 
 !!! note
@@ -107,7 +107,7 @@ aiconfig install my-instruction --ide opencode
 DevSync detects Codex CLI by checking if the `codex` binary is available on the system PATH. Verify with:
 
 ```bash
-aiconfig tools
+devsync tools
 ```
 
 ---
@@ -129,10 +129,8 @@ aiconfig tools
 ## Example: Multiple Instructions
 
 ```bash
-# Install several instructions
-aiconfig install code-style --ide codex
-aiconfig install security-rules --ide codex
-aiconfig install api-conventions --ide codex
+# Install a package containing several practices
+devsync install ./team-standards --tool codex
 ```
 
 Result in `AGENTS.md`:

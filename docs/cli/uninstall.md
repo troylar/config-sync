@@ -1,29 +1,29 @@
 # devsync uninstall
 
-Remove an installed instruction from your AI tools at the project level.
+Remove an installed package from your project's AI tools.
 
 ## Usage
 
 ```
-$ devsync uninstall <name> [options]
+$ devsync uninstall <name> [OPTIONS]
 ```
 
 ## Arguments
 
 | Argument | Description | Required |
 |----------|-------------|----------|
-| `name` | Instruction name to uninstall | Yes |
+| `name` | Package name to uninstall | Yes |
 
 ## Options
 
 | Option | Short | Description |
 |--------|-------|-------------|
-| `--tool` | `-t` | Uninstall from a specific AI tool only (`cursor`, `copilot`, `windsurf`, `claude`, etc.) |
+| `--tool` | `-t` | Uninstall from a specific AI tool only |
 | `--force` | `-f` | Skip the confirmation prompt |
 
 ## How It Works
 
-The `uninstall` command removes instruction files from your project's AI tool configuration directories and updates the installation tracker. It only affects project-level installations.
+The `uninstall` command removes files installed by a package from your project's AI tool configuration directories and updates the installation tracker (`.devsync/packages.json`). It only affects project-level installations.
 
 Before removing, DevSync shows what will be uninstalled and asks for confirmation (unless `--force` is used).
 
@@ -32,15 +32,15 @@ Before removing, DevSync shows what will be uninstalled and asks for confirmatio
 ### Uninstall from all tools
 
 ```
-$ devsync uninstall python-best-practices
+$ devsync uninstall team-standards
 ```
 
-This removes the instruction from every AI tool it was installed to in the current project.
+This removes all files installed by the package from every AI tool in the current project.
 
 ### Uninstall from a specific tool
 
 ```
-$ devsync uninstall python-best-practices --tool cursor
+$ devsync uninstall team-standards --tool cursor
 ```
 
 Only removes from Cursor, leaving other tools untouched.
@@ -48,16 +48,16 @@ Only removes from Cursor, leaving other tools untouched.
 ### Uninstall without confirmation
 
 ```
-$ devsync uninstall python-best-practices --force
+$ devsync uninstall team-standards --force
 ```
 
 ### Typical workflow
 
 ```
-$ devsync list installed                           # See what's installed
-$ devsync uninstall python-best-practices          # Remove it
-$ devsync list installed                           # Verify removal
+$ devsync list                           # See what's installed
+$ devsync uninstall team-standards       # Remove it
+$ devsync list                           # Verify removal
 ```
 
 !!! tip
-    Uninstalling removes the file from your AI tool's directory (e.g., `.cursor/rules/`) but does not remove the instruction from your local library. You can reinstall it later with `devsync install`.
+    Uninstalling removes files from your AI tool directories (e.g., `.cursor/rules/`, `.claude/rules/`) and updates the tracking in `.devsync/packages.json`. You can reinstall the package later with `devsync install`.

@@ -128,7 +128,7 @@ type(scope): description
 
 ### Scope
 
-Use the module name: `cli`, `core`, `storage`, `tui`, `ai_tools`, `utils`.
+Use the module name: `cli`, `core`, `storage`, `ai_tools`, `llm`, `utils`.
 
 ### Examples
 
@@ -235,6 +235,19 @@ chmod +x .githooks/pre-push
 7. Add tests in `tests/unit/test_ai_tools.py`
 
 ## Adding a New CLI Command
+
+The v2 CLI has six commands: `setup`, `tools`, `extract`, `install`, `list`, `uninstall`. These are defined in the following files:
+
+| Command | File |
+|---------|------|
+| `setup` | `devsync/cli/setup.py` |
+| `tools` | `devsync/cli/tools.py` |
+| `extract` | `devsync/cli/extract.py` |
+| `install` | `devsync/cli/install_v2.py` |
+| `list` | `devsync/cli/list_v2.py` |
+| `uninstall` | `devsync/cli/uninstall.py` |
+
+To add a new command:
 
 1. Create a command file in `devsync/cli/` (e.g., `devsync/cli/my_command.py`)
 2. Define the command function with Typer decorators

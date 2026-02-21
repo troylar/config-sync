@@ -8,7 +8,30 @@ Get DevSync working in 5 minutes.
 $ pip install devsync
 ```
 
-## 2. Check Your IDEs
+## 2. Configure Your LLM Provider
+
+```bash
+$ devsync setup
+```
+
+DevSync uses an LLM to intelligently extract and adapt coding practices. The setup wizard configures your provider:
+
+```
+? Select LLM provider:
+  1. Anthropic (Claude)
+  2. OpenAI
+  3. OpenRouter
+> 1
+
+? API key found in ANTHROPIC_API_KEY. Use it? [Y/n]: y
+
+Configuration saved to ~/.devsync/config.yaml
+```
+
+!!! info
+    No API key? DevSync still works. Use `--no-ai` on any command to fall back to file-copy mode, which copies files verbatim instead of using AI extraction/adaptation.
+
+## 3. Check Your IDEs
 
 ```bash
 $ devsync tools
@@ -23,89 +46,116 @@ Detected AI Tools:
   Windsurf       .windsurf/rules/        (.md)
 ```
 
-## 3. Download Instructions
+## 4. Extract Practices from a Project
 
-Download a repository of instructions to your local library:
+Navigate to a project that has existing AI rules or configs, then extract:
 
 ```bash
-$ devsync download --from https://github.com/troylar/devsync-starter-templates --as starter
+$ cd ~/my-team-project
+$ devsync extract --output ./team-standards --name team-standards
 ```
 
-This clones the repo to `~/.devsync/library/company/`. The `--as` flag sets a friendly alias.
+DevSync reads the project's rules (`.claude/rules/`, `.cursor/rules/`, MCP configs, etc.) and produces a shareable package with abstract practice declarations:
 
-!!! info
-    You can also download from local directories:
+```
+Extracting practices from /home/user/my-team-project...
+
+  Found 5 rule files across 2 AI tools
+  Found 1 MCP server configuration
+
+Extracted:
+  Practices: 4
+  MCP servers: 1
+
+Package written to: ./team-standards/devsync-package.yaml
+```
+
+!!! tip
+    Use `--no-ai` to skip AI extraction and copy files verbatim instead:
 
     ```bash
-    $ devsync download --from ./my-instructions --as local
+    $ devsync extract --output ./team-standards --name team-standards --no-ai
     ```
 
-## 4. Browse and Install
+## 5. Install Practices into Another Project
 
-Launch the interactive TUI to browse and select instructions:
-
-```bash
-$ devsync install
-```
-
-The TUI shows all instructions in your library. Select which ones to install and which IDEs to target.
-
-Or install by name directly:
+Navigate to the target project and install:
 
 ```bash
-$ devsync install python-best-practices --tool cursor --tool claude
+$ cd ~/new-project
+$ devsync install ~/my-team-project/team-standards
 ```
 
-## 5. Verify
+DevSync detects your installed AI tools and adapts the practices:
+
+```
+Installing team-standards to /home/user/new-project...
+
+  Detected tools: Claude Code, Cursor
+  Adapting 4 practices + 1 MCP server...
+
+  Claude Code:
+    Created: .claude/rules/type-safety.md
+    Created: .claude/rules/error-handling.md
+    Merged:  .claude/rules/code-style.md (adapted to existing)
+    Created: .claude/rules/testing.md
+
+  Cursor:
+    Created: .cursor/rules/type-safety.mdc
+    Created: .cursor/rules/error-handling.mdc
+    Merged:  .cursor/rules/code-style.mdc (adapted to existing)
+    Created: .cursor/rules/testing.mdc
+
+  MCP: Configured 1 server (1 credential prompted)
+
+Installation complete.
+```
+
+## 6. Verify
 
 Check what's installed:
 
 ```bash
-$ devsync list installed
+$ devsync list
 ```
 
-Your AI tools now have the instructions. Open your IDE and the coding assistant will follow them automatically.
+Your AI tools now have the practices. Open your IDE and the coding assistant will follow them automatically.
 
 ---
 
-## Alternative: Templates
+## Install from Git
 
-Templates provide a richer system with slash commands, hooks, and more:
+You can install directly from a Git repository:
 
 ```bash
-# Create a template repo
-$ devsync template init my-standards
-
-# Install from Git
-$ devsync template install https://github.com/company/templates --as company
-
-# List installed
-$ devsync template list
+$ devsync install https://github.com/company/team-standards
 ```
 
-See the [CLI reference](../cli/index.md) for full template commands.
+Or install from a local directory:
+
+```bash
+$ devsync install ./path/to/package
+```
 
 ---
 
-## Alternative: Packages
+## File-Copy Mode (No AI)
 
-Packages bundle instructions, MCP servers, hooks, and commands together:
+Every command works without an API key using the `--no-ai` flag:
 
 ```bash
-# Install a complete package
-$ devsync package install ./example-package --ide claude
+# Extract by copying files verbatim
+$ devsync extract --output ./pkg --name my-pkg --no-ai
 
-# List installed packages
-$ devsync package list
+# Install by copying files without AI adaptation
+$ devsync install ./pkg --no-ai
 ```
-
-See the [Packages guide](../packages/index.md) for details.
 
 ---
 
 ## What's Next?
 
-- [Core Concepts](concepts.md) -- understand the library, namespaces, and scopes
-- [CLI Reference](../cli/index.md) -- all commands with examples
+- [Core Concepts](concepts.md) -- understand practices, packages, and adaptation
+- [CLI Reference](../cli/index.md) -- all 6 commands with examples
 - [IDE Integrations](../ide-integrations/index.md) -- setup guide for each AI tool
 - [Tutorials](../tutorials/team-config-repo.md) -- step-by-step walkthroughs

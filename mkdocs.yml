@@ -76,14 +76,12 @@ nav:
     - getting-started/concepts.md
   - CLI:
     - cli/index.md
-    - cli/download.md
+    - cli/setup.md
+    - cli/extract.md
     - cli/install.md
     - cli/list.md
-    - cli/update.md
-    - cli/delete.md
     - cli/uninstall.md
     - cli/tools.md
-    - cli/package.md
   - IDE Integrations:
     - ide-integrations/index.md
     - ide-integrations/claude-code.md
@@ -98,20 +96,10 @@ nav:
     - packages/components.md
     - packages/installing.md
     - packages/examples.md
-  - MCP Server:
-    - mcp-server/index.md
-    - mcp-server/installation.md
-    - mcp-server/tools-reference.md
-    - mcp-server/team-profiles.md
-    - mcp-server/ai-merge-flow.md
-    - mcp-server/backups-and-recovery.md
-    - mcp-server/ide-setup.md
   - Tutorials:
     - tutorials/team-config-repo.md
     - tutorials/onboard-new-developer.md
-    - tutorials/ai-merge-workflow.md
     - tutorials/custom-packages.md
-    - tutorials/ci-cd-integration.md
     - tutorials/multi-ide-workflow.md
     - tutorials/migrate-existing-configs.md
   - Advanced:

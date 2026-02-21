@@ -1,13 +1,14 @@
 # Conflict Resolution
 
-When installing instructions or templates, DevSync checks whether the target file already exists. If it does, a conflict must be resolved before installation can proceed.
+In v2, DevSync uses AI-powered merging as the primary approach to conflict resolution. When a practice or instruction already exists in a target IDE's rule directory, the LLM reads both the incoming content and the existing content and produces a semantically merged result, preserving any local customizations while incorporating the new standards.
+
+File-level strategies (skip, overwrite, rename) are still available as fallback modes -- used when running with `--no-ai`, when the LLM is unavailable, or when explicitly requested via the `--conflict` flag.
 
 ## When Conflicts Occur
 
 A conflict is detected when:
 
 - An instruction file already exists at the target path (e.g., `.cursor/rules/python-style.mdc` already exists)
-- A template has been modified locally since it was last installed
 - A section with the same name already exists in a single-file IDE (e.g., an `AGENTS.md` section with the same marker)
 - A package component would overwrite an existing file
 
@@ -15,9 +16,13 @@ A conflict is detected when:
 
 DevSync provides four conflict resolution strategies.
 
-### Prompt (Default)
+### AI Merge (Default in v2)
 
-The default strategy for interactive use. When a conflict is detected, DevSync displays a Rich terminal prompt asking the user to choose how to proceed.
+When an LLM provider is configured, the default behavior is to let the AI merge incoming practice content with the existing rule file. The LLM reads both versions and produces a unified result that preserves local customizations while incorporating the new standards.
+
+To configure an LLM provider, run `devsync setup` before installing packages.
+
+For non-AI fallback, DevSync displays a prompt:
 
 ```
 Conflict: Instruction 'python-style' already exists.
@@ -28,8 +33,6 @@ How would you like to resolve this?
 
 Your choice [k/o/r]:
 ```
-
-For template conflicts, the prompt also displays context about the conflict type (local-only changes vs. both sides changed).
 
 ### Skip
 
@@ -91,20 +94,12 @@ devsync install python-style --conflict overwrite
 devsync install python-style --conflict rename
 ```
 
-### Templates
-
-Use the `--conflict` flag with `devsync template install`:
-
-```bash
-devsync template install my-repo/security-rules --conflict overwrite
-```
-
 ### Packages
 
-Use the `--conflict` (or `-c`) flag with `devsync package install`:
+Use the `--conflict` (or `-c`) flag with `devsync install`:
 
 ```bash
-devsync package install ./my-package --ide claude --conflict overwrite
+devsync install ./my-package --tool claude --conflict overwrite
 ```
 
 ## Upgrade Detection
@@ -167,36 +162,22 @@ All checksums use SHA-256 for integrity verification.
 
 ## Batch Conflict Resolution
 
-When installing multiple instructions at once (e.g., a bundle or package), DevSync can apply the same strategy to all conflicts:
+When installing a package with multiple practices, DevSync can apply the same strategy to all conflicts:
 
 ```bash
 # Skip all conflicts in a batch install
-devsync install python-style testing-guide api-design --conflict skip
+devsync install ./team-standards --conflict skip
 
 # Overwrite all existing files
-devsync install --bundle python-backend --conflict overwrite
+devsync install ./team-standards --conflict overwrite
 ```
 
 The `batch_resolve_conflicts()` function applies the chosen strategy uniformly to all detected conflicts in a single operation.
 
 ## Backup Integration
 
-Backups are created automatically before any destructive operation during template conflict resolution. The backup system:
+Backups are created automatically before any destructive overwrite operation. The backup system:
 
 - Stores backups in `.devsync/backups/<YYYYMMDD_HHMMSS>/`
 - Preserves the original filename
 - Handles name collisions within the same timestamp directory by appending a counter suffix
-- Supports listing, restoring, and cleaning up old backups
-
-```bash
-# List available backups
-devsync template backup list
-
-# Restore a specific backup
-devsync template backup restore
-
-# Clean up backups older than 30 days
-devsync template backup cleanup --days 30
-```
-
-See the [Template Backup commands](../reference/cli-reference.md) for the full CLI reference.

@@ -12,7 +12,7 @@ Verify the installation:
 
 ```bash
 $ devsync version
-DevSync version 0.10.0
+DevSync version 2.0.0
 ```
 
 !!! tip
@@ -28,6 +28,16 @@ DevSync version 0.10.0
 - **Git** (for cloning instruction repositories)
 - **One or more AI coding tools** (see [IDE Integrations](../ide-integrations/index.md))
 
+## Configure LLM Provider
+
+DevSync v2 uses an LLM to intelligently adapt practices to each IDE. Configure your provider once after installation:
+
+```bash
+$ devsync setup
+```
+
+This prompts for your LLM provider (Anthropic, OpenAI, or OpenRouter) and API key, stored in `~/.devsync/config.yaml`. Without a configured provider, DevSync falls back to file-copy mode.
+
 ## Check Detected IDEs
 
 After installing, verify which AI tools DevSync detects on your system:
@@ -36,7 +46,7 @@ After installing, verify which AI tools DevSync detects on your system:
 $ devsync tools
 ```
 
-This scans for installed tools and shows their configuration paths. DevSync supports 22 AI coding assistants -- see the [full list](../ide-integrations/index.md).
+This scans for installed tools and shows their configuration paths. DevSync supports 23+ AI coding assistants -- see the [full list](../ide-integrations/index.md).
 
 ## Upgrading
 

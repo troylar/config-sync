@@ -1,420 +1,37 @@
-"""Main CLI application entry point."""
+"""Main CLI application entry point — v2 command surface."""
 
 from typing import Optional
 
 import typer
 
-from devsync.cli.delete import delete_from_library
-from devsync.cli.download import download_instructions
-from devsync.cli.install_new import install_instruction_unified
-from devsync.cli.list import list_available, list_installed, list_library
-from devsync.cli.mcp_configure import mcp_configure_command
-from devsync.cli.mcp_install import mcp_install_command
-from devsync.cli.mcp_sync import mcp_sync_command
-from devsync.cli.package import package_app
-from devsync.cli.template import template_app
-from devsync.cli.template_backup import (
-    backup_cleanup_command,
-    backup_list_command,
-    backup_restore_command,
-)
-from devsync.cli.template_init import init_command as template_init_command
-from devsync.cli.template_install import install_command as template_install_command
-from devsync.cli.template_list import list_command as template_list_command
-from devsync.cli.template_uninstall import uninstall_command as template_uninstall_command
-from devsync.cli.template_update import update_command as template_update_command
-from devsync.cli.template_validate import validate_command as template_validate_command
 from devsync.cli.tools import show_tools
-from devsync.cli.uninstall import uninstall_instruction
-from devsync.cli.update import update_repository
 
 app = typer.Typer(
     name="devsync",
-    help="Distribute and sync dev tool configurations across teams",
+    help="AI-powered config distribution for AI coding tools.",
     add_completion=False,
 )
 
-# Create list subcommand group
-list_app = typer.Typer(help="List instructions")
-app.add_typer(list_app, name="list")
-
-# Create package subcommand group
-app.add_typer(package_app, name="package")
-
-# Create template subcommand group
-app.add_typer(template_app, name="template")
-
-# Create backup subcommand group under template
-backup_app = typer.Typer(help="Manage template backups")
-template_app.add_typer(backup_app, name="backup")
-
-# Create mcp subcommand group
-mcp_app = typer.Typer(help="Manage MCP server configurations")
-app.add_typer(mcp_app, name="mcp")
-
-# Register mcp commands
-mcp_app.command(name="install")(mcp_install_command)
-mcp_app.command(name="configure")(mcp_configure_command)
-mcp_app.command(name="sync")(mcp_sync_command)
-
-# Register template commands
-template_app.command(name="init")(template_init_command)
-template_app.command(name="install")(template_install_command)
-template_app.command(name="list")(template_list_command)
-template_app.command(name="update")(template_update_command)
-template_app.command(name="uninstall")(template_uninstall_command)
-template_app.command(name="validate")(template_validate_command)
-
-# Register backup commands
-backup_app.command(name="list")(backup_list_command)
-backup_app.command(name="cleanup")(backup_cleanup_command)
-backup_app.command(name="restore")(backup_restore_command)
-
-
-@list_app.callback(invoke_without_command=True)
-def list_callback(ctx: typer.Context) -> None:
-    """List instructions (available, installed, or in library)."""
-    # If no subcommand was provided, show help
-    if ctx.invoked_subcommand is None:
-        typer.echo(ctx.get_help())
-        raise typer.Exit(0)
-
 
 @app.command()
-def install(
-    names: Optional[list[str]] = typer.Argument(
-        None,
-        help="Instruction name(s) to install (use source/name for disambiguation). Can specify multiple.",
-    ),
-    source: Optional[str] = typer.Option(
-        None,
-        "--from",
-        "-f",
-        help="Source URL or path for direct install (bypasses library)",
-    ),
-    tools: Optional[list[str]] = typer.Option(
-        None,
-        "--tool",
-        "-t",
-        help="AI tool(s) to install to (cursor, copilot, windsurf, claude). Can specify multiple times.",
-    ),
-    conflict: str = typer.Option(
-        "prompt",
-        "--conflict",
-        "-c",
-        help="Conflict resolution strategy (prompt [default], skip, rename, overwrite)",
-    ),
-    bundle: bool = typer.Option(
-        False,
-        "--bundle",
-        "-b",
-        help="Install as bundle (multiple instructions)",
-    ),
-) -> None:
+def setup() -> None:
+    """Configure LLM provider for AI-powered features.
+
+    Interactive setup to select provider (Anthropic, OpenAI, OpenRouter),
+    validate API key, and save preferences.
+
+    Example:
+      devsync setup
     """
-    Install instructions from your library or directly from a source.
+    from devsync.cli.setup import setup_command
 
-    LIBRARY WORKFLOW (Recommended):
-      # Browse and select instructions with TUI
-      devsync install
-
-      # Install specific instruction from library
-      devsync install python-best-practices
-
-      # Install from specific source (if multiple sources have same name)
-      devsync install company/python-best-practices
-
-      # Install multiple instructions at once
-      devsync install python-style testing-guide api-design
-
-      # Install to specific tools only
-      devsync install python-style --tool cursor --tool windsurf
-
-    DIRECT INSTALL (Bypasses library):
-      # Install directly from source URL
-      devsync install python-style --from https://github.com/company/instructions
-
-      # Install bundle directly
-      devsync install python-backend --bundle --from https://github.com/company/instructions
-
-    TIP: Download to your library first for better management:
-      devsync download --from https://github.com/company/instructions
-    """
-    exit_code = install_instruction_unified(
-        names=names,
-        repo=source,  # Keep backend param name for now
-        tools=tools,
-        conflict_strategy=conflict,
-        bundle=bundle,
-    )
-    raise typer.Exit(code=exit_code)
-
-
-@app.command()
-def download(
-    source: str = typer.Option(
-        ...,
-        "--from",
-        "-f",
-        help="Source URL or local directory path",
-    ),
-    ref: Optional[str] = typer.Option(
-        None,
-        "--ref",
-        "-r",
-        help="Git reference (tag, branch, or commit) to download",
-    ),
-    alias: Optional[str] = typer.Option(
-        None,
-        "--as",
-        "-a",
-        help="Friendly alias for this source (auto-generated if not provided)",
-    ),
-    force: bool = typer.Option(
-        False,
-        "--force",
-        help="Re-download even if already in library",
-    ),
-) -> None:
-    """
-    Download instructions from a source into your local library.
-
-    This downloads and caches instructions locally without installing them.
-    After downloading, use 'devsync install' to install instructions.
-
-    Examples:
-
-      # Download from GitHub (auto-generates alias)
-      devsync download --from github.com/company/instructions
-
-      # Download specific version
-      devsync download --from github.com/company/instructions --ref v1.0.0
-
-      # Download from branch
-      devsync download --from github.com/company/instructions --ref main
-
-      # Download with custom alias
-      devsync download --from github.com/company/instructions --as company
-
-      # Download from local folder
-      devsync download --from ./my-instructions --as local
-
-      # Force re-download
-      devsync download --from github.com/company/instructions --force
-    """
-    exit_code = download_instructions(repo=source, ref=ref, force=force, alias=alias)
-    raise typer.Exit(code=exit_code)
-
-
-@list_app.command("available")
-def list_available_cmd(
-    source: str = typer.Option(..., "--from", "-f", help="Source URL or local directory path"),
-    tag: Optional[str] = typer.Option(None, "--tag", "-t", help="Filter by tag"),
-    bundles_only: bool = typer.Option(False, "--bundles-only", help="Show only bundles"),
-    instructions_only: bool = typer.Option(False, "--instructions-only", help="Show only instructions"),
-) -> None:
-    """
-    List available instructions from a source (without downloading).
-
-    Examples:
-
-      # List from Git repository
-      devsync list available --from github.com/company/instructions
-
-      # List from local folder
-      devsync list available --from ./my-instructions
-
-      # Filter by tag
-      devsync list available --from github.com/company/instructions --tag python
-
-      # Show only bundles
-      devsync list available --from github.com/company/instructions --bundles-only
-    """
-    exit_code = list_available(
-        repo=source,  # Keep backend param name for now
-        tag=tag,
-        bundles_only=bundles_only,
-        instructions_only=instructions_only,
-    )
-    raise typer.Exit(code=exit_code)
-
-
-@list_app.command("installed")
-def list_installed_cmd(
-    tool: Optional[str] = typer.Option(
-        None,
-        "--tool",
-        "-t",
-        help="Filter by AI tool (cursor, copilot, windsurf, claude)",
-    ),
-    source: Optional[str] = typer.Option(
-        None,
-        "--source",
-        "-s",
-        help="Filter by source alias or name",
-    ),
-) -> None:
-    """
-    List installed instructions in your AI tools.
-
-    Examples:
-
-      # List all installed instructions
-      devsync list installed
-
-      # Filter by AI tool
-      devsync list installed --tool cursor
-
-      # Filter by source
-      devsync list installed --source company
-    """
-    exit_code = list_installed(tool=tool, repo=source)  # Keep backend param name for now
-    raise typer.Exit(code=exit_code)
-
-
-@list_app.command("library")
-def list_library_cmd(
-    source: Optional[str] = typer.Option(
-        None,
-        "--source",
-        "-s",
-        help="Filter by source alias",
-    ),
-    instructions: bool = typer.Option(
-        False,
-        "--instructions",
-        "-i",
-        help="Show individual instructions instead of repositories",
-    ),
-) -> None:
-    """
-    List sources and instructions in your local library.
-
-    Examples:
-
-      # List all sources in library
-      devsync list library
-
-      # Show individual instructions
-      devsync list library --instructions
-
-      # Filter by source
-      devsync list library --source company
-    """
-    exit_code = list_library(repo_filter=source, show_instructions=instructions)
-    raise typer.Exit(code=exit_code)
-
-
-@app.command()
-def update(
-    namespace: Optional[str] = typer.Option(
-        None,
-        "--namespace",
-        "-n",
-        help="Repository namespace to update",
-    ),
-    all_repos: bool = typer.Option(
-        False,
-        "--all",
-        "-a",
-        help="Update all repositories in library",
-    ),
-) -> None:
-    """
-    Update downloaded instructions to their latest versions.
-
-    This re-downloads instructions from their sources,
-    ensuring you have the latest versions in your library.
-
-    Examples:
-
-      # Update a specific source
-      devsync update --namespace github.com_company_instructions
-
-      # Update all sources
-      devsync update --all
-
-      # List sources to find namespace
-      devsync list library
-    """
-    exit_code = update_repository(namespace=namespace, all_repos=all_repos)
-    raise typer.Exit(code=exit_code)
-
-
-@app.command()
-def delete(
-    namespace: str = typer.Argument(
-        ...,
-        help="Repository namespace to delete from library",
-    ),
-    force: bool = typer.Option(
-        False,
-        "--force",
-        "-f",
-        help="Skip confirmation prompt",
-    ),
-) -> None:
-    """
-    Delete a source from your local library.
-
-    This removes the downloaded instructions from your library but does NOT
-    uninstall them from your AI tools. To uninstall, use 'devsync uninstall'.
-
-    Examples:
-
-      # Delete a source
-      devsync delete github.com_company_instructions
-
-      # Skip confirmation
-      devsync delete github.com_company_instructions --force
-
-      # List sources to find namespace
-      devsync list library
-    """
-    exit_code = delete_from_library(namespace=namespace, force=force)
-    raise typer.Exit(code=exit_code)
-
-
-@app.command()
-def uninstall(
-    name: str = typer.Argument(..., help="Instruction name to uninstall"),
-    tool: Optional[str] = typer.Option(
-        None,
-        "--tool",
-        "-t",
-        help="AI tool to uninstall from (cursor, copilot, windsurf, claude)",
-    ),
-    force: bool = typer.Option(
-        False,
-        "--force",
-        "-f",
-        help="Skip confirmation prompt",
-    ),
-) -> None:
-    """
-    Uninstall an instruction from your AI tools.
-
-    Removes instructions from project level only.
-
-    Examples:
-
-      # Uninstall from all tools
-      devsync uninstall python-best-practices
-
-      # Uninstall from specific tool
-      devsync uninstall python-best-practices --tool cursor
-
-      # Skip confirmation
-      devsync uninstall python-best-practices --force
-    """
-    exit_code = uninstall_instruction(name=name, tool=tool, force=force)
+    exit_code = setup_command()
     raise typer.Exit(code=exit_code)
 
 
 @app.command()
 def tools() -> None:
-    """
-    Show detected AI coding tools.
+    """Show detected AI coding tools.
 
     Display which AI coding tools are installed on your system
     and where their configuration directories are located.
@@ -424,27 +41,207 @@ def tools() -> None:
 
 
 @app.command()
+def extract(
+    output: Optional[str] = typer.Option(
+        None,
+        "--output",
+        "-o",
+        help="Output directory for the package (default: ./devsync-package/)",
+    ),
+    name: Optional[str] = typer.Option(
+        None,
+        "--name",
+        "-n",
+        help="Package name (default: project directory name)",
+    ),
+    no_ai: bool = typer.Option(
+        False,
+        "--no-ai",
+        help="Force file-copy mode (no LLM calls)",
+    ),
+    project_dir: Optional[str] = typer.Option(
+        None,
+        "--project",
+        "-p",
+        help="Project directory to extract from (default: current directory)",
+    ),
+    upgrade: Optional[str] = typer.Option(
+        None,
+        "--upgrade",
+        help="Convert a v1 package to v2 format",
+    ),
+) -> None:
+    """Extract practices from a project into a shareable package.
+
+    Reads your project's AI tool configs (rules, MCP servers, hooks, commands)
+    and produces a devsync-package.yaml with abstract practice declarations.
+
+    Examples:
+      # AI-powered extraction
+      devsync extract
+
+      # File-copy mode (no AI)
+      devsync extract --no-ai
+
+      # Custom output and name
+      devsync extract --output ./my-package --name team-standards
+
+      # Upgrade v1 package to v2
+      devsync extract --upgrade ./old-package
+    """
+    from devsync.cli.extract import extract_command
+
+    exit_code = extract_command(
+        output=output,
+        name=name,
+        no_ai=no_ai,
+        project_dir=project_dir,
+        upgrade=upgrade,
+    )
+    raise typer.Exit(code=exit_code)
+
+
+@app.command()
+def install(
+    source: str = typer.Argument(
+        ...,
+        help="Package source: Git URL, local path, or package directory",
+    ),
+    tool: Optional[list[str]] = typer.Option(
+        None,
+        "--tool",
+        "-t",
+        help="Target AI tool(s). Auto-detects if not specified.",
+    ),
+    no_ai: bool = typer.Option(
+        False,
+        "--no-ai",
+        help="Disable AI-powered adaptation",
+    ),
+    conflict: str = typer.Option(
+        "prompt",
+        "--conflict",
+        "-c",
+        help="Conflict strategy: prompt, skip, overwrite, rename",
+    ),
+    project_dir: Optional[str] = typer.Option(
+        None,
+        "--project",
+        "-p",
+        help="Target project directory (default: current directory)",
+    ),
+) -> None:
+    """Install a package into the current project.
+
+    Accepts Git URLs, local paths, or extracted package directories.
+    AI-powered adaptation merges incoming practices with existing rules.
+
+    Examples:
+      # Install from local package
+      devsync install ./team-standards
+
+      # Install from Git
+      devsync install https://github.com/company/standards
+
+      # Install to specific tools
+      devsync install ./package --tool claude --tool cursor
+
+      # File-copy mode (no AI)
+      devsync install ./package --no-ai
+
+      # Skip conflicts
+      devsync install ./package --conflict skip
+    """
+    from devsync.cli.install_v2 import install_v2_command
+
+    exit_code = install_v2_command(
+        source=source,
+        tool=tool,
+        no_ai=no_ai,
+        conflict=conflict,
+        project_dir=project_dir,
+    )
+    raise typer.Exit(code=exit_code)
+
+
+@app.command(name="list")
+def list_cmd(
+    tool: Optional[str] = typer.Option(
+        None,
+        "--tool",
+        "-t",
+        help="Filter by AI tool name",
+    ),
+    json: bool = typer.Option(
+        False,
+        "--json",
+        help="Output as JSON",
+    ),
+) -> None:
+    """List installed packages and instructions.
+
+    Shows all packages installed in the current project with component breakdown.
+
+    Examples:
+      devsync list
+      devsync list --tool claude
+      devsync list --json
+    """
+    from devsync.cli.list_v2 import list_v2_command
+
+    exit_code = list_v2_command(tool=tool, json=json)
+    raise typer.Exit(code=exit_code)
+
+
+@app.command()
+def uninstall(
+    name: str = typer.Argument(..., help="Package name to uninstall"),
+    tool: Optional[str] = typer.Option(
+        None,
+        "--tool",
+        "-t",
+        help="AI tool to uninstall from",
+    ),
+    force: bool = typer.Option(
+        False,
+        "--force",
+        "-f",
+        help="Skip confirmation prompt",
+    ),
+) -> None:
+    """Uninstall a package from the current project.
+
+    Examples:
+      devsync uninstall team-standards
+      devsync uninstall team-standards --tool cursor
+      devsync uninstall team-standards --force
+    """
+    from devsync.cli.uninstall import uninstall_instruction
+
+    exit_code = uninstall_instruction(name=name, tool=tool, force=force)
+    raise typer.Exit(code=exit_code)
+
+
+@app.command()
 def version() -> None:
     """Show DevSync version."""
     from importlib.metadata import version as get_version
 
     try:
-        version = get_version("devsync")
+        ver = get_version("devsync")
     except Exception:
-        version = "unknown"
+        ver = "unknown"
 
-    typer.echo(f"DevSync version {version}")
+    typer.echo(f"DevSync version {ver}")
 
 
 @app.callback(invoke_without_command=True)
 def main(ctx: typer.Context) -> None:
-    """
-    DevSync - Distribute and sync dev tool configurations across teams.
+    """DevSync — AI-powered config distribution for AI coding tools.
 
-    Manage AI coding assistant configurations for Claude Code, Cursor,
-    Windsurf, GitHub Copilot, Cline, Kiro, and Roo Code.
+    Extract practices from your project, share them as packages,
+    and install them into any supported AI coding tool.
     """
-    # If no command was provided, show help
     if ctx.invoked_subcommand is None:
         typer.echo(ctx.get_help())
         raise typer.Exit(0)

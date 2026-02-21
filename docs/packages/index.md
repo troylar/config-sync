@@ -2,82 +2,72 @@
 
 ## What Are Packages?
 
-A configuration package is a directory containing multiple related components that configure AI coding assistants as a unit. Instead of installing instructions, MCP servers, hooks, and commands individually, a package bundles them together with a manifest that declares what is included and how components relate to each other.
+A configuration package is a shareable bundle of coding practices, MCP server configurations, and other components that configure AI coding assistants as a unit. DevSync v2 packages use AI to extract abstract practice declarations and adapt them intelligently when installed.
 
-A package can contain any combination of these component types:
+A package can contain:
 
 | Component Type | Description |
 |----------------|-------------|
-| **Instructions** | Markdown guidelines that shape AI behavior |
+| **Practices** | Abstract declarations of coding standards (AI-native, v2) |
+| **Instructions** | Markdown guidelines that shape AI behavior (v1 compat) |
 | **MCP Servers** | Model Context Protocol server configurations |
 | **Hooks** | Scripts triggered by IDE lifecycle events |
 | **Commands** | Reusable slash commands and shell scripts |
-| **Skills** | Claude Code skill directories (SKILL.md format) |
-| **Workflows** | Windsurf multi-step automated processes |
-| **Memory Files** | CLAUDE.md persistent context files |
 | **Resources** | Configuration files, templates, .gitignore, etc. |
 
-## Why Packages Instead of Individual Instructions?
+## v2 Packages: AI-Native
 
-Individual instructions work well for standalone guidelines. Packages solve a different problem: coordinating multiple components that work together.
+DevSync v2 introduces **practice declarations** -- abstract representations of coding standards that capture intent rather than raw file content. This enables AI-powered adaptation when installing into new projects.
 
-**Without packages:**
-
-```bash
-# Install instructions one at a time
-devsync install python-style-guide
-devsync install testing-strategy
-
-# Manually configure MCP servers
-# Manually create hooks
-# Manually set up commands
-# Hope the pieces work together
-```
-
-**With packages:**
+**Creating a package:**
 
 ```bash
-devsync package install ./python-dev-setup --ide claude
+# Extract practices from your project
+devsync extract --output ./team-standards --name team-standards
 ```
 
-One command installs all components, translates them to the correct IDE format, and tracks everything for later management.
+**Installing a package:**
 
-Packages provide:
+```bash
+# AI adapts practices to the target project's existing setup
+devsync install ./team-standards
+```
 
-- **Atomicity** -- install or uninstall an entire configuration as one unit
-- **IDE adaptation** -- components are automatically filtered and translated per IDE
-- **Tracking** -- installed packages are recorded in `.devsync/packages.json`
-- **Conflict handling** -- skip, overwrite, or rename files that already exist
-- **Reproducibility** -- share a package directory and anyone gets the same setup
+The AI reads the target project's existing rules and merges incoming practices intelligently -- no duplication, no blind overwriting.
 
-## Installation Workflow
+## v1 Backward Compatibility
 
-When you run `devsync package install`, the system executes these steps in order:
+DevSync v2 fully supports v1 packages using `ai-config-kit-package.yaml` manifests. When a v1 package is detected, installation uses file-copy mode automatically. You can upgrade v1 packages to v2 format:
+
+```bash
+devsync extract --upgrade ./old-v1-package --output ./v2-package --name my-package
+```
+
+## Package Structure
+
+### v2 Package (AI-native)
 
 ```
-1. Parse Manifest
-   Read ai-config-kit-package.yaml, validate required fields,
-   resolve component file references
+team-standards/
+├── devsync-package.yaml    # v2 manifest with practices
+├── practices/              # Practice declaration files
+│   ├── type-safety.md
+│   └── error-handling.md
+├── mcp/                    # MCP server configs
+│   └── github.json
+└── README.md
+```
 
-2. Check Existing Installation
-   Query .devsync/packages.json to determine if this package
-   is already installed (enables reinstall detection)
+### v1 Package (file-copy)
 
-3. Filter by IDE Capability
-   Remove components the target IDE does not support
-   (e.g., hooks are skipped for Cursor)
-
-4. Translate Components
-   Convert each component to the IDE-specific format
-   (file extension, directory path, content structure)
-
-5. Install Files
-   Write files to the project, applying the chosen
-   conflict resolution strategy (skip/overwrite/rename)
-
-6. Track Installation
-   Record the package name, version, component paths,
-   checksums, and timestamps in .devsync/packages.json
+```
+my-package/
+├── ai-config-kit-package.yaml    # v1 manifest
+├── instructions/                 # Instruction .md files
+├── mcp/                          # MCP server .json configs
+├── hooks/                        # Hook shell scripts
+├── commands/                     # Command scripts
+└── resources/                    # Any additional files
 ```
 
 ## IDE Compatibility
@@ -86,17 +76,11 @@ Different AI coding tools support different component types. When installing a p
 
 | Component | Claude Code | Cursor | Windsurf | Copilot | Kiro | Cline | Roo Code | Codex CLI |
 |-----------|:-----------:|:------:|:--------:|:-------:|:----:|:-----:|:--------:|:---------:|
-| Instructions | Y | Y | Y | Y | Y | Y | Y | Y |
+| Practices/Instructions | Y | Y | Y | Y | Y | Y | Y | Y |
 | MCP Servers | Y | Y | Y | Y | -- | -- | Y | -- |
 | Hooks | Y | -- | -- | -- | -- | -- | -- | -- |
 | Commands | Y | -- | -- | -- | -- | -- | Y | -- |
-| Skills | Y | -- | -- | -- | -- | -- | -- | -- |
-| Workflows | -- | -- | Y | -- | -- | -- | -- | -- |
-| Memory Files | Y | -- | -- | -- | -- | -- | -- | -- |
 | Resources | Y | Y | Y | -- | Y | Y | Y | Y |
-
-!!! info "Additional IDEs"
-    DevSync also supports Gemini CLI, Antigravity, Amazon Q, JetBrains AI, Junie, Zed, Continue.dev, Aider, Trae, Augment, Tabnine, OpenHands, Amp, and OpenCode. All support instructions and resources. MCP support varies -- check `devsync/ai_tools/capability_registry.py` for the full matrix.
 
 ### Translation Paths
 
@@ -105,19 +89,17 @@ Components are installed to IDE-specific locations:
 === "Claude Code"
 
     ```
-    Instructions  -> .claude/rules/*.md
+    Practices     -> .claude/rules/*.md
     MCP Servers   -> .claude/settings.local.json
     Hooks         -> .claude/hooks/*.sh
     Commands      -> .claude/commands/*.sh
-    Skills        -> .claude/skills/<name>/SKILL.md
-    Memory Files  -> CLAUDE.md (project root or subdirectories)
     Resources     -> specified install_path
     ```
 
 === "Cursor"
 
     ```
-    Instructions  -> .cursor/rules/*.mdc
+    Practices     -> .cursor/rules/*.mdc
     MCP Servers   -> .cursor/mcp.json
     Resources     -> specified install_path
     ```
@@ -125,49 +107,30 @@ Components are installed to IDE-specific locations:
 === "Windsurf"
 
     ```
-    Instructions  -> .windsurf/rules/*.md
+    Practices     -> .windsurf/rules/*.md
     MCP Servers   -> ~/.codeium/windsurf/mcp_config.json
-    Workflows     -> .windsurf/workflows/*.md
     Resources     -> specified install_path
     ```
 
 === "GitHub Copilot"
 
     ```
-    Instructions  -> .github/instructions/*.instructions.md
+    Practices     -> .github/instructions/*.instructions.md
     MCP Servers   -> .vscode/mcp.json
     ```
 
 === "Roo Code"
 
     ```
-    Instructions  -> .roo/rules/*.md
+    Practices     -> .roo/rules/*.md
     MCP Servers   -> .roo/mcp.json
     Commands      -> .roo/commands/*.md
     Resources     -> specified install_path
     ```
 
-## Package Structure
-
-Every package is a directory with an `ai-config-kit-package.yaml` manifest and one or more component directories:
-
-```
-my-package/
-├── ai-config-kit-package.yaml    # Required manifest
-├── README.md                     # Recommended documentation
-├── instructions/                 # Instruction .md files
-├── mcp/                          # MCP server .json configs
-├── hooks/                        # Hook shell scripts
-├── commands/                     # Command shell scripts
-├── skills/                       # Skill directories (SKILL.md)
-├── workflows/                    # Workflow files
-├── memory_files/                 # CLAUDE.md files
-└── resources/                    # Any additional files
-```
-
 ## Next Steps
 
-- [Creating Packages](creating.md) -- build your own package from scratch or from an existing project
+- [Creating Packages](creating.md) -- extract practices from your project
 - [Component Types](components.md) -- detailed reference for each component type
-- [Installing Packages](installing.md) -- install, list, and uninstall packages
+- [Installing Packages](installing.md) -- install, list, and manage packages
 - [Examples](examples.md) -- complete real-world package examples

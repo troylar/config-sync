@@ -1,6 +1,6 @@
 # IDE Integrations
 
-DevSync supports **22 AI coding assistants**, each with its own file format, directory structure, and feature set. This page provides a complete comparison and links to detailed guides for the most popular tools.
+DevSync supports **23+ AI coding assistants**, each with its own file format, directory structure, and feature set. This page provides a complete comparison and links to detailed guides for the most popular tools.
 
 ## How DevSync Handles Different IDEs
 
@@ -9,7 +9,7 @@ AI coding tools fall into two patterns for storing instructions:
 - **Multi-file**: Each instruction is a separate file in a directory (e.g., `.cursor/rules/code-style.mdc`). DevSync creates one file per instruction.
 - **Single-file**: All instructions live in one file at the project root (e.g., `AGENTS.md`). DevSync manages sections within the file using HTML comment markers.
 
-DevSync abstracts this difference away. The same `aiconfig install` command works regardless of the target IDE.
+DevSync abstracts this difference away. The same `devsync install` command works regardless of the target IDE.
 
 ---
 

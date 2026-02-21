@@ -32,11 +32,11 @@ my-project/
 ### Installing Instructions
 
 ```bash
-# Install interactively
-aiconfig install --ide windsurf
+# Install a package from a local path
+devsync install ./my-package --tool windsurf
 
-# Install a specific instruction
-aiconfig install my-instruction --ide windsurf
+# Install a package from a Git repository
+devsync install https://github.com/acme/standards --tool windsurf
 ```
 
 ### Activation Modes
@@ -81,7 +81,7 @@ Windsurf uses a **global-only** MCP configuration with a limit of **100 tools**.
 ### Installing MCP via Packages
 
 ```bash
-aiconfig package install ./my-package --ide windsurf
+devsync install ./my-package --tool windsurf
 ```
 
 DevSync merges MCP entries into the global configuration file.
@@ -115,7 +115,7 @@ Windsurf does not support hooks, commands, or skills. When installing a package 
 DevSync detects Windsurf by checking for the Windsurf application configuration directory. Verify with:
 
 ```bash
-aiconfig tools
+devsync tools
 ```
 
 ---
@@ -137,11 +137,8 @@ aiconfig tools
 ## Example: Project Setup
 
 ```bash
-# Download team standards
-aiconfig download --from github.com/acme/standards --as acme
-
-# Install to Windsurf
-aiconfig install --ide windsurf
+# Install team standards from a Git repository
+devsync install https://github.com/acme/standards --tool windsurf
 ```
 
 Result:
@@ -150,8 +147,8 @@ Result:
 my-project/
   .windsurf/
     rules/
-      acme--code-style.md
-      acme--testing.md
+      code-style.md
+      testing.md
     workflows/
-      acme--deploy.md          # If package includes workflows
+      deploy.md                # If package includes workflows
 ```

@@ -37,14 +37,14 @@ my-project/
 ### Installing Instructions
 
 ```bash
-# Install from library interactively
-aiconfig install --ide claude
+# Install a package from a local path
+devsync install ./my-package --tool claude
 
-# Install a specific instruction
-aiconfig install my-instruction --ide claude
+# Install a package from a Git repository
+devsync install https://github.com/acme/standards --tool claude
 
 # Install with conflict handling
-aiconfig install my-instruction --ide claude --conflict overwrite
+devsync install ./my-package --tool claude --conflict overwrite
 ```
 
 ### Instruction File Format
@@ -106,7 +106,7 @@ Claude Code supports MCP (Model Context Protocol) servers for extending its capa
 ### Installing MCP via Packages
 
 ```bash
-aiconfig package install ./my-package --ide claude
+devsync install ./my-package --tool claude
 ```
 
 DevSync merges MCP server entries into the existing configuration file without overwriting unrelated entries.
@@ -166,7 +166,7 @@ The `CLAUDE.md` file at the project root persists context across Claude Code ses
 DevSync can install memory file content as part of a package:
 
 ```bash
-aiconfig package install ./team-setup --ide claude
+devsync install ./team-setup --tool claude
 ```
 
 !!! warning
@@ -179,7 +179,7 @@ aiconfig package install ./team-setup --ide claude
 DevSync detects Claude Code by checking for the `~/.claude/` configuration directory. You can verify detection with:
 
 ```bash
-aiconfig tools
+devsync tools
 ```
 
 ---
@@ -206,7 +206,7 @@ Claude Code supports all DevSync package component types:
 Given a package with all component types:
 
 ```bash
-aiconfig package install ./full-stack-setup --ide claude
+devsync install ./full-stack-setup --tool claude
 ```
 
 Result:

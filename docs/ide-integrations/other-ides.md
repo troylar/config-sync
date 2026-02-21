@@ -20,7 +20,7 @@ These tools store each instruction as a separate file in a dedicated directory.
 Cline reads `.md` files from the `.clinerules/` directory recursively. Files support optional YAML frontmatter with a `paths:` field for conditional activation based on file paths.
 
 ```bash
-aiconfig install --ide cline
+devsync install ./my-package --tool cline
 ```
 
 ```
@@ -44,7 +44,7 @@ my-project/
 Kiro reads markdown files from `.kiro/steering/`. Files support optional YAML frontmatter for inclusion modes: `always`, `fileMatch`, `manual`, and `auto`.
 
 ```bash
-aiconfig install --ide kiro
+devsync install ./my-package --tool kiro
 ```
 
 ```
@@ -71,8 +71,7 @@ my-project/
 Roo Code supports instructions, MCP servers, and slash commands. It also supports mode-specific rules in `.roo/rules-{mode-slug}/` directories (e.g., `.roo/rules-code/`, `.roo/rules-architect/`).
 
 ```bash
-aiconfig install --ide roo
-aiconfig package install ./my-package --ide roo
+devsync install ./my-package --tool roo
 ```
 
 ```
@@ -99,7 +98,7 @@ my-project/
 | **Detection** | Amazon Q extension or application config |
 
 ```bash
-aiconfig install --ide amazonq
+devsync install ./my-package --tool amazonq
 ```
 
 **Supported components**: Instructions, MCP Servers, Resources
@@ -116,7 +115,7 @@ aiconfig install --ide amazonq
 | **Detection** | JetBrains IDE configuration directory |
 
 ```bash
-aiconfig install --ide jetbrains
+devsync install ./my-package --tool jetbrains
 ```
 
 **Supported components**: Instructions, MCP Servers, Resources
@@ -133,7 +132,7 @@ aiconfig install --ide jetbrains
 | **Detection** | Continue extension in VS Code globalStorage |
 
 ```bash
-aiconfig install --ide continue
+devsync install ./my-package --tool continue
 ```
 
 **Supported components**: Instructions, MCP Servers, Resources
@@ -150,7 +149,7 @@ aiconfig install --ide continue
 | **Detection** | Trae application configuration directory |
 
 ```bash
-aiconfig install --ide trae
+devsync install ./my-package --tool trae
 ```
 
 **Supported components**: Instructions, MCP Servers, Resources
@@ -167,7 +166,7 @@ aiconfig install --ide trae
 | **Detection** | Augment extension or application config |
 
 ```bash
-aiconfig install --ide augment
+devsync install ./my-package --tool augment
 ```
 
 **Supported components**: Instructions, MCP Servers, Resources
@@ -184,7 +183,7 @@ aiconfig install --ide augment
 | **Detection** | Tabnine application configuration directory |
 
 ```bash
-aiconfig install --ide tabnine
+devsync install ./my-package --tool tabnine
 ```
 
 **Supported components**: Instructions, MCP Servers, Resources
@@ -201,7 +200,7 @@ aiconfig install --ide tabnine
 | **Detection** | OpenHands configuration directory |
 
 ```bash
-aiconfig install --ide openhands
+devsync install ./my-package --tool openhands
 ```
 
 **Supported components**: Instructions, MCP Servers, Resources
@@ -220,7 +219,7 @@ aiconfig install --ide openhands
 Antigravity IDE (Google's VS Code fork) reads instructions from `.agent/rules/` and MCP configuration from `.mcp.json` at the project root.
 
 ```bash
-aiconfig install --ide antigravity
+devsync install ./my-package --tool antigravity
 ```
 
 **Supported components**: Instructions, MCP Servers, Resources
@@ -262,7 +261,7 @@ For a detailed explanation of how section markers work, see the [Codex CLI](code
 JetBrains Junie reads a single `.junie/guidelines.md` file. DevSync inserts sections with markers.
 
 ```bash
-aiconfig install --ide junie
+devsync install ./my-package --tool junie
 ```
 
 **Supported components**: Instructions, Resources
@@ -280,7 +279,7 @@ aiconfig install --ide junie
 Zed reads a single `.rules` file at the project root. MCP servers are configured through `.zed/settings.json`.
 
 ```bash
-aiconfig install --ide zed
+devsync install ./my-package --tool zed
 ```
 
 **Supported components**: Instructions, MCP Servers, Resources
@@ -298,7 +297,7 @@ aiconfig install --ide zed
 Aider reads a single `CONVENTIONS.md` file at the project root.
 
 ```bash
-aiconfig install --ide aider
+devsync install ./my-package --tool aider
 ```
 
 **Supported components**: Instructions, Resources
@@ -316,7 +315,7 @@ aiconfig install --ide aider
 Amp uses the same `AGENTS.md` file as Codex CLI and OpenCode. See the [Codex CLI](codex.md#shared-file-codex-cli-amp-and-opencode) page for details on how shared files are handled.
 
 ```bash
-aiconfig install --ide amp
+devsync install ./my-package --tool amp
 ```
 
 **Supported components**: Instructions, Resources
@@ -334,7 +333,7 @@ aiconfig install --ide amp
 OpenCode uses the same `AGENTS.md` file as Codex CLI and Amp. See the [Codex CLI](codex.md#shared-file-codex-cli-amp-and-opencode) page for details on how shared files are handled.
 
 ```bash
-aiconfig install --ide opencode
+devsync install ./my-package --tool opencode
 ```
 
 **Supported components**: Instructions, Resources
@@ -352,7 +351,7 @@ aiconfig install --ide opencode
 Gemini CLI and Gemini Code Assist read a single `GEMINI.md` file at the project root. MCP servers are configured globally via `~/.gemini/settings.json`.
 
 ```bash
-aiconfig install --ide gemini
+devsync install ./my-package --tool gemini
 ```
 
 **Supported components**: Instructions, Resources
@@ -391,6 +390,6 @@ The MCP config path is platform-specific:
 | Windows | `%APPDATA%\Claude\claude_desktop_config.json` |
 
 ```bash
-# Sync MCP servers to Claude Desktop
-aiconfig mcp sync --tool claude-desktop
+# Install a package with MCP server configuration to Claude Desktop
+devsync install ./my-package --tool claude-desktop
 ```

@@ -36,11 +36,11 @@ my-project/
 ### Installing Instructions
 
 ```bash
-# Install interactively
-aiconfig install --ide copilot
+# Install a package from a local path
+devsync install ./my-package --tool copilot
 
-# Install a specific instruction
-aiconfig install my-instruction --ide copilot
+# Install a package from a Git repository
+devsync install https://github.com/acme/standards --tool copilot
 ```
 
 ### Alternative: copilot-instructions.md
@@ -108,7 +108,7 @@ GitHub Copilot supports MCP servers through VS Code's built-in MCP integration w
 ### Installing MCP via Packages
 
 ```bash
-aiconfig package install ./my-package --ide copilot
+devsync install ./my-package --tool copilot
 ```
 
 DevSync merges MCP entries into `.vscode/mcp.json`.
@@ -126,7 +126,7 @@ GitHub Copilot does not support hooks, commands, skills, workflows, or resources
 DevSync detects GitHub Copilot by checking for the VS Code configuration directory and the Copilot extension. Verify with:
 
 ```bash
-aiconfig tools
+devsync tools
 ```
 
 ---
@@ -148,11 +148,8 @@ aiconfig tools
 ## Example: Project Setup
 
 ```bash
-# Download team standards
-aiconfig download --from github.com/acme/standards --as acme
-
-# Install to GitHub Copilot
-aiconfig install --ide copilot
+# Install team standards from a Git repository
+devsync install https://github.com/acme/standards --tool copilot
 ```
 
 Result:
@@ -161,8 +158,8 @@ Result:
 my-project/
   .github/
     instructions/
-      acme--code-style.instructions.md
-      acme--testing.instructions.md
+      code-style.instructions.md
+      testing.instructions.md
   .vscode/
     mcp.json                              # If package includes MCP servers
 ```

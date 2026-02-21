@@ -1,12 +1,20 @@
 # Configuration Types and Detection
 
-DevSync manages several distinct configuration types across 22 supported AI coding tools. Each type has specific file formats, installation patterns, and detection rules.
+DevSync manages several distinct configuration types across 23+ supported AI coding tools. Each type has specific file formats, installation patterns, and detection rules.
 
 ## Configuration Types
 
-### Instructions
+### Practices
 
-Instructions are the core configuration type -- markdown files that guide AI coding assistants. DevSync supports two installation patterns depending on the target IDE.
+Practices are the primary configuration type in v2. They are abstract, tool-agnostic declarations of development standards that the LLM reads and adapts into IDE-specific rule files. Practices are defined in the `practices` section of a `devsync-package.yaml` manifest and include structured fields: intent, principles, enforcement patterns, and examples.
+
+During installation, the AI adaptation engine reads each practice and generates the appropriate content for each target IDE -- formatting it as a `.mdc` file for Cursor, a `.md` file for Claude Code, a section in `AGENTS.md` for Codex, etc.
+
+### Instructions (v1)
+
+In v1, instructions were explicit markdown files distributed directly to IDE rule directories. In v2, the equivalent is the `practices` section in the package manifest, which the LLM uses to generate IDE-adapted content. File-copy fallback (using `--no-ai`) still writes instructions as-is to their target locations.
+
+DevSync supports two installation patterns for instructions depending on the target IDE.
 
 #### Multi-File Pattern
 
@@ -172,7 +180,7 @@ Each resource is checksummed with SHA-256 for integrity verification.
 
 ## Component Detection
 
-The `ComponentDetector` class in `devsync/core/component_detector.py` scans a project directory to discover all existing configurations. This is used by `devsync package create` to auto-detect components when generating a package from an existing project.
+The `ComponentDetector` class in `devsync/core/component_detector.py` scans a project directory to discover all existing configurations. This is used by `devsync extract` to auto-detect components when generating a package from an existing project.
 
 ### How Detection Works
 
@@ -234,4 +242,4 @@ components = detector.to_package_components(result)
 # components.instructions, components.mcp_servers, etc.
 ```
 
-This conversion is used internally by `devsync package create` to build the `ai-config-kit-package.yaml` manifest.
+This conversion is used internally by `devsync extract` to build the `devsync-package.yaml` manifest.

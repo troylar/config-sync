@@ -2,7 +2,7 @@
 
 # DevSync
 
-**Distribute and sync AI coding assistant configurations across your team**
+**AI-powered config distribution for AI coding assistants**
 
 [![CI](https://github.com/troylar/devsync/actions/workflows/ci.yml/badge.svg)](https://github.com/troylar/devsync/actions/workflows/ci.yml)
 [![Docs](https://readthedocs.org/projects/devsync/badge/?version=latest)](https://devsync.readthedocs.io)
@@ -17,31 +17,58 @@
 
 ---
 
-DevSync is a CLI tool for managing AI coding assistant instructions, MCP servers, and configuration packages across 22+ IDEs. Download shared configs from Git repos, install them to any tool, and keep your team aligned.
+DevSync uses LLM intelligence to extract coding practices from projects and adapt them to recipients' existing setups -- across 23+ AI coding assistants. Two commands: `extract` and `install`.
 
 ## Quick Start
 
 ```bash
 pip install devsync
 
+# One-time: configure your LLM provider
+devsync setup
+
 # Check detected AI tools
 devsync tools
 
-# Download instructions from a Git repo
-devsync download --from github.com/company/standards --as company
+# Extract practices from a project
+devsync extract
 
-# Install interactively
-devsync install
+# Install a package into another project
+devsync install ./team-standards
+
+# Install from Git
+devsync install https://github.com/company/standards
 ```
+
+No API key? DevSync works without one -- it falls back to file-copy mode. Add `--no-ai` to any command to force this.
 
 ## Features
 
-- **Instructions** -- share coding standards, style guides, and AI prompts from Git repos
-- **MCP Servers** -- distribute Model Context Protocol configs with secure credential management
-- **Packages** -- bundle instructions, MCP servers, hooks, commands, and resources together
-- **23 IDE integrations** -- Claude Code, Cursor, Windsurf, GitHub Copilot, and 19 more
-- **Templates** -- IDE-targeted content with slash commands, hooks, and backups
-- **Conflict resolution** -- skip, overwrite, or rename when files already exist
+- **AI-powered extraction** -- LLM reads your project's rules, MCP configs, and commands to produce abstract practice declarations
+- **AI-powered installation** -- LLM adapts incoming practices to your existing setup with intelligent merging
+- **23+ AI tool integrations** -- Claude Code, Cursor, Windsurf, GitHub Copilot, Kiro, Roo Code, Cline, Codex, and more
+- **MCP credential handling** -- prompts for credentials at install time, never stores them in repos
+- **v1 backward compatibility** -- old `ai-config-kit-package.yaml` packages still install via file-copy
+- **Graceful degradation** -- works without an API key, `--no-ai` flag for explicit file-copy mode
+
+## Commands
+
+| Command | Description |
+|---------|-------------|
+| `devsync setup` | Configure LLM provider (Anthropic, OpenAI, OpenRouter) |
+| `devsync tools` | Detect installed AI coding tools |
+| `devsync extract` | Extract practices from current project into a shareable package |
+| `devsync install <source>` | Install a package with AI-powered adaptation |
+| `devsync list` | Show installed packages |
+| `devsync uninstall <name>` | Remove an installed package |
+
+## Migrating from v1
+
+If you have v1 packages (`ai-config-kit-package.yaml`), they still work with `devsync install`. To upgrade them to v2 format:
+
+```bash
+devsync extract --upgrade ./old-package
+```
 
 ## Documentation
 

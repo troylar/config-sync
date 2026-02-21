@@ -43,9 +43,7 @@ Project root detection affects several aspects of DevSync:
 
 **Tracking data.** Installation records are stored in `<project-root>/.devsync/installations.json`. The `installed_path` field in each record uses relative paths so that tracking files are portable across machines and safe to commit to version control.
 
-**Package operations.** The `devsync package install` and `devsync package list` commands use the project root to locate `.devsync/packages.json`.
-
-**Backup storage.** Template backups are stored under `<project-root>/.devsync/backups/`.
+**Package operations.** The `devsync install` and `devsync list` commands use the project root to locate `.devsync/packages.json`.
 
 ## Running from Subdirectories
 
@@ -53,16 +51,16 @@ You can run `devsync` commands from any subdirectory within a project. The upwar
 
 ```bash
 cd ~/projects/my-app/src/components
-devsync install python-style  # installs to ~/projects/my-app/.claude/rules/python-style.md
+devsync install ./team-standards  # installs to ~/projects/my-app/.claude/rules/...
 ```
 
 ## Overriding the Project Root
 
-Some commands accept a `--project` flag to explicitly specify the project root, bypassing auto-detection:
+Some commands accept a `--project-dir` flag to explicitly specify the project root, bypassing auto-detection:
 
 ```bash
-devsync package install ./my-package --project ~/projects/my-app
-devsync package list --project ~/projects/my-app
+devsync install ./my-package --project-dir ~/projects/my-app
+devsync extract --project-dir ~/projects/my-app --output ./pkg --name my-pkg
 ```
 
 ## Edge Cases

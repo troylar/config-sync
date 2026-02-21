@@ -1,10 +1,122 @@
 # YAML Schema Reference
 
-DevSync uses three YAML manifest formats for different purposes.
+DevSync uses several YAML manifest formats. The primary v2 format is `devsync-package.yaml`. The v1 formats (`ai-config-kit-package.yaml` and `ai-config-kit.yaml`) are still supported for backward compatibility.
 
-## ai-config-kit.yaml
+## devsync-package.yaml
 
-The instruction repository manifest. Placed at the root of an instruction repository to define available instructions and bundles.
+The v2 package manifest. Placed at the root of a package directory. Supports the `practices` section for AI-native content distribution alongside the v1 `components` section.
+
+### Schema
+
+```yaml
+# Required fields
+name: string              # Package identifier (lowercase, alphanumeric, hyphens)
+version: string           # Semantic version
+description: string       # Package description
+
+# Optional metadata
+author: string            # Package author
+license: string           # License identifier (e.g., "MIT", "Apache-2.0")
+namespace: string         # Repository namespace (e.g., "org/repo")
+
+# Practices (AI-native content -- primary v2 approach)
+practices:
+  - name: string          # Practice identifier (lowercase, hyphenated)
+    intent: string        # One-sentence description of what this practice achieves
+    principles:           # Core rules or values (list of strings)
+      - string
+    enforcement_patterns: # Concrete implementation examples (list of strings)
+      - string
+    examples:             # Optional illustrative examples (list of strings)
+      - string
+    tags:                 # Optional categorization tags
+      - string
+
+# MCP server configurations (in practices-based packages)
+mcp_servers:
+  - name: string          # Server identifier
+    description: string   # What the server provides
+    command: string       # Executable command (e.g., "npx")
+    args:                 # Command-line arguments
+      - string
+    credentials:          # Required environment variables
+      - name: string      # Env var name (UPPER_SNAKE_CASE)
+        description: string
+        required: boolean # Default: true
+        default: string   # Default value (only if not required)
+        example: string   # Example value for guidance
+
+# Components (v1-compatible file-copy approach, optional)
+components:
+  instructions:
+    - name: string
+      file: string
+      description: string
+      tags:
+        - string
+  # ... (same structure as ai-config-kit-package.yaml components)
+```
+
+### practices[] Field Details
+
+| Field | Required | Description |
+|-------|----------|-------------|
+| `name` | Yes | Unique identifier within the package |
+| `intent` | Yes | One-sentence statement of what behavior or standard this practice enforces |
+| `principles` | Yes | List of core rules that define the practice |
+| `enforcement_patterns` | No | Concrete patterns the AI should look for or enforce |
+| `examples` | No | Illustrative code or workflow examples |
+| `tags` | No | List of string tags for filtering |
+
+### Example
+
+```yaml
+name: python-team-standards
+version: 1.0.0
+description: Python development standards for AI coding assistants
+author: Platform Team
+license: MIT
+
+practices:
+  - name: type-safety
+    intent: Ensure all Python code uses explicit type annotations
+    principles:
+      - All function signatures must include parameter and return type hints
+      - Use built-in generic types (list[str], dict[str, int]) not typing module equivalents
+      - Avoid Any except where genuinely unavoidable
+    enforcement_patterns:
+      - Flag functions missing return type annotations
+      - Suggest specific types when Any is used
+    tags: [python, types, mypy]
+
+  - name: testing-standards
+    intent: Maintain high test coverage with clear, isolated unit tests
+    principles:
+      - Write tests before implementation (TDD preferred)
+      - Each test function covers exactly one behavior
+      - Use pytest fixtures for shared state, not setUp/tearDown
+    enforcement_patterns:
+      - New public functions must have at least one unit test
+      - Tests must not depend on external services without mocking
+    tags: [python, testing, pytest]
+
+mcp_servers:
+  - name: postgres-explorer
+    description: Read-only PostgreSQL access for schema exploration
+    command: npx
+    args: ["-y", "@modelcontextprotocol/server-postgres"]
+    credentials:
+      - name: DATABASE_URL
+        description: PostgreSQL connection string
+        required: true
+        example: postgresql://user:pass@localhost:5432/mydb
+```
+
+---
+
+## ai-config-kit.yaml (v1 instruction repository format)
+
+The v1 instruction repository manifest. Placed at the root of an instruction repository to define available instructions and bundles.
 
 ### Schema
 
@@ -103,9 +215,9 @@ bundles:
 
 ---
 
-## ai-config-kit-package.yaml
+## ai-config-kit-package.yaml (v1 package format)
 
-The package manifest. Placed at the root of a package directory to define multi-component configuration bundles.
+The v1 package manifest. Placed at the root of a package directory to define multi-component configuration bundles. Still supported for backward compatibility -- v1 packages install via file-copy mode.
 
 ### Schema
 
@@ -287,138 +399,3 @@ components:
       size: 45678
 ```
 
----
-
-## templatekit.yaml
-
-The template repository manifest. Placed at the root of a template repository for use with `devsync template` commands.
-
-### Schema
-
-```yaml
-# Required fields
-name: string              # Repository name
-description: string       # Repository description
-version: string           # Semantic version
-
-# Optional fields
-author: string            # Author or team name
-
-# Template definitions (at least one required)
-templates:
-  - name: string          # Template identifier
-    description: string   # What this template provides
-    files:                # At least one file required
-      - path: string      # Relative path to template file
-        ide: string       # Target IDE: "all", "cursor", "claude", "windsurf", etc.
-    tags:                 # Optional tags
-      - string
-    dependencies:         # Optional: other templates this one requires
-      - string
-
-# Bundle definitions (optional, minimum 2 templates per bundle)
-bundles:
-  - name: string          # Bundle identifier
-    description: string   # What this bundle provides
-    templates:            # Template names (must reference defined templates)
-      - string
-    tags:
-      - string
-
-# MCP server definitions (optional)
-mcp_servers:
-  - name: string          # Server identifier (alphanumeric, hyphens, underscores)
-    command: string       # Executable command
-    args:                 # Command-line arguments
-      - string
-    env:                  # Environment variables (null value = requires user config)
-      VAR_NAME: string | null
-
-# MCP sets (optional, named collections of servers)
-mcp_sets:
-  - name: string          # Set identifier
-    description: string   # Set purpose
-    servers:              # Server names from mcp_servers
-      - string
-```
-
-### File Entry Formats
-
-Template files can be specified in two formats:
-
-```yaml
-# Simple format (applies to all IDEs)
-files:
-  - instructions/python-style.md
-
-# Detailed format (IDE-specific)
-files:
-  - path: instructions/python-style.md
-    ide: cursor
-  - path: instructions/python-style-claude.md
-    ide: claude
-```
-
-Valid `ide` values: `all`, `cursor`, `claude`, `windsurf`, `copilot`, `kiro`, `cline`, `roo`, `codex`, `gemini`, `antigravity`, `amazonq`, `jetbrains`, `junie`, `zed`, `continue`, `aider`, `trae`, `augment`, `tabnine`, `openhands`, `amp`, `opencode`.
-
-### Validation Rules
-
-- `name`, `description`, and `version` are required and must be non-empty
-- At least one template must be defined
-- Each template must have at least one file
-- All referenced files must exist in the repository
-- Bundle `templates` must reference defined template names
-- Bundles must contain at least 2 templates
-- Dependencies must reference defined template names (circular dependencies are rejected)
-- MCP server names must match `^[a-zA-Z0-9_-]+$`
-- MCP environment variable names must match `^[A-Z][A-Z0-9_]*$`
-
-### Example
-
-```yaml
-name: Company Standards
-description: Shared development standards and MCP servers
-version: 1.2.0
-author: Platform Engineering
-
-templates:
-  - name: code-style
-    description: Language-agnostic code style rules
-    files:
-      - path: templates/code-style.md
-        ide: all
-    tags: [style, universal]
-
-  - name: security-rules
-    description: OWASP-based security guidelines
-    files:
-      - path: templates/security-cursor.mdc
-        ide: cursor
-      - path: templates/security.md
-        ide: claude
-    tags: [security, owasp]
-    dependencies:
-      - code-style
-
-bundles:
-  - name: full-stack
-    description: Complete development standards
-    templates:
-      - code-style
-      - security-rules
-    tags: [full-stack]
-
-mcp_servers:
-  - name: internal-api
-    command: npx
-    args: ["-y", "@company/mcp-api-server"]
-    env:
-      API_TOKEN: null
-      API_BASE_URL: "https://api.internal.company.com"
-
-mcp_sets:
-  - name: backend-dev
-    description: Backend development servers
-    servers:
-      - internal-api
-```

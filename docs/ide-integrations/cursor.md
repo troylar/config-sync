@@ -31,11 +31,11 @@ my-project/
 ### Installing Instructions
 
 ```bash
-# Install interactively
-aiconfig install --ide cursor
+# Install a package from a local path
+devsync install ./my-package --tool cursor
 
-# Install a specific instruction
-aiconfig install my-instruction --ide cursor
+# Install a package from a Git repository
+devsync install https://github.com/acme/standards --tool cursor
 ```
 
 ### The .mdc File Format
@@ -114,7 +114,7 @@ Cursor supports MCP servers with a limit of **40 tools** across all configured s
 ### Installing MCP via Packages
 
 ```bash
-aiconfig package install ./my-package --ide cursor
+devsync install ./my-package --tool cursor
 ```
 
 DevSync merges MCP entries into the project-level `.cursor/mcp.json` by default.
@@ -136,7 +136,7 @@ Installed 3 of 5 components (2 skipped: hooks, commands not supported by Cursor)
 DevSync detects Cursor by checking for the Cursor application configuration directory. Verify with:
 
 ```bash
-aiconfig tools
+devsync tools
 ```
 
 ---
@@ -158,11 +158,8 @@ aiconfig tools
 ## Example: Project Setup
 
 ```bash
-# Download team standards
-aiconfig download --from github.com/acme/standards --as acme
-
-# Install to Cursor
-aiconfig install --ide cursor
+# Install team standards from a Git repository
+devsync install https://github.com/acme/standards --tool cursor
 ```
 
 Result:
@@ -172,6 +169,6 @@ my-project/
   .cursor/
     mcp.json                    # MCP servers (if package includes them)
     rules/
-      acme--code-style.mdc     # Team coding standard
-      acme--testing.mdc         # Testing conventions
+      code-style.mdc            # Team coding standard
+      testing.mdc               # Testing conventions
 ```

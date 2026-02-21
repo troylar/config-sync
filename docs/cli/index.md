@@ -10,75 +10,49 @@ $ devsync <command> [options]
 
 ## Commands
 
-### Core Workflow
-
 | Command | Description |
 |---------|-------------|
-| [`download`](download.md) | Download instruction repositories to your local library |
-| [`install`](install.md) | Install instructions to AI tools (interactive TUI or named) |
-| [`uninstall`](uninstall.md) | Remove instructions from AI tools at project level |
-| [`update`](update.md) | Update downloaded instructions to latest versions |
-| [`delete`](delete.md) | Remove a source from your local library |
+| [`setup`](setup.md) | Configure LLM provider (one-time) |
+| [`tools`](tools.md) | Detect installed AI coding tools |
+| [`extract`](extract.md) | Extract practices from a project |
+| [`install`](install.md) | Install a package with AI adaptation |
+| [`list`](list.md) | Show installed packages |
+| [`uninstall`](uninstall.md) | Remove an installed package |
 
-### Listing & Discovery
+## Typical Workflow
 
-| Command | Description |
-|---------|-------------|
-| [`list available`](list.md#list-available) | List instructions from a remote source without downloading |
-| [`list installed`](list.md#list-installed) | List instructions installed in your AI tools |
-| [`list library`](list.md#list-library) | List sources and instructions in your local library |
+```bash
+# 1. One-time setup
+devsync setup
 
-### Template Management
+# 2. In your source project, extract practices
+cd ~/team-project
+devsync extract --output ./team-standards --name team-standards
 
-| Command | Description |
-|---------|-------------|
-| `template init` | Create a new template repository |
-| `template install` | Install a template repository |
-| `template list` | List installed templates |
-| `template update` | Update installed templates |
-| `template uninstall` | Uninstall a template repository |
-| `template validate` | Validate a template repository structure |
-| `template backup list` | List template backups |
-| `template backup cleanup` | Clean up old template backups |
-| `template backup restore` | Restore a template from backup |
+# 3. In your target project, install
+cd ~/new-project
+devsync install ~/team-project/team-standards
 
-### MCP Server Management
+# 4. Check what's installed
+devsync list
 
-| Command | Description |
-|---------|-------------|
-| `mcp install` | Install MCP server configurations |
-| `mcp configure` | Configure credentials for MCP servers |
-| `mcp sync` | Sync MCP servers to AI tool configuration files |
-
-### Package Management
-
-| Command | Description |
-|---------|-------------|
-| [`package install`](package.md#package-install) | Install a configuration package to a project |
-| [`package list`](package.md#package-list) | List installed packages |
-| [`package uninstall`](package.md#package-uninstall) | Remove a package from a project |
-| [`package create`](package.md#package-create) | Create a shareable package from project components |
-
-### Utilities
-
-| Command | Description |
-|---------|-------------|
-| [`tools`](tools.md) | Show detected AI coding tools |
-| `version` | Show DevSync version |
+# 5. Remove if needed
+devsync uninstall team-standards
+```
 
 ## Global Options
 
 ```
 $ devsync --help       # Show help
-$ devsync --version    # Show version (via `devsync version`)
+$ devsync --version    # Show version
 ```
 
 Every command supports `--help` for detailed usage:
 
 ```
-$ devsync download --help
-$ devsync list available --help
-$ devsync package install --help
+$ devsync setup --help
+$ devsync extract --help
+$ devsync install --help
 ```
 
 ## Environment Variables
@@ -86,7 +60,10 @@ $ devsync package install --help
 | Variable | Description | Default |
 |----------|-------------|---------|
 | `LOGLEVEL` | Logging verbosity (`DEBUG`, `INFO`, `WARNING`, `ERROR`) | `INFO` |
+| `ANTHROPIC_API_KEY` | Anthropic API key (auto-detected by `devsync setup`) | -- |
+| `OPENAI_API_KEY` | OpenAI API key (auto-detected by `devsync setup`) | -- |
+| `OPENROUTER_API_KEY` | OpenRouter API key (auto-detected by `devsync setup`) | -- |
 
 ```
-$ LOGLEVEL=DEBUG devsync install
+$ LOGLEVEL=DEBUG devsync install ./package
 ```
