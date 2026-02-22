@@ -30,13 +30,20 @@ def setup() -> None:
 
 
 @app.command()
-def tools() -> None:
+def tools(
+    verbose: bool = typer.Option(
+        False,
+        "--verbose",
+        "-v",
+        help="Show capabilities and valid filter names",
+    ),
+) -> None:
     """Show detected AI coding tools.
 
     Display which AI coding tools are installed on your system
     and where their configuration directories are located.
     """
-    exit_code = show_tools()
+    exit_code = show_tools(verbose=verbose)
     raise typer.Exit(code=exit_code)
 
 
@@ -86,7 +93,18 @@ def extract(
         "project",
         "--scope",
         "-s",
-        help="Detection scope: project, global, or all",
+        help="(Deprecated) Detection scope: project, global, or all. Use --include-global instead.",
+        hidden=True,
+    ),
+    dry_run: bool = typer.Option(
+        False,
+        "--dry-run",
+        help="Show detected components without writing files or calling the LLM",
+    ),
+    include_global: bool = typer.Option(
+        False,
+        "--include-global",
+        help="Include home directory / global configs in extraction",
     ),
 ) -> None:
     """Extract practices from a project into a shareable package.
@@ -111,8 +129,11 @@ def extract(
       # Extract only MCP configs
       devsync extract --component mcp
 
-      # Extract from global configs too
-      devsync extract --scope all
+      # Preview what would be extracted (no files written)
+      devsync extract --dry-run
+
+      # Include home directory / global configs
+      devsync extract --include-global
 
       # Combine filters: extract only rules and hooks from Claude Code
       devsync extract --tool claude --component rules --component hooks
@@ -131,6 +152,8 @@ def extract(
         tool=tool,
         component=component,
         scope=scope,
+        dry_run=dry_run,
+        include_global=include_global,
     )
     raise typer.Exit(code=exit_code)
 

@@ -1,18 +1,110 @@
 """Extract command — reads project configs and produces a shareable package."""
 
 import shutil
+import warnings
+from collections import Counter
 from pathlib import Path
 from typing import Optional
 
 from rich.console import Console
 from rich.progress import Progress, SpinnerColumn, TextColumn
+from rich.table import Table
 
+from devsync.core.component_detector import (
+    COMPONENT_TYPE_MAP,
+    ComponentDetector,
+    DetectionResult,
+    filter_detection_result,
+)
 from devsync.core.extractor import PracticeExtractor
 from devsync.core.package_manifest_v2 import PackageManifestV2, detect_manifest_format, parse_manifest
 from devsync.llm.config import load_config
 from devsync.llm.provider import resolve_provider
 
 console = Console()
+
+# Map DetectionResult field names back to user-facing component names
+_FIELD_TO_LABEL: dict[str, str] = {
+    "instructions": "Rules",
+    "mcp_servers": "MCP",
+    "hooks": "Hooks",
+    "commands": "Commands",
+    "skills": "Skills",
+    "workflows": "Workflows",
+    "memory_files": "Memory",
+    "resources": "Resources",
+}
+
+
+def _get_detection_rows(detection: DetectionResult) -> list[tuple[str, str, int]]:
+    """Build (component_label, source_tool, count) rows from detection.
+
+    Groups by component type + source tool for a concise table.
+
+    Returns:
+        List of (label, source, count) tuples, sorted by label then source.
+    """
+    rows: list[tuple[str, str, int]] = []
+
+    for field_name, label in _FIELD_TO_LABEL.items():
+        items = getattr(detection, field_name, [])
+        if not items:
+            continue
+
+        source_counts: Counter[str] = Counter()
+        for item in items:
+            source = getattr(item, "source_tool", "") or getattr(item, "source_ide", "") or "project"
+            source_counts[source] += 1
+
+        for source, count in sorted(source_counts.items()):
+            rows.append((label, source, count))
+
+    return rows
+
+
+def _display_detection_summary(detection: DetectionResult) -> None:
+    """Display a Rich table summarizing detected components."""
+    rows = _get_detection_rows(detection)
+
+    if not rows:
+        return
+
+    table = Table(title="Detected Components", show_header=True, header_style="bold cyan")
+    table.add_column("Component", style="cyan", no_wrap=True)
+    table.add_column("Source", style="green")
+    table.add_column("Count", justify="right")
+
+    for label, source, count in rows:
+        table.add_row(label, source, str(count))
+
+    console.print()
+    console.print(table)
+
+    tool_sources = {source for _, source, _ in rows if source not in ("project", "devsync")}
+    tool_count = len(tool_sources) if tool_sources else 1
+    console.print(f"\n  Total: {detection.total_count} components from {tool_count} tool(s)")
+
+
+def _display_zero_result_warning(
+    tool: Optional[list[str]] = None,
+    component: Optional[list[str]] = None,
+    include_global: bool = False,
+) -> None:
+    """Display a helpful warning when filters match no components."""
+    console.print("\n[yellow]No components found matching your filters.[/yellow]")
+
+    active_filters = []
+    if tool:
+        active_filters.append(f"--tool {' --tool '.join(tool)}")
+    if component:
+        active_filters.append(f"--component {' --component '.join(component)}")
+    if active_filters:
+        console.print(f"\n  Active: {' '.join(active_filters)}")
+
+    console.print("\n  Suggestions:")
+    console.print("  - Run [cyan]devsync extract --dry-run[/cyan] without filters to see all available components")
+    if not include_global:
+        console.print("  - Try [cyan]--include-global[/cyan] to include home directory configs")
 
 
 def extract_command(
@@ -24,6 +116,8 @@ def extract_command(
     tool: Optional[list[str]] = None,
     component: Optional[list[str]] = None,
     scope: str = "project",
+    dry_run: bool = False,
+    include_global: bool = False,
 ) -> int:
     """Extract practices from the current project into a shareable package.
 
@@ -35,7 +129,9 @@ def extract_command(
         upgrade: Path to a v1 package to convert to v2 format.
         tool: Only extract from these AI tool(s).
         component: Only extract these component types.
-        scope: Detection scope — project, global, or all.
+        scope: Detection scope — project, global, or all. Deprecated; use include_global.
+        dry_run: Show what would be extracted without writing files.
+        include_global: Include home directory / global configs.
 
     Returns:
         Exit code (0 = success).
@@ -43,9 +139,22 @@ def extract_command(
     if upgrade:
         return _upgrade_v1_package(upgrade, output=output, name=name, no_ai=no_ai)
 
+    # Resolve effective scope: --include-global takes precedence
+    effective_scope = "project"
+    if include_global:
+        effective_scope = "all"
+    elif scope != "project":
+        warnings.warn(
+            "--scope is deprecated, use --include-global instead",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        console.print("[yellow]--scope is deprecated. Use --include-global instead.[/yellow]")
+        effective_scope = scope
+
     # Validate scope
-    if scope not in ("project", "global", "all"):
-        console.print(f"[red]Invalid scope: {scope}. Must be project, global, or all.[/red]")
+    if effective_scope not in ("project", "global", "all"):
+        console.print(f"[red]Invalid scope: {effective_scope}. Must be project, global, or all.[/red]")
         return 1
 
     # Validate tool names
@@ -61,8 +170,6 @@ def extract_command(
 
     # Validate component names
     if component:
-        from devsync.core.component_detector import COMPONENT_TYPE_MAP
-
         for c in component:
             if c.lower() not in COMPONENT_TYPE_MAP:
                 valid = sorted(set(COMPONENT_TYPE_MAP.keys()))
@@ -75,6 +182,27 @@ def extract_command(
         console.print(f"[red]Not a directory: {project_path}[/red]")
         return 1
 
+    # Phase 1: Detection + filtering
+    comp_detector = ComponentDetector(project_path, scope=effective_scope, tool_filter=tool)
+    detection = comp_detector.detect_all()
+
+    if component:
+        detection = filter_detection_result(detection, component_filter=component)
+
+    # Zero-result handling
+    if detection.total_count == 0:
+        _display_zero_result_warning(tool=tool, component=component, include_global=include_global)
+        return 0
+
+    # Display detection summary
+    _display_detection_summary(detection)
+
+    # Dry-run: stop here
+    if dry_run:
+        console.print("\n[dim]Dry run — no files written.[/dim]")
+        return 0
+
+    # Phase 2: Extraction
     package_name = name or project_path.name
     output_path = Path(output) if output else project_path / "devsync-package"
 
@@ -96,13 +224,8 @@ def extract_command(
         TextColumn("[progress.description]{task.description}"),
         console=console,
     ) as progress:
-        task = progress.add_task("Scanning project...", total=None)
-        result = extractor.extract(
-            project_path,
-            tool_filter=tool,
-            component_filter=component,
-            scope=scope,
-        )
+        task = progress.add_task("Extracting practices...", total=None)
+        result = extractor.extract(project_path, detection=detection)
         progress.update(task, description="Building package...")
 
     output_path.mkdir(parents=True, exist_ok=True)
@@ -134,12 +257,13 @@ def extract_command(
     manifest_path = output_path / "devsync-package.yaml"
     manifest_path.write_text(manifest.to_yaml())
 
+    # Enhanced output
     mode = "[green]AI-powered[/green]" if result.ai_powered else "[yellow]file-copy[/yellow]"
-    console.print(f"\nExtracted ({mode}):")
-    console.print(f"  Practices: {len(result.practices)}")
+    console.print(f"\nExtraction complete ({mode})")
+    console.print(f"  Practices generated: {len(result.practices)}")
     console.print(f"  MCP servers: {len(result.mcp_servers)}")
     console.print(f"  Source files: {len(result.source_files)}")
-    console.print(f"\nPackage written to: [cyan]{output_path}[/cyan]")
+    console.print(f"\n  Package written to: [cyan]{output_path}[/cyan]")
     return 0
 
 
