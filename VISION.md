@@ -27,7 +27,7 @@ These principles guide every feature decision. New features must align with at l
 `pip install devsync && devsync tools` — that's it. No Docker, no external services, no accounts required. Download from any Git repo, install with one command. If a feature requires infrastructure to work, it doesn't belong.
 
 ### 2. IDE-agnostic
-22+ tools, one package format, no lock-in. DevSync translates configurations to each tool's native format. Adding a new AI tool should be a single file implementing the `AITool` base class. Users should never have to think about tool-specific file formats.
+22+ tools, one package format, no lock-in. DevSync extracts from and installs to each tool's native format. Both extraction and installation must work across all supported tools — a user with only Cursor configs should be able to extract and share them just as easily as a Claude Code user. Adding a new AI tool should be a single file implementing the `AITool` base class. Users should never have to think about tool-specific file formats.
 
 ### 3. Git as distribution
 No central server, no registry, no accounts. Any Git repository can be an instruction source. Version control is the distribution mechanism. If it works with `git clone`, it works with DevSync.
@@ -43,9 +43,10 @@ MCP protocol for server configs, conventional markdown for instructions, YAML ma
 
 ## What's In Scope
 
-- **AI-powered extraction**: Read a project's rules, MCP configs, and commands to produce abstract practice declarations
+- **AI-powered extraction**: Read a project's rules, MCP configs, and commands to produce abstract practice declarations — from any supported tool, not just one
 - **AI-powered installation**: Adapt incoming practices to the recipient's existing setup with intelligent merging
-- **Multi-tool support**: Translate configs to 23+ AI coding assistants
+- **Multi-tool support**: Extract from and install to 23+ AI coding assistants. Both sides of the pipeline must be tool-agnostic
+- **Selective packaging**: Filter extractions by tool, component type (rules, MCP servers, commands, hooks), and scope (project vs global)
 - **Package system**: v2 practice-based packages and v1 file-copy backward compatibility
 - **MCP credential handling**: Prompt for credentials at install time, never store in repos
 - **Project tracking**: Per-project installation records
