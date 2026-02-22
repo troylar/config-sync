@@ -768,6 +768,35 @@ class TestComponentFilter:
         assert len(filtered.instructions) == 1
         assert len(filtered.mcp_servers) == 1
 
+    def test_tool_filter_on_instructions(self) -> None:
+        """Test that tool_filter filters instructions by source_ide."""
+        result = DetectionResult(
+            instructions=[
+                DetectedInstruction(name="r1", file_path=Path("/r1.md"), relative_path="r1.md", source_ide="claude"),
+                DetectedInstruction(name="r2", file_path=Path("/r2.md"), relative_path="r2.md", source_ide="cursor"),
+                DetectedInstruction(name="r3", file_path=Path("/r3.md"), relative_path="r3.md", source_ide="windsurf"),
+            ],
+        )
+
+        filtered = filter_detection_result(result, tool_filter=["cursor"])
+        assert len(filtered.instructions) == 1
+        assert filtered.instructions[0].source_ide == "cursor"
+
+    def test_tool_filter_multiple_on_instructions(self) -> None:
+        """Test that tool_filter with multiple tools filters instructions correctly."""
+        result = DetectionResult(
+            instructions=[
+                DetectedInstruction(name="r1", file_path=Path("/r1.md"), relative_path="r1.md", source_ide="claude"),
+                DetectedInstruction(name="r2", file_path=Path("/r2.md"), relative_path="r2.md", source_ide="cursor"),
+                DetectedInstruction(name="r3", file_path=Path("/r3.md"), relative_path="r3.md", source_ide="windsurf"),
+            ],
+        )
+
+        filtered = filter_detection_result(result, tool_filter=["claude", "windsurf"])
+        assert len(filtered.instructions) == 2
+        ides = {i.source_ide for i in filtered.instructions}
+        assert ides == {"claude", "windsurf"}
+
 
 class TestScopeFilter:
     """Test scope-based detection."""
@@ -812,6 +841,11 @@ class TestScopeFilter:
 
         assert len(result.commands) == 1
         assert result.commands[0].source_tool == "claude"
+
+    def test_invalid_scope_rejected(self, temp_project: Path) -> None:
+        """Test that invalid scope raises ValueError."""
+        with pytest.raises(ValueError, match="Invalid scope"):
+            ComponentDetector(temp_project, scope="invalid")
 
     def test_source_tool_on_roo_commands(self, temp_project: Path) -> None:
         """Test that source_tool is set correctly on Roo commands."""
