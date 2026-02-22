@@ -10,6 +10,7 @@ from devsync.core.component_detector import (
     DetectedHook,
     DetectedInstruction,
     DetectedMCPServer,
+    DetectedResource,
     DetectionResult,
     filter_detection_result,
 )
@@ -707,7 +708,9 @@ class TestComponentFilter:
             instructions=[
                 DetectedInstruction(name="r", file_path=Path("/r.md"), relative_path="r.md", source_ide="claude")
             ],
-            mcp_servers=[DetectedMCPServer(name="s", file_path=None, config={}, source="x", source_tool="claude")],
+            mcp_servers=[
+                DetectedMCPServer(name="s", file_path=Path("/fake"), config={}, source="x", source_tool="claude")
+            ],
         )
 
         filtered = filter_detection_result(result, component_filter=["rules"])
@@ -720,7 +723,9 @@ class TestComponentFilter:
             instructions=[
                 DetectedInstruction(name="r", file_path=Path("/r.md"), relative_path="r.md", source_ide="claude")
             ],
-            mcp_servers=[DetectedMCPServer(name="s", file_path=None, config={}, source="x", source_tool="claude")],
+            mcp_servers=[
+                DetectedMCPServer(name="s", file_path=Path("/fake"), config={}, source="x", source_tool="claude")
+            ],
         )
 
         filtered = filter_detection_result(result, component_filter=["mcp"])
@@ -733,7 +738,9 @@ class TestComponentFilter:
             instructions=[
                 DetectedInstruction(name="r", file_path=Path("/r.md"), relative_path="r.md", source_ide="claude")
             ],
-            mcp_servers=[DetectedMCPServer(name="s", file_path=None, config={}, source="x", source_tool="claude")],
+            mcp_servers=[
+                DetectedMCPServer(name="s", file_path=Path("/fake"), config={}, source="x", source_tool="claude")
+            ],
             hooks=[DetectedHook(name="h", file_path=Path("/h.sh"), relative_path="h.sh", hook_type="PreToolUse")],
         )
 
@@ -746,8 +753,8 @@ class TestComponentFilter:
         """Test filtering by both tool and component."""
         result = DetectionResult(
             mcp_servers=[
-                DetectedMCPServer(name="s1", file_path=None, config={}, source="x", source_tool="claude"),
-                DetectedMCPServer(name="s2", file_path=None, config={}, source="y", source_tool="cursor"),
+                DetectedMCPServer(name="s1", file_path=Path("/fake"), config={}, source="x", source_tool="claude"),
+                DetectedMCPServer(name="s2", file_path=Path("/fake"), config={}, source="y", source_tool="cursor"),
             ],
         )
 
@@ -761,7 +768,9 @@ class TestComponentFilter:
             instructions=[
                 DetectedInstruction(name="r", file_path=Path("/r.md"), relative_path="r.md", source_ide="claude")
             ],
-            mcp_servers=[DetectedMCPServer(name="s", file_path=None, config={}, source="x", source_tool="claude")],
+            mcp_servers=[
+                DetectedMCPServer(name="s", file_path=Path("/fake"), config={}, source="x", source_tool="claude")
+            ],
         )
 
         filtered = filter_detection_result(result)
@@ -781,6 +790,23 @@ class TestComponentFilter:
         filtered = filter_detection_result(result, tool_filter=["cursor"])
         assert len(filtered.instructions) == 1
         assert filtered.instructions[0].source_ide == "cursor"
+
+    def test_tool_filter_preserves_resources(self) -> None:
+        """Test that tool_filter does not drop resources (they are tool-agnostic)."""
+        result = DetectionResult(
+            mcp_servers=[
+                DetectedMCPServer(name="s", file_path=Path("/fake"), config={}, source="x", source_tool="claude"),
+            ],
+            resources=[
+                DetectedResource(name="res", file_path=Path("/r.txt"), relative_path="r.txt", size=10, checksum="abc"),
+            ],
+        )
+
+        filtered = filter_detection_result(result, tool_filter=["cursor"])
+        # MCP filtered out (source_tool=claude, filter=cursor)
+        assert len(filtered.mcp_servers) == 0
+        # Resources preserved despite tool_filter (they're tool-agnostic)
+        assert len(filtered.resources) == 1
 
     def test_tool_filter_multiple_on_instructions(self) -> None:
         """Test that tool_filter with multiple tools filters instructions correctly."""

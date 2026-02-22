@@ -280,7 +280,8 @@ def filter_detection_result(
         skills=_get_field("skills", result.skills),
         workflows=_get_field("workflows", result.workflows),
         memory_files=_get_field("memory_files", result.memory_files),
-        resources=_get_field("resources", result.resources),
+        # Resources are tool-agnostic (.devsync/resources/), skip tool filtering
+        resources=result.resources if (allowed_fields is None or "resources" in allowed_fields) else [],
         warnings=result.warnings,
     )
 
