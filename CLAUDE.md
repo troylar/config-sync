@@ -52,6 +52,7 @@ devsync/
 │   ├── mcp_credential_prompter.py # MCP credential prompting
 │   ├── repository.py # Parse ai-config-kit.yaml
 │   ├── git_operations.py # Git clone/pull operations
+│   ├── pip_utils.py  # Pip package validation, detection, installation
 │   ├── checksum.py   # File integrity checking
 │   └── conflict_resolution.py # Handle file conflicts
 ├── llm/               # LLM provider abstraction (HTTP-only, no SDK deps)
@@ -355,6 +356,7 @@ devsync install https://github.com/company/standards
 devsync install ./package --tool claude --tool cursor
 devsync install ./package --no-ai
 devsync install ./package --conflict skip
+devsync install ./package --skip-pip
 
 # List installed packages
 devsync list

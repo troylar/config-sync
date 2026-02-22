@@ -58,6 +58,7 @@ class DetectedMCPServer:
     config: dict
     source: str
     env_vars: list[str] = field(default_factory=list)
+    pip_package: Optional[str] = None
 
 
 @dataclass
@@ -424,6 +425,10 @@ class ComponentDetector:
                 mcp_servers = config_data.get("mcpServers", {})
                 for server_name, server_config in mcp_servers.items():
                     env_vars = list(server_config.get("env", {}).keys())
+                    pip_package = self._resolve_pip_package(
+                        server_config.get("command", ""),
+                        server_config.get("args", []),
+                    )
                     servers.append(
                         DetectedMCPServer(
                             name=server_name,
@@ -431,6 +436,7 @@ class ComponentDetector:
                             config=server_config,
                             source=config_location,
                             env_vars=env_vars,
+                            pip_package=pip_package,
                         )
                     )
             except json.JSONDecodeError as e:
@@ -445,6 +451,10 @@ class ComponentDetector:
                     with open(file_path, "r", encoding="utf-8") as f:
                         server_config = json.load(f)
                     env_vars = list(server_config.get("env", {}).keys())
+                    pip_package = self._resolve_pip_package(
+                        server_config.get("command", ""),
+                        server_config.get("args", []),
+                    )
                     servers.append(
                         DetectedMCPServer(
                             name=file_path.stem,
@@ -452,12 +462,31 @@ class ComponentDetector:
                             config=server_config,
                             source=str(file_path.relative_to(self.project_root)),
                             env_vars=env_vars,
+                            pip_package=pip_package,
                         )
                     )
                 except Exception as e:
                     logger.warning(f"Failed to read MCP config {file_path}: {e}")
 
         return servers
+
+    def _resolve_pip_package(self, command: str, args: list[str]) -> Optional[str]:
+        """Attempt to resolve a pip package from an MCP server command.
+
+        Non-fatal: returns None on any failure.
+
+        Args:
+            command: Server executable command.
+            args: Server command arguments.
+
+        Returns:
+            Pip package name or None.
+        """
+        if not command:
+            return None
+        from devsync.core.pip_utils import resolve_pip_package_for_command
+
+        return resolve_pip_package_for_command(command, args)
 
     def _detect_hooks(self) -> list[DetectedHook]:
         """Detect hook scripts.

@@ -41,6 +41,9 @@ Strip all credential VALUES but keep credential NAMES and descriptions.
 Input configuration:
 {mcp_config}
 
+If the MCP server command suggests a pip-installable package (e.g., uvx, python -m),
+include the pip_package field with the package name and optional version constraint.
+
 Respond with a JSON object:
 {{
   "name": "server-name",
@@ -55,7 +58,8 @@ Respond with a JSON object:
       "description": "what this credential is for",
       "required": true
     }}
-  ]
+  ],
+  "pip_package": "package-name>=1.0 (if pip-installable, null otherwise)"
 }}"""
 
 ADAPT_PRACTICE_PROMPT = """\

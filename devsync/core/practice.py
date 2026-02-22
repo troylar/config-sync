@@ -3,6 +3,8 @@
 from dataclasses import dataclass, field
 from typing import Optional
 
+from devsync.core.pip_utils import validate_pip_spec
+
 
 @dataclass
 class CredentialSpec:
@@ -135,6 +137,7 @@ class MCPDeclaration:
     args: list[str] = field(default_factory=list)
     env_vars: dict[str, str] = field(default_factory=dict)
     credentials: list[CredentialSpec] = field(default_factory=list)
+    pip_package: Optional[str] = None
 
     def __post_init__(self) -> None:
         if not self.name:
@@ -143,6 +146,9 @@ class MCPDeclaration:
             raise ValueError("MCPDeclaration description cannot be empty")
         if self.protocol not in ("stdio", "sse"):
             raise ValueError(f"MCPDeclaration protocol must be 'stdio' or 'sse', got '{self.protocol}'")
+        if self.pip_package is not None:
+            if not validate_pip_spec(self.pip_package):
+                raise ValueError(f"MCPDeclaration pip_package is not a valid pip spec: '{self.pip_package}'")
 
     def to_dict(self) -> dict:
         result: dict = {
@@ -158,6 +164,8 @@ class MCPDeclaration:
             result["env_vars"] = self.env_vars
         if self.credentials:
             result["credentials"] = [c.to_dict() for c in self.credentials]
+        if self.pip_package is not None:
+            result["pip_package"] = self.pip_package
         return result
 
     @classmethod
@@ -171,4 +179,5 @@ class MCPDeclaration:
             args=data.get("args", []),
             env_vars=data.get("env_vars", {}),
             credentials=credentials,
+            pip_package=data.get("pip_package"),
         )

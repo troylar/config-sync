@@ -73,7 +73,7 @@ class PracticeExtractor:
         configs = []
         for server in getattr(detection, "mcp_servers", []):
             config: dict = {}
-            for attr in ("name", "command", "args", "env"):
+            for attr in ("name", "command", "args", "env", "pip_package"):
                 val = getattr(server, attr, None)
                 if val is not None:
                     config[attr] = val
@@ -140,6 +140,7 @@ class PracticeExtractor:
                     description=f"MCP server: {name}",
                     command=config.get("command", ""),
                     args=config.get("args", []),
+                    pip_package=config.get("pip_package"),
                 )
             )
 

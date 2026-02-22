@@ -130,6 +130,11 @@ def install(
         "-p",
         help="Target project directory (default: current directory)",
     ),
+    skip_pip: bool = typer.Option(
+        False,
+        "--skip-pip",
+        help="Skip pip package installations for MCP servers",
+    ),
 ) -> None:
     """Install a package into the current project.
 
@@ -151,6 +156,9 @@ def install(
 
       # Skip conflicts
       devsync install ./package --conflict skip
+
+      # Skip pip installations
+      devsync install ./package --skip-pip
     """
     from devsync.cli.install_v2 import install_v2_command
 
@@ -160,6 +168,7 @@ def install(
         no_ai=no_ai,
         conflict=conflict,
         project_dir=project_dir,
+        skip_pip=skip_pip,
     )
     raise typer.Exit(code=exit_code)
 

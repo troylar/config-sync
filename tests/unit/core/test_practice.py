@@ -182,6 +182,57 @@ class TestMCPDeclaration:
         assert len(m.credentials) == 1
         assert m.credentials[0].name == "TOKEN"
 
+    def test_pip_package_field(self) -> None:
+        m = MCPDeclaration(
+            name="fetch",
+            description="Fetch server",
+            pip_package="mcp-server-fetch>=0.1",
+        )
+        assert m.pip_package == "mcp-server-fetch>=0.1"
+
+    def test_pip_package_none_by_default(self) -> None:
+        m = MCPDeclaration(name="test", description="Test")
+        assert m.pip_package is None
+
+    def test_pip_package_invalid_raises(self) -> None:
+        with pytest.raises(ValueError, match="not a valid pip spec"):
+            MCPDeclaration(name="test", description="Test", pip_package="git+https://evil.com")
+
+    def test_pip_package_to_dict_included(self) -> None:
+        m = MCPDeclaration(name="test", description="Test", pip_package="pkg>=1.0")
+        d = m.to_dict()
+        assert d["pip_package"] == "pkg>=1.0"
+
+    def test_pip_package_to_dict_omitted_when_none(self) -> None:
+        m = MCPDeclaration(name="test", description="Test")
+        d = m.to_dict()
+        assert "pip_package" not in d
+
+    def test_pip_package_from_dict(self) -> None:
+        data = {
+            "name": "test",
+            "description": "Test",
+            "pip_package": "mcp-server>=2.0",
+        }
+        m = MCPDeclaration.from_dict(data)
+        assert m.pip_package == "mcp-server>=2.0"
+
+    def test_pip_package_from_dict_missing(self) -> None:
+        data = {"name": "test", "description": "Test"}
+        m = MCPDeclaration.from_dict(data)
+        assert m.pip_package is None
+
+    def test_pip_package_roundtrip(self) -> None:
+        original = MCPDeclaration(
+            name="fetch",
+            description="Fetch server",
+            command="python",
+            args=["-m", "mcp_server_fetch"],
+            pip_package="mcp-server-fetch>=0.5",
+        )
+        restored = MCPDeclaration.from_dict(original.to_dict())
+        assert restored.pip_package == original.pip_package
+
     def test_roundtrip(self) -> None:
         original = MCPDeclaration(
             name="db",

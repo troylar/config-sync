@@ -5,7 +5,12 @@ from unittest.mock import MagicMock, patch
 
 import yaml
 
-from devsync.cli.install_v2 import _get_tool_instruction_path, _resolve_source, install_v2_command
+from devsync.cli.install_v2 import (
+    _get_tool_instruction_path,
+    _install_pip_dependencies,
+    _resolve_source,
+    install_v2_command,
+)
 
 
 class TestResolveSource:
@@ -32,6 +37,75 @@ class TestGetToolInstructionPath:
     def test_unknown_tool_returns_none(self, tmp_path: Path) -> None:
         result = _get_tool_instruction_path("unknown-tool", tmp_path, "test")
         assert result is None
+
+
+class TestInstallPipDependencies:
+    def _make_server(self, name: str = "test-mcp", pip_package: str | None = None, description: str = "") -> MagicMock:
+        server = MagicMock()
+        server.name = name
+        server.pip_package = pip_package
+        server.description = description
+        return server
+
+    def test_no_pip_servers_returns_empty(self) -> None:
+        servers = [self._make_server(pip_package=None)]
+        result = _install_pip_dependencies(servers, skip_pip=False)
+        assert result == set()
+
+    def test_skip_pip_flag_returns_empty(self) -> None:
+        servers = [self._make_server(pip_package="mcp-server>=1.0")]
+        result = _install_pip_dependencies(servers, skip_pip=True)
+        assert result == set()
+
+    @patch("devsync.core.pip_utils.validate_pip_spec", return_value=False)
+    def test_invalid_spec_returns_failed(self, mock_validate: MagicMock) -> None:
+        servers = [self._make_server(name="bad-mcp", pip_package="bad-spec")]
+        result = _install_pip_dependencies(servers, skip_pip=False)
+        assert "bad-mcp" in result
+
+    @patch("devsync.core.pip_utils.get_installed_version", return_value="1.2.3")
+    @patch("devsync.core.pip_utils.installed_version_satisfies", return_value=True)
+    @patch("devsync.core.pip_utils.validate_pip_spec", return_value=True)
+    def test_already_installed_skipped(
+        self, mock_validate: MagicMock, mock_satisfies: MagicMock, mock_version: MagicMock
+    ) -> None:
+        servers = [self._make_server(pip_package="mcp-server>=1.0")]
+        result = _install_pip_dependencies(servers, skip_pip=False)
+        assert result == set()
+
+    @patch("devsync.cli.install_v2.Confirm.ask", return_value=False)
+    @patch("devsync.core.pip_utils.installed_version_satisfies", return_value=False)
+    @patch("devsync.core.pip_utils.validate_pip_spec", return_value=True)
+    def test_user_declines_returns_failed(
+        self, mock_validate: MagicMock, mock_satisfies: MagicMock, mock_ask: MagicMock
+    ) -> None:
+        servers = [self._make_server(name="declined-mcp", pip_package="mcp-server>=1.0")]
+        result = _install_pip_dependencies(servers, skip_pip=False)
+        assert "declined-mcp" in result
+
+    @patch("devsync.core.pip_utils.install_pip_package", return_value=(True, "Successfully installed mcp-server>=1.0"))
+    @patch("devsync.cli.install_v2.Confirm.ask", return_value=True)
+    @patch("devsync.core.pip_utils.installed_version_satisfies", return_value=False)
+    @patch("devsync.core.pip_utils.validate_pip_spec", return_value=True)
+    def test_install_success(
+        self, mock_validate: MagicMock, mock_satisfies: MagicMock, mock_ask: MagicMock, mock_install: MagicMock
+    ) -> None:
+        servers = [self._make_server(pip_package="mcp-server>=1.0")]
+        result = _install_pip_dependencies(servers, skip_pip=False)
+        assert result == set()
+        mock_install.assert_called_once_with("mcp-server>=1.0")
+
+    @patch("devsync.core.pip_utils.install_pip_package", return_value=(False, "Package not found: bad-pkg"))
+    @patch("devsync.cli.install_v2.Confirm.ask", return_value=True)
+    @patch("devsync.core.pip_utils.installed_version_satisfies", return_value=False)
+    @patch("devsync.core.pip_utils.validate_pip_spec", return_value=True)
+    def test_install_failure_returns_failed(
+        self, mock_validate: MagicMock, mock_satisfies: MagicMock, mock_ask: MagicMock, mock_install: MagicMock
+    ) -> None:
+        servers = [self._make_server(name="fail-mcp", pip_package="bad-pkg")]
+        result = _install_pip_dependencies(servers, skip_pip=False)
+        assert "fail-mcp" in result
+        mock_install.assert_called_once_with("bad-pkg")
 
 
 class TestInstallV2Command:

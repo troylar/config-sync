@@ -47,6 +47,7 @@ No API key? DevSync works without one -- it falls back to file-copy mode. Add `-
 - **AI-powered extraction** -- LLM reads your project's rules, MCP configs, and commands to produce abstract practice declarations
 - **AI-powered installation** -- LLM adapts incoming practices to your existing setup with intelligent merging
 - **23+ AI tool integrations** -- Claude Code, Cursor, Windsurf, GitHub Copilot, Kiro, Roo Code, Cline, Codex, and more
+- **MCP server dependencies** -- auto-detects pip-installable MCP servers and prompts to install them (`--skip-pip` to skip)
 - **MCP credential handling** -- prompts for credentials at install time, never stores them in repos
 - **v1 backward compatibility** -- old `ai-config-kit-package.yaml` packages still install via file-copy
 - **Graceful degradation** -- works without an API key, `--no-ai` flag for explicit file-copy mode

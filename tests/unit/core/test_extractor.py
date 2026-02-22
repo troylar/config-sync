@@ -52,6 +52,7 @@ class TestPracticeExtractorNoAI:
         mock_server.command = "npx"
         mock_server.args = ["-y", "server"]
         mock_server.env = None
+        mock_server.pip_package = None
 
         with patch("devsync.core.component_detector.ComponentDetector") as mock_cls:
             mock_cls.return_value.detect_all.return_value = _make_detection_result(mcp_servers=[mock_server])
@@ -61,6 +62,40 @@ class TestPracticeExtractorNoAI:
         assert len(result.mcp_servers) == 1
         assert result.mcp_servers[0].name == "github"
         assert result.mcp_servers[0].command == "npx"
+
+
+class TestPracticeExtractorPipPackage:
+    def test_extract_propagates_pip_package(self, tmp_path: Path) -> None:
+        mock_server = MagicMock()
+        mock_server.name = "fetch"
+        mock_server.command = "python"
+        mock_server.args = ["-m", "mcp_server_fetch"]
+        mock_server.env = None
+        mock_server.pip_package = "mcp-server-fetch>=0.5"
+
+        with patch("devsync.core.component_detector.ComponentDetector") as mock_cls:
+            mock_cls.return_value.detect_all.return_value = _make_detection_result(mcp_servers=[mock_server])
+            extractor = PracticeExtractor(llm_provider=None)
+            result = extractor.extract(tmp_path)
+
+        assert len(result.mcp_servers) == 1
+        assert result.mcp_servers[0].pip_package == "mcp-server-fetch>=0.5"
+
+    def test_extract_pip_package_none_when_absent(self, tmp_path: Path) -> None:
+        mock_server = MagicMock()
+        mock_server.name = "github"
+        mock_server.command = "npx"
+        mock_server.args = ["-y", "server"]
+        mock_server.env = None
+        mock_server.pip_package = None
+
+        with patch("devsync.core.component_detector.ComponentDetector") as mock_cls:
+            mock_cls.return_value.detect_all.return_value = _make_detection_result(mcp_servers=[mock_server])
+            extractor = PracticeExtractor(llm_provider=None)
+            result = extractor.extract(tmp_path)
+
+        assert len(result.mcp_servers) == 1
+        assert result.mcp_servers[0].pip_package is None
 
 
 class TestPracticeExtractorWithAI:
