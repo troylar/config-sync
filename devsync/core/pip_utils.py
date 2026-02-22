@@ -7,6 +7,7 @@ install packages with comprehensive error handling.
 
 import importlib.metadata
 import logging
+import os
 import re
 import shutil
 import subprocess
@@ -116,8 +117,6 @@ def resolve_pip_package_for_command(command: str, args: list[str]) -> Optional[s
 
 def _resolve_pip_package_for_command_inner(command: str, args: list[str]) -> Optional[str]:
     """Inner implementation of resolve_pip_package_for_command."""
-    import os
-
     cmd_basename = os.path.basename(command)
 
     # Pattern 1: python -m module_name
