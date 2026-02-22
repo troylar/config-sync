@@ -73,6 +73,34 @@ jobs:
           file: ./coverage.xml
           fail_ci_if_error: false
 
+  security:
+    name: Security Scan
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.10'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e .[dev]
+
+      - name: Run Semgrep
+        run: |
+          pip install semgrep
+          semgrep scan --config p/python --config p/security-audit --config p/owasp-top-ten --error devsync/
+
+      - name: Run pip-audit
+        run: |
+          pip install pip-audit
+          pip-audit --desc on
+        continue-on-error: true
+
   dependency-review:
     name: Dependency Review
     runs-on: ubuntu-latest
