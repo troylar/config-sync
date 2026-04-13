@@ -68,7 +68,7 @@ jobs:
 
       - name: Comment if tests are missing
         if: steps.code_changes.outputs.has_code_changes == 'true' && steps.test_changes.outputs.has_test_changes == 'false'
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         with:
           script: |
             github.rest.issues.createComment({
