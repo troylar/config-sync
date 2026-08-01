@@ -155,3 +155,60 @@ class TestPracticeExtractorWithAI:
 
         assert len(result.practices) == 1
         assert result.practices[0].raw_content == "# Test"
+
+
+class TestSecretRedactionTripwire:
+    """DEBT-001 tripwire: planted secrets must never reach the LLM payload.
+
+    If secret detection is removed from the extraction path, these fail.
+    """
+
+    def _detection_for(self, rule_file: Path) -> MagicMock:
+        mock_instr = MagicMock()
+        mock_instr.file_path = str(rule_file)
+        mock_instr.path = None
+        return _make_detection_result(instructions=[mock_instr])
+
+    def test_planted_secret_never_reaches_llm_payload(self, tmp_path: Path) -> None:
+        rules_dir = tmp_path / ".cursor" / "rules"
+        rules_dir.mkdir(parents=True)
+        rule_file = rules_dir / "deploy.md"
+        rule_file.write_text(
+            "# Deploy\n"
+            'export OPENAI_API_KEY="sk-plantedsecret1234567890abcdef"\n'
+            "AWS_SECRET_ACCESS_KEY: plantedAWSsecretValue99\n"
+            "Use PORT=8080 for local runs.\n"
+        )
+
+        mock_llm = MagicMock()
+        mock_llm.complete.return_value = LLMResponse(
+            content=json.dumps({"practices": []}), model="test", usage={}
+        )
+
+        with patch("devsync.core.component_detector.ComponentDetector") as mock_cls:
+            mock_cls.return_value.detect_all.return_value = self._detection_for(rule_file)
+            extractor = PracticeExtractor(llm_provider=mock_llm)
+            extractor.extract(tmp_path)
+
+        assert mock_llm.complete.called
+        all_payloads = " ".join(
+            str(call.args) + str(call.kwargs) for call in mock_llm.complete.call_args_list
+        )
+        assert "sk-plantedsecret1234567890abcdef" not in all_payloads
+        assert "plantedAWSsecretValue99" not in all_payloads
+        # Non-secret content must survive redaction (no over-scrubbing)
+        assert "8080" in all_payloads
+
+    def test_planted_secret_never_persisted_in_file_copy_path(self, tmp_path: Path) -> None:
+        rules_dir = tmp_path / ".claude" / "rules"
+        rules_dir.mkdir(parents=True)
+        rule_file = rules_dir / "ci.md"
+        rule_file.write_text("token: ghp_ABCdefGHIjklMNOpqrSTUvwx12345678\n")
+
+        with patch("devsync.core.component_detector.ComponentDetector") as mock_cls:
+            mock_cls.return_value.detect_all.return_value = self._detection_for(rule_file)
+            extractor = PracticeExtractor(llm_provider=None)
+            result = extractor.extract(tmp_path)
+
+        assert len(result.practices) == 1
+        assert "ghp_ABCdefGHIjklMNOpqrSTUvwx12345678" not in (result.practices[0].raw_content or "")

@@ -12,6 +12,7 @@ if TYPE_CHECKING:
     from devsync.core.component_detector import DetectionResult
 
 from devsync.core.practice import MCPDeclaration, PracticeDeclaration
+from devsync.core.secret_detector import SecretDetector, redact_secrets_in_text
 from devsync.llm.prompts import (
     EXTRACT_MCP_PROMPT,
     EXTRACT_PRACTICES_PROMPT,
@@ -32,6 +33,7 @@ class PracticeExtractor:
 
     def __init__(self, llm_provider: Optional[LLMProvider] = None):
         self._llm = llm_provider
+        self._secret_detector = SecretDetector()
 
     def extract(
         self,
@@ -85,6 +87,15 @@ class PracticeExtractor:
                 try:
                     content = path.read_text(encoding="utf-8")
                     rel_path = str(path.relative_to(project_path))
+                    # Redact likely secrets before content can reach an LLM
+                    # provider (AI path) or a package (file-copy path).
+                    content, redactions = redact_secrets_in_text(content, self._secret_detector)
+                    if redactions:
+                        logger.warning(
+                            "Redacted %d likely secret(s) from %s before extraction",
+                            redactions,
+                            rel_path,
+                        )
                     files[rel_path] = content
                 except (OSError, UnicodeDecodeError):
                     logger.warning("Could not read %s", path)

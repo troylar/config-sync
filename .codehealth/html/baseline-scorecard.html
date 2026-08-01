@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DevSync — Baseline Health Scorecard (2026-08-01)</title>
+<style>
+:root{
+  --ground:#F7F8F8;--surface:#FFFFFF;--ink:#141C1E;--muted:#5B6B6E;
+  --hair:#DDE3E3;--accent:#0B6E77;
+  --good:#2E7D5B;--caution:#9A6A10;--bad:#A63A2E;
+  --good-text:#1E5A40;--caution-text:#6E4A0B;--bad-text:#7C2A20;
+}
+@media (prefers-color-scheme: dark){:root{
+  --ground:#101719;--surface:#182124;--ink:#E3EAEA;--muted:#93A3A5;
+  --hair:#263235;--accent:#57C7D1;
+  --good:#5FBF92;--caution:#E0A93B;--bad:#F08573;
+  --good-text:#5FBF92;--caution-text:#E0A93B;--bad-text:#F08573;
+}}
+:root[data-theme="dark"]{
+  --ground:#101719;--surface:#182124;--ink:#E3EAEA;--muted:#93A3A5;
+  --hair:#263235;--accent:#57C7D1;
+  --good:#5FBF92;--caution:#E0A93B;--bad:#F08573;
+  --good-text:#5FBF92;--caution-text:#E0A93B;--bad-text:#F08573;}
+:root[data-theme="light"]{
+  --ground:#F7F8F8;--surface:#FFFFFF;--ink:#141C1E;--muted:#5B6B6E;
+  --hair:#DDE3E3;--accent:#0B6E77;
+  --good:#2E7D5B;--caution:#9A6A10;--bad:#A63A2E;
+  --good-text:#1E5A40;--caution-text:#6E4A0B;--bad-text:#7C2A20;}
+*{box-sizing:border-box}
+a,a:visited{color:var(--accent)}
+body{margin:0;background:var(--ground);color:var(--ink);
+  font:15px/1.55 ui-sans-serif,-apple-system,"Segoe UI",system-ui,sans-serif}
+main{max-width:72ch;margin:0 auto;padding:24px 20px 64px}
+.wide{max-width:960px;margin-left:auto;margin-right:auto}
+code,.mono{font-family:ui-monospace,"SF Mono","Cascadia Mono",Menlo,Consolas,monospace;font-size:13px}
+h1{font-size:24px;margin:8px 0 2px}
+h2{font-size:18px;margin:40px 0 12px}
+h2 a.self{color:var(--hair);text-decoration:none;margin-left:6px}
+h2 a.self:hover,h2 a.self:focus{color:var(--accent)}
+.eyebrow{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+nav.top{display:flex;gap:14px;font-size:13px;border-bottom:1px solid var(--hair);padding-bottom:10px}
+nav.top a{color:var(--accent);text-decoration:none}
+nav.top .here{color:var(--muted)}
+table{border-collapse:collapse;width:100%;font-variant-numeric:tabular-nums}
+th{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);text-align:left}
+th,td{padding:10px 14px;border-bottom:1px solid var(--hair);vertical-align:top}
+.tablewrap{overflow-x:auto}
+.pill{display:inline-block;min-width:34px;text-align:center;padding:2px 8px;border-radius:6px;font-weight:700}
+.pill.good{background:color-mix(in srgb,var(--good) 14%,transparent);color:var(--good-text)}
+.pill.caution{background:color-mix(in srgb,var(--caution) 14%,transparent);color:var(--caution-text)}
+.pill.bad{background:color-mix(in srgb,var(--bad) 14%,transparent);color:var(--bad-text)}
+.pill.na{background:transparent;border:1px solid var(--hair);color:var(--muted)}
+.strip{display:flex;flex-wrap:wrap;gap:14px;margin:18px 0 6px}
+.strip .cell{text-align:center}
+.strip .lab{display:block;font-size:11px;color:var(--muted);max-width:9ch;margin:4px auto 0;line-height:1.25}
+.verdict{font-size:18px;line-height:1.5;border-top:1px solid var(--hair);border-bottom:1px solid var(--hair);padding:18px 2px;margin:26px 0}
+.finding{border-top:1px solid var(--hair);padding-top:18px;margin-top:26px;position:relative}
+.rank{position:absolute;left:-52px;top:14px;font-size:32px;color:var(--muted);font-weight:700}
+@media(max-width:900px){.rank{position:static;display:block;font-size:24px}}
+.findhead{break-inside:avoid;page-break-inside:avoid}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0 12px}
+.chip{font-size:12px;padding:2px 10px;border-radius:999px;border:1px solid var(--hair)}
+.chip.bad{background:color-mix(in srgb,var(--bad) 12%,transparent);color:var(--bad-text);border-color:transparent}
+.chip.caution{background:color-mix(in srgb,var(--caution) 12%,transparent);color:var(--caution-text);border-color:transparent}
+.chip.mono{font-family:ui-monospace,Menlo,monospace}
+dl.attrs{display:grid;grid-template-columns:1fr 1fr;gap:6px 28px;margin:14px 0}
+@media(max-width:700px){dl.attrs{grid-template-columns:1fr}}
+dl.attrs dt{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+dl.attrs dd{margin:2px 0 10px}
+.evidence{background:var(--surface);border:1px solid var(--hair);border-radius:6px;
+  padding:10px 14px;font-family:ui-monospace,Menlo,monospace;font-size:12.5px;color:var(--muted);
+  overflow-wrap:anywhere;margin:10px 0}
+.evidence div{padding:1px 0}
+.constraint{border:1px solid var(--hair);border-left:1px solid var(--hair);border-radius:6px;
+  background:color-mix(in srgb,var(--caution) 8%,transparent);padding:12px 16px;margin:12px 0}
+.constraint b{color:var(--ink)}
+.backlink{font-size:12px;margin-top:10px}
+.backlink a{color:var(--accent);text-decoration:none}
+footer{margin-top:56px;border-top:1px solid var(--hair);padding-top:12px;font-size:12px;color:var(--muted)}
+.note{font-size:13px;color:var(--muted)}
+@media print{
+  body{background:#fff;color:#111}
+  nav.top{display:none}
+  .finding,.constraint{break-inside:avoid}
+  details>*:not(summary){display:block !important}
+  a{color:#111;text-decoration:none}
+}
+</style>
+</head>
+<body>
+<main>
+<nav class="top"><span class="here">baseline scorecard</span><a href="./dashboard.html">dashboard</a></nav>
+
+<p class="eyebrow">Baseline reading · 2026-08-01 · devsync v0.15.0 · single-repo</p>
+<h1>DevSync — Baseline Health Scorecard</h1>
+<p class="note">First full reading. No prior reading exists; grades below are the anchors every future checkup grades against. Coverage: full read of the trust paths (extraction→LLM, credentials, secret detection, git/install) and CLI entry points; structural read + targeted sampling elsewhere. Per-tool adapters sampled, not exhaustively read.</p>
+
+<section id="vitals" class="wide">
+<h2>Vitals<a class="self" href="#vitals">#</a></h2>
+<div class="strip" aria-hidden="true">
+  <div class="cell"><span class="pill good">B</span><span class="lab">Architecture</span></div>
+  <div class="cell"><span class="pill good">B−</span><span class="lab">Correctness</span></div>
+  <div class="cell"><span class="pill caution">C</span><span class="lab">Security</span></div>
+  <div class="cell"><span class="pill good">B</span><span class="lab">Performance</span></div>
+  <div class="cell"><span class="pill good">B−</span><span class="lab">Logging</span></div>
+  <div class="cell"><span class="pill na">N/A</span><span class="lab">Metrics &amp; alerting</span></div>
+  <div class="cell"><span class="pill good">B+</span><span class="lab">Test safety net</span></div>
+  <div class="cell"><span class="pill good">A−</span><span class="lab">Dependencies</span></div>
+  <div class="cell"><span class="pill good">A−</span><span class="lab">Deployability</span></div>
+  <div class="cell"><span class="pill caution">C+</span><span class="lab">Change velocity</span></div>
+</div>
+<div class="tablewrap" tabindex="0">
+<table>
+<thead><tr><th>Dimension</th><th>Grade</th><th>Why</th></tr></thead>
+<tbody>
+<tr><td>Architecture &amp; coupling</td><td><span class="pill good">B</span></td><td>Clean layering (cli/core/ai_tools/llm/storage); adapters isolate 23 tools behind a registry; marred by a 43-class, 1,702-line models.py and live v1/v2 manifest duplication.</td></tr>
+<tr><td>Correctness &amp; data integrity</td><td><span class="pill good">B−</span></td><td>Atomic writes and backups exist and are tested; conflict resolution tested; but 55 broad <code>except Exception</code> catches, several returning None/continue, can convert real failures into silent partial installs.</td></tr>
+<tr><td>Security posture</td><td><span class="pill caution">C</span></td><td><b>Extraction payload bypasses secret detection entirely</b> — extractor.py sends raw instruction-file text to the LLM; SecretDetector guards only MCP-config templating. Credentials hygiene otherwise good (.env-based, gitignore-enforced). Semgrep in CI.</td></tr>
+<tr><td>Performance &amp; scalability</td><td><span class="pill good">B</span></td><td>CLI workload; no hot loops found; unbounded reads bounded in practice. SUSPECTED only — no profiling performed. Benchmark workflow exists but its assertions weren't reviewed.</td></tr>
+<tr><td>Observability: logging</td><td><span class="pill good">B−</span></td><td>Real logging util (leveled, optional file); but CLI paths mix console.print and logger, and most broad catches log at levels users never see — a failed install's <i>why</i> often isn't recoverable.</td></tr>
+<tr><td>Observability: metrics &amp; alerting</td><td><span class="pill na">N/A</span></td><td>Local CLI — no production surface. Not graded rather than graded F; TRACKER.md should drop this vital.</td></tr>
+<tr><td>Test safety net</td><td><span class="pill good">B+</span></td><td>~22.8k test lines vs 17.5k source; money paths covered (extractor, install_v2, credential prompter, dotenv, git ops, conflict resolution). Gap: no test asserts secrets DON'T reach the LLM payload — the regression that matters most has no tripwire.</td></tr>
+<tr><td>Dependency &amp; platform health</td><td><span class="pill good">A−</span></td><td>Dependabot on, Semgrep + dependency checks in CI, sane version floors, py3.10+.</td></tr>
+<tr><td>Deployability &amp; recoverability</td><td><span class="pill good">A−</span></td><td>Full pipeline: CI, publish workflow, release drafter, docs build, PyPI. Rollback = pip install previous version; no migration surface.</td></tr>
+<tr><td>Change velocity friction</td><td><span class="pill caution">C+</span></td><td>Rename debt bites here: credential/config paths still write <code>.instructionkit/</code> (5 modules, 11 refs); v1/v2 manifest coexistence doubles some code paths; ROADMAP #86 itself says extraction is Claude-centric against the project's core principle.</td></tr>
+</tbody>
+</table>
+</div>
+</section>
+
+<section id="verdict">
+<h2>Overall verdict<a class="self" href="#verdict">#</a></h2>
+<p class="verdict">For a solo side project this codebase is in genuinely good shape — the test ratio, CI pipeline, and adapter architecture are better than most funded projects'. If only <b>one</b> item gets funded, it must be the <b>secret-detection gap in the extraction payload</b>: the product's pitch is "safely move your practices between projects," extraction is the first command a new user runs, and instruction files are exactly where people paste keys. Everything else on this list is drag; that one is existential.</p>
+</section>
+
+<section id="findings-index" class="wide">
+<h2>Findings<a class="self" href="#findings-index">#</a></h2>
+<p class="note">Ranked. These are candidates — nothing is tracked until registered. (Findings 1–2 were registered 2026-08-01 as DEBT-001/DEBT-002; 3–5 received ledger dispositions.)</p>
+<div class="tablewrap" tabindex="0">
+<table>
+<thead><tr><th>#</th><th>Finding</th><th>Severity</th><th>Effort</th><th>Verdict</th></tr></thead>
+<tbody>
+<tr><td>1</td><td><a href="#debt-001">Extraction payload bypasses secret detection</a></td><td><span class="chip bad">critical</span></td><td><span class="chip mono">S</span></td><td>fix before building on top of it</td></tr>
+<tr><td>2</td><td><a href="#debt-002">.instructionkit residue in the storage/credentials layer</a></td><td><span class="chip bad">high</span></td><td><span class="chip mono">S–M</span></td><td>schedule as roadmap item</td></tr>
+<tr><td>3</td><td><a href="#v1-v2-dual-architecture">v1/v2 dual architecture still resident</a></td><td><span class="chip caution">medium</span></td><td><span class="chip mono">M</span></td><td>pay down opportunistically</td></tr>
+<tr><td>4</td><td><a href="#broad-exception-handling">Broad exception handling can hide partial-install failures</a></td><td><span class="chip caution">medium</span></td><td><span class="chip mono">M</span></td><td>pay down opportunistically</td></tr>
+<tr><td>5</td><td><a href="#models-monolith">models.py is a 43-class monolith</a></td><td><span class="chip">low</span></td><td><span class="chip mono">M</span></td><td>accept and monitor</td></tr>
+</tbody>
+</table>
+</div>
+
+<article class="finding" id="debt-001">
+<div class="findhead"><span class="rank">1</span>
+<h2>Extraction payload bypasses secret detection</h2>
+<div class="chips"><span class="chip">devsync</span><span class="chip bad">critical</span><span class="chip mono">effort S</span><span class="chip bad">fix before building on top of it</span></div></div>
+<p><code>extractor.py</code>'s <code>_read_instruction_files</code> reads raw file text; <code>_extract_with_ai</code> formats it into the extraction prompt and sends it to the configured LLM provider. <code>SecretDetector</code> — a real, tested detector that exists thirty lines away in the same package — is applied only in <code>package_creator.py</code>'s MCP-config templating, never to the extraction payload.</p>
+<dl class="attrs">
+<dt>Blast radius</dt><dd>Any user whose CLAUDE.md-class instruction files contain keys, tokens, or internal URLs ships them to OpenRouter/OpenAI/Anthropic on first <code>extract</code>.</dd>
+<dt>Interest rate</dt><dd>Grows with every new user; silent by design.</dd>
+<dt>Cost of inaction</dt><dd>The single trust incident the project cannot survive.</dd>
+<dt>Status</dt><dd>Registered as DEBT-001 · <a href="https://github.com/troylar/devsync/issues/103">issue #103</a></dd>
+</dl>
+<div class="evidence"><div>devsync/core/extractor.py:74–118</div><div>devsync/core/package_creator.py:27, 103, 328</div></div>
+<p class="backlink"><a href="#findings-index">↑ back to findings</a></p>
+</article>
+
+<article class="finding" id="debt-002">
+<div class="findhead"><span class="rank">2</span>
+<h2>.instructionkit residue in the storage/credentials layer</h2>
+<div class="chips"><span class="chip">devsync</span><span class="chip bad">high</span><span class="chip mono">effort S–M</span><span class="chip caution">schedule as roadmap item</span></div></div>
+<p>The instructionkit→devsync rename never reached storage: <code>credentials.py</code> writes <code>.instructionkit/.env</code> (project) and <code>~/.instructionkit/global/.env</code>; paths, backup, project, and mcp_syncer modules carry the same prefix — 11 references across 5 modules.</p>
+<dl class="attrs">
+<dt>Blast radius</dt><dd>User-visible mystery directories under the old product name; support confusion; every contributor learns the alias.</dd>
+<dt>Interest rate</dt><dd>Migration cost compounds the longer both names coexist.</dd>
+<dt>Handle with care</dt><dd>Existing users' credentials live at the old paths — write-new/read-old alias or one-time migration; never strand keys.</dd>
+<dt>Status</dt><dd>Registered as DEBT-002 · <a href="https://github.com/troylar/devsync/issues/104">issue #104</a></dd>
+</dl>
+<div class="evidence"><div>devsync/core/mcp/credentials.py:31–32</div><div>devsync/utils/paths.py · utils/backup.py · utils/project.py · ai_tools/mcp_syncer.py</div></div>
+<p class="backlink"><a href="#findings-index">↑ back to findings</a></p>
+</article>
+
+<article class="finding" id="v1-v2-dual-architecture">
+<div class="findhead"><span class="rank">3</span>
+<h2>v1/v2 dual architecture still resident</h2>
+<div class="chips"><span class="chip">devsync</span><span class="chip caution">medium</span><span class="chip mono">effort M</span><span class="chip">pay down opportunistically</span></div></div>
+<p><code>package_manifest.py</code> and <code>package_manifest_v2.py</code> are both live; <code>install_v2</code>/<code>list_v2</code> naming implies a v1 that no current non-test import appears to reference. Dead-or-nearly-dead twin modules tax every reader.</p>
+<dl class="attrs">
+<dt>Disposition</dt><dd>Dismissed from register (below trust threshold for a solo project). Revisit if any non-test import of the v1 module is found, or a v1-path bug ships.</dd>
+</dl>
+<div class="evidence"><div>devsync/core/package_manifest.py · package_manifest_v2.py · cli/install_v2.py</div></div>
+<p class="backlink"><a href="#findings-index">↑ back to findings</a></p>
+</article>
+
+<article class="finding" id="broad-exception-handling">
+<div class="findhead"><span class="rank">4</span>
+<h2>Broad exception handling can hide partial-install failures</h2>
+<div class="chips"><span class="chip">devsync</span><span class="chip caution">medium</span><span class="chip mono">effort M, incremental</span><span class="chip">pay down opportunistically</span></div></div>
+<p>55 <code>except Exception</code> sites; component_detector alone has 11, several continue/return-None. In detection that's arguably policy; in install/write paths it converts failures into "worked, mostly" — the user finds out later.</p>
+<dl class="attrs">
+<dt>Disposition</dt><dd>Awaiting decision — quick win #4 (promote failure logs to console at WARN+) may be sufficient. First surfaced 2026-08-01.</dd>
+</dl>
+<div class="evidence"><div>grep "except Exception" devsync/ · core/component_detector.py · core/package_creator.py</div></div>
+<p class="backlink"><a href="#findings-index">↑ back to findings</a></p>
+</article>
+
+<article class="finding" id="models-monolith">
+<div class="findhead"><span class="rank">5</span>
+<h2>models.py is a 43-class monolith</h2>
+<div class="chips"><span class="chip">devsync</span><span class="chip">low</span><span class="chip mono">effort M</span><span class="chip">accept and monitor</span></div></div>
+<p>1,702 lines, 43 classes, imported by every layer. Cohesion is actually fair — they're all models; the cost is merge friction and read time, not correctness.</p>
+<dl class="attrs">
+<dt>Disposition</dt><dd>Accepted with a tripwire: revisit when <code>wc -l &lt; devsync/core/models.py</code> exceeds 2,000 (baseline 1,702).</dd>
+</dl>
+<p class="backlink"><a href="#findings-index">↑ back to findings</a></p>
+</article>
+</section>
+
+<section id="quick-wins">
+<h2>Quick wins<a class="self" href="#quick-wins">#</a></h2>
+<p class="note">Cheap and high-leverage — deliberately a different class of thing from findings.</p>
+<ol>
+<li>Add a secret-detection pass + one test on the extraction payload (the tripwire for finding 1's regression).</li>
+<li>Alias-read old <code>.instructionkit</code> paths while writing new <code>.devsync</code> ones — 90% of finding 2's user pain, one afternoon.</li>
+<li>Delete <code>package_manifest.py</code> (v1) after confirming zero non-test imports.</li>
+<li>Promote failed-install logging to console at WARN+ so users see the <i>why</i>.</li>
+<li>Fix ROADMAP.md's link to VISION.md if VISION.md is absent (dangling reference).</li>
+</ol>
+</section>
+
+<section id="suggested-metrics" class="wide">
+<h2>Suggested metrics<a class="self" href="#suggested-metrics">#</a></h2>
+<p class="note">Proposals until registered — these are not yet being tracked.</p>
+<div class="tablewrap" tabindex="0">
+<table>
+<thead><tr><th>Metric</th><th>Measures</th><th>Command</th><th>Direction</th></tr></thead>
+<tbody>
+<tr><td>broad-catch count</td><td>exception hygiene</td><td><code>grep -rc "except Exception" devsync/ --include='*.py' | awk -F: '{s+=$2} END{print s}'</code></td><td>down</td></tr>
+<tr><td>instructionkit refs</td><td>rename-debt burn-down</td><td><code>grep -rn "instructionkit" devsync/ --include='*.py' | wc -l</code></td><td>down to 0</td></tr>
+<tr><td>coverage %</td><td>safety net</td><td><code>pytest --cov=devsync -q</code></td><td>hold ≥ current</td></tr>
+<tr><td>models.py lines</td><td>monolith growth</td><td><code>wc -l &lt; devsync/core/models.py</code></td><td>not up</td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="tracker-design">Tracker-design recommendations<a class="self" href="#tracker-design">#</a></h2>
+<ul>
+<li>Drop "Observability: metrics &amp; alerting" from the vitals — no production surface to observe.</li>
+<li>"instructionkit refs" is a vital worth tracking as a number (change-velocity-friction proxy).</li>
+</ul>
+</section>
+
+<section id="handle-with-care">
+<h2>Handle with care<a class="self" href="#handle-with-care">#</a></h2>
+<div class="constraint"><b><code>.instructionkit</code> paths are load-bearing.</b> Existing installs store credentials there; renaming without a read-alias strands users' keys.</div>
+<div class="constraint"><b><code>_extract_without_ai</code> is a parallel path.</b> The non-AI fallback behaves differently from the AI path; changes to extraction must keep both in parity.</div>
+<div class="constraint"><b>23 adapters share the capability_registry contract.</b> A registry change fans out to every tool; the per-tool tests are the safety net — run them all.</div>
+</section>
+
+<footer>
+Source: <span class="mono">.codehealth/baseline/scorecard.md</span> · provenance <span class="mono">sha256:78fc73c7a664</span> (worktree at repo commit <span class="mono">356c7fb</span>) · rendered 2026-08-01 · Markdown is the source of truth; this file is a render of it.
+</footer>
+</main>
+</body>
+</html>

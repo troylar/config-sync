@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DevSync — Code Health Dashboard (2026-08-01)</title>
+<script>
+(function(){try{var t=localStorage.getItem("ch-theme");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}})();
+</script>
+<style>
+:root{
+  --ground:#F7F8F8;--surface:#FFFFFF;--ink:#141C1E;--muted:#5B6B6E;
+  --hair:#DDE3E3;--accent:#0B6E77;
+  --good:#2E7D5B;--caution:#9A6A10;--bad:#A63A2E;
+  --good-text:#1E5A40;--caution-text:#6E4A0B;--bad-text:#7C2A20;
+}
+@media (prefers-color-scheme: dark){:root{
+  --ground:#101719;--surface:#182124;--ink:#E3EAEA;--muted:#93A3A5;
+  --hair:#263235;--accent:#57C7D1;
+  --good:#5FBF92;--caution:#E0A93B;--bad:#F08573;
+  --good-text:#5FBF92;--caution-text:#E0A93B;--bad-text:#F08573;
+}}
+:root[data-theme="dark"]{
+  --ground:#101719;--surface:#182124;--ink:#E3EAEA;--muted:#93A3A5;
+  --hair:#263235;--accent:#57C7D1;
+  --good:#5FBF92;--caution:#E0A93B;--bad:#F08573;
+  --good-text:#5FBF92;--caution-text:#E0A93B;--bad-text:#F08573;}
+:root[data-theme="light"]{
+  --ground:#F7F8F8;--surface:#FFFFFF;--ink:#141C1E;--muted:#5B6B6E;
+  --hair:#DDE3E3;--accent:#0B6E77;
+  --good:#2E7D5B;--caution:#9A6A10;--bad:#A63A2E;
+  --good-text:#1E5A40;--caution-text:#6E4A0B;--bad-text:#7C2A20;}
+*{box-sizing:border-box}
+a,a:visited{color:var(--accent)}
+body{margin:0;background:var(--ground);color:var(--ink);
+  font:15px/1.55 ui-sans-serif,-apple-system,"Segoe UI",system-ui,sans-serif}
+main{max-width:1080px;margin:0 auto;padding:20px 20px 56px}
+code,.mono{font-family:ui-monospace,"SF Mono","Cascadia Mono",Menlo,Consolas,monospace;font-size:13px}
+h1{font-size:24px;margin:0}
+h2{font-size:18px;margin:34px 0 10px}
+h2 a{color:var(--accent);text-decoration:none;font-size:13px;font-weight:400}
+.eyebrow{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+nav.top{display:flex;gap:14px;font-size:13px;border-bottom:1px solid var(--hair);padding-bottom:10px;margin-bottom:14px}
+nav.top a{color:var(--accent);text-decoration:none}
+nav.top .here{color:var(--muted)}
+.header{display:flex;flex-wrap:wrap;gap:24px;align-items:baseline;background:var(--surface);
+  border:1px solid var(--hair);border-radius:8px;padding:14px 18px;margin-top:14px}
+.header .kv{display:flex;flex-direction:column}
+.header .kv b{font-size:20px;font-variant-numeric:tabular-nums}
+.header .kv span{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+#themeToggle{margin-left:auto;background:none;border:1px solid var(--hair);border-radius:6px;
+  color:var(--ink);padding:4px 12px;cursor:pointer;font-size:12px}
+#themeToggle:focus{outline:2px solid var(--accent)}
+table{border-collapse:collapse;width:100%;font-variant-numeric:tabular-nums}
+th{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);text-align:left}
+th,td{padding:10px 14px;border-bottom:1px solid var(--hair);vertical-align:top}
+.tablewrap{overflow-x:auto}
+.pill{display:inline-block;min-width:34px;text-align:center;padding:2px 8px;border-radius:6px;font-weight:700}
+.pill.good{background:color-mix(in srgb,var(--good) 14%,transparent);color:var(--good-text)}
+.pill.caution{background:color-mix(in srgb,var(--caution) 14%,transparent);color:var(--caution-text)}
+.pill.bad{background:color-mix(in srgb,var(--bad) 14%,transparent);color:var(--bad-text)}
+.pill.na{background:transparent;border:1px solid var(--hair);color:var(--muted)}
+.vgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px}
+.vcell{background:var(--surface);border:1px solid var(--hair);border-radius:8px;padding:10px 12px}
+.vcell .dim{font-size:12px;color:var(--muted);display:block;margin-bottom:6px;min-height:2.4em}
+.vcell .why{font-size:12px;color:var(--muted);display:block;margin-top:6px}
+.chip{font-size:12px;padding:2px 10px;border-radius:999px;border:1px solid var(--hair);display:inline-block}
+.chip.bad{background:color-mix(in srgb,var(--bad) 12%,transparent);color:var(--bad-text);border-color:transparent}
+.chip.caution{background:color-mix(in srgb,var(--caution) 12%,transparent);color:var(--caution-text);border-color:transparent}
+.status{font-variant:small-caps;border:1px solid var(--hair);border-radius:999px;padding:1px 10px;font-size:12px;
+  background:color-mix(in srgb,var(--caution) 10%,transparent);color:var(--caution-text)}
+details{margin-top:6px}
+summary{cursor:pointer;font-size:13px;color:var(--accent)}
+.crit{font-size:13px;margin:6px 0 0 2px;color:var(--muted)}
+.crit .mono{font-size:12px}
+.empty{color:var(--muted);font-size:13px;border:1px dashed var(--hair);border-radius:8px;padding:12px 16px}
+footer{margin-top:48px;border-top:1px solid var(--hair);padding-top:12px;font-size:12px;color:var(--muted)}
+@media print{
+  body{background:#fff;color:#111}
+  nav.top,#themeToggle{display:none}
+  details>*:not(summary){display:block !important}
+  a{color:#111;text-decoration:none}
+}
+</style>
+</head>
+<body>
+<main>
+<nav class="top"><a href="./baseline-scorecard.html">baseline scorecard</a><span class="here">dashboard</span></nav>
+
+<p class="eyebrow">Code health · devsync · latest reading 2026-08-01 (baseline)</p>
+<h1>DevSync — Health Dashboard</h1>
+<div class="header">
+  <div class="kv"><b>8</b><span>Tracked debt (index)</span></div>
+  <div class="kv"><b>—</b><span>Δ since last (first reading)</span></div>
+  <div class="kv"><b>1</b><span>Candidate pressure</span></div>
+  <div class="kv"><b>1 + 1</b><span>Open + pending verify</span></div>
+  <button id="themeToggle" type="button">theme</button>
+</div>
+<p class="empty" style="margin-top:14px">First reading — trend widgets appear from the second checkup onward. The <a href="./baseline-scorecard.html">baseline scorecard</a> holds the full reasoning; this page earns its keep once there's movement to show.</p>
+
+<section id="vitals">
+<h2>Vitals <a href="./baseline-scorecard.html#vitals">full reasoning →</a></h2>
+<div class="vgrid">
+<div class="vcell"><span class="dim">Architecture &amp; coupling</span><span class="pill good">B</span><span class="why">clean layers; models.py monolith</span></div>
+<div class="vcell"><span class="dim">Correctness &amp; data integrity</span><span class="pill good">B−</span><span class="why">atomic writes; broad catches</span></div>
+<div class="vcell"><span class="dim">Security posture</span><span class="pill caution">C</span><span class="why">extraction payload unscanned</span></div>
+<div class="vcell"><span class="dim">Performance &amp; scalability</span><span class="pill good">B</span><span class="why">suspected only — no profiling</span></div>
+<div class="vcell"><span class="dim">Observability: logging</span><span class="pill good">B−</span><span class="why">failures logged where users don't look</span></div>
+<div class="vcell"><span class="dim">Observability: metrics &amp; alerting</span><span class="pill na">N/A</span><span class="why">no prod surface — drop this vital</span></div>
+<div class="vcell"><span class="dim">Test safety net</span><span class="pill good">B+</span><span class="why">22.8k test lines; no payload tripwire</span></div>
+<div class="vcell"><span class="dim">Dependency &amp; platform health</span><span class="pill good">A−</span><span class="why">dependabot + semgrep</span></div>
+<div class="vcell"><span class="dim">Deployability &amp; recoverability</span><span class="pill good">A−</span><span class="why">full CI→PyPI pipeline</span></div>
+<div class="vcell"><span class="dim">Change velocity friction</span><span class="pill caution">C+</span><span class="why">rename debt; v1/v2 duplication</span></div>
+</div>
+</section>
+
+<section id="metrics">
+<h2>Metrics</h2>
+<div class="tablewrap" tabindex="0">
+<table>
+<thead><tr><th>Metric</th><th>Repo</th><th>Current</th><th>Trend</th><th>Direction</th><th>Guardrail</th></tr></thead>
+<tbody>
+<tr><td class="mono">secretdetector.extractor.refs</td><td>devsync</td><td>3</td><td>— (1 day)</td><td>up (≥1 = DEBT-001 criterion)</td><td>—</td></tr>
+<tr><td class="mono">payload.tripwire.tests</td><td>devsync</td><td>1</td><td>— (1 day)</td><td>up (≥1 = DEBT-001 criterion)</td><td>—</td></tr>
+<tr><td class="mono">instructionkit.refs</td><td>devsync</td><td>11</td><td>— (1 reading)</td><td>down to 0</td><td>—</td></tr>
+<tr><td class="mono">models.py.lines</td><td>devsync</td><td>1702</td><td>— (1 reading)</td><td>not up</td><td>2000 (revisit trigger)</td></tr>
+</tbody>
+</table>
+</div>
+</section>
+
+<section id="register">
+<h2>Register</h2>
+<div class="tablewrap" tabindex="0">
+<table>
+<thead><tr><th>ID</th><th>Title</th><th>Severity</th><th>Status</th><th>Progress</th><th>Issue</th></tr></thead>
+<tbody>
+<tr><td class="mono">DEBT-001</td><td>Extraction payload bypasses secret detection
+<details open><summary>goal criteria</summary>
+<p class="crit">1. Payload passes secret detection before any provider call — <span class="mono">grep -c "SecretDetector\|secret_detector" devsync/core/extractor.py</span> · baseline <b>0</b> → target <b>≥1</b> (on-path, both AI and non-AI persistence)</p>
+<p class="crit">2. Tripwire test: planted secret must not reach outbound payload — <span class="mono">grep -rln "secret" tests/unit/test_extractor.py | wc -l</span> · baseline <b>0</b> → target <b>≥1</b></p>
+</details></td>
+<td><span class="chip bad">critical</span></td><td><span class="status">pending verify</span></td><td>2 / 2</td>
+<td><a href="https://github.com/troylar/devsync/issues/103" class="mono">#103</a></td></tr>
+<tr><td class="mono">DEBT-002</td><td>.instructionkit residue in storage/credentials layer
+<details open><summary>goal criteria</summary>
+<p class="crit">1. New writes land under .devsync/; old paths readable (alias) — code review + alias test</p>
+<p class="crit">2. Source refs trend to 0 — <span class="mono">grep -rn "instructionkit" devsync/ --include="*.py" | wc -l</span> · baseline <b>11</b> → target <b>0</b> (alias constant allowlisted when it lands)</p>
+</details></td>
+<td><span class="chip bad">high</span></td><td><span class="status">open</span></td><td>0 / 2</td>
+<td><a href="https://github.com/troylar/devsync/issues/104" class="mono">#104</a></td></tr>
+</tbody>
+</table>
+</div>
+</section>
+
+<section id="trend">
+<h2>Debt Index over time</h2>
+<p class="empty">One reading: Debt Index <b>8</b> (1 critical × 5 + 1 high × 3 — resolved-pending-verify still counts until it survives the soak), candidate pressure <b>1</b>. The paired chart starts at the first checkup — a single point is a number, not a trend.</p>
+</section>
+
+<section id="candidates">
+<h2>Candidates awaiting decision</h2>
+<div class="tablewrap" tabindex="0">
+<table>
+<thead><tr><th>Candidate</th><th>First surfaced</th><th>Age</th></tr></thead>
+<tbody>
+<tr><td>Broad exception handling can hide partial-install failures (quick-win #4 may suffice)</td><td>2026-08-01</td><td>0 checkups</td></tr>
+</tbody>
+</table>
+</div>
+</section>
+
+<footer>
+Sources: <span class="mono">.codehealth/REGISTER.md</span> (sha256:a545f22f93d7) · <span class="mono">baseline/scorecard.md</span> (sha256:78fc73c7a664) · <span class="mono">metrics.csv</span> · worktree at repo commit <span class="mono">356c7fb</span> · rendered 2026-08-01.
+Markdown in <span class="mono">.codehealth/</span> is the source of truth; this file is a render of it — delete and regenerate freely.
+</footer>
+</main>
+<script>
+document.getElementById("themeToggle").addEventListener("click",function(){
+  var r=document.documentElement,cur=r.getAttribute("data-theme");
+  var next=cur==="dark"?"light":cur==="light"?"dark":
+    (window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches?"light":"dark");
+  r.setAttribute("data-theme",next);
+  try{localStorage.setItem("ch-theme",next)}catch(e){}
+});
+</script>
+</body>
+</html>

@@ -436,3 +436,64 @@ def _template_dict_recursive(
         return [_template_dict_recursive(item, detector, templated_keys, current_path) for item in obj]
     else:
         return obj
+
+
+# Assignment-style lines in free text: KEY=value, key: value, export KEY="value"
+_TEXT_ASSIGNMENT_RE = re.compile(
+    r"""(?P<prefix>^|\s|["'`])
+        (?P<key>[A-Za-z_][A-Za-z0-9_\-\.]{2,60})
+        \s*(?P<sep>[:=])\s*
+        (?P<quote>["'`]?)
+        (?P<value>[^\s"'`]{8,})
+        (?P=quote)""",
+    re.VERBOSE | re.MULTILINE,
+)
+
+# Standalone bearer-style tokens (common provider prefixes), independent of key names
+_TOKEN_PATTERN_RE = re.compile(
+    r"\b(sk-[A-Za-z0-9\-_]{16,}|ghp_[A-Za-z0-9]{20,}|github_pat_[A-Za-z0-9_]{20,}"
+    r"|xox[baprs]-[A-Za-z0-9\-]{10,}|AKIA[0-9A-Z]{16}|eyJ[A-Za-z0-9_\-]{20,}\.[A-Za-z0-9_\-]{10,})\b"
+)
+
+
+def redact_secrets_in_text(
+    text: str, detector: Optional[SecretDetector] = None
+) -> tuple[str, int]:
+    """Redact likely secrets from free text before it leaves the machine.
+
+    Used on instruction-file contents prior to LLM submission: scans
+    assignment-style lines (KEY=value / key: value) with the same detector
+    heuristics used for MCP configs, plus well-known token patterns.
+
+    Args:
+        text: Free text (e.g., an instruction file's contents)
+        detector: SecretDetector instance (creates default if None)
+
+    Returns:
+        Tuple of (redacted text, number of redactions)
+    """
+    if detector is None:
+        detector = SecretDetector()
+
+    count = 0
+
+    def _sub_assignment(m: re.Match) -> str:
+        nonlocal count
+        key, value = m.group("key"), m.group("value")
+        result = detector.detect(value, key)
+        if result.confidence == SecretConfidence.HIGH:
+            count += 1
+            return (
+                f"{m.group('prefix')}{key}{m.group('sep') if m.group('sep') == ':' else '='}"
+                f" [REDACTED:{key.upper()}]"
+            )
+        return m.group(0)
+
+    def _sub_token(m: re.Match) -> str:
+        nonlocal count
+        count += 1
+        return "[REDACTED:TOKEN]"
+
+    redacted = _TEXT_ASSIGNMENT_RE.sub(_sub_assignment, text)
+    redacted = _TOKEN_PATTERN_RE.sub(_sub_token, redacted)
+    return redacted, count

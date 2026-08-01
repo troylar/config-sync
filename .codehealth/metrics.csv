@@ -1,0 +1,10 @@
+timestamp,repo,metric,value,note
+2026-08-01T00:00:00Z,devsync,secretdetector.extractor.refs,0,baseline (DEBT-001)
+2026-08-01T00:00:00Z,devsync,payload.tripwire.tests,0,baseline (DEBT-001)
+2026-08-01T00:00:00Z,devsync,instructionkit.refs,11,baseline (DEBT-002)
+2026-08-01T00:00:00Z,devsync,models.py.lines,1702,baseline (watch item)
+2026-08-01T00:00:01Z,devsync,smell.open.core-pipeline,5,run_id=2026-08-01-core-pipeline
+2026-08-01T00:00:01Z,devsync,smell.systemic.core-pipeline,0,run_id=2026-08-01-core-pipeline (suspected_cross_area not counted)
+2026-08-01T00:00:01Z,devsync,smell.ever_cleared.core-pipeline,0,run_id=2026-08-01-core-pipeline
+2026-08-01T00:00:02Z,devsync,secretdetector.extractor.refs,3,DEBT-001 fix landed
+2026-08-01T00:00:02Z,devsync,payload.tripwire.tests,1,DEBT-001 fix landed
